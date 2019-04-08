@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <!-- Google button -->
-<Button style="@style/AppTheme.ButtonStyle"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/google_button_txt"
-    android:drawableStart="@drawable/google_icon_layer_list" />
+    <!-- Facebook button -->
+    <Button
+        style="@style/AppTheme.Facebook.ButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/facebook_icon_layer_list"
+        android:text="@string/google_facebook_txt" />
 
-</RelativeLayout>
+    <!-- Google button -->
+    <Button
+        style="@style/AppTheme.Google.ButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:drawableStart="@drawable/google_icon_layer_list"
+        android:text="@string/google_button_txt" />
+
+</LinearLayout>

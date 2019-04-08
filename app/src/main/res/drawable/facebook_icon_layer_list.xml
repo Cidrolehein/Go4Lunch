@@ -12,7 +12,7 @@
     <!-- Google Button -->
     <item
         android:bottom="0dp"
-        android:drawable="@drawable/google_icon"
+        android:drawable="@drawable/facebook_icon"
         android:left="0dp"
         android:right="0dp"
         android:top="0dp" />

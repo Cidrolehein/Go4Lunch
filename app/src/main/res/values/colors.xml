@@ -7,4 +7,5 @@
     <color name="icon_background_color">#FFF</color>
     <color name="text_button">#FFF</color>
     <color name="google_button_color">#eb5e4b</color>
+    <color name="facebook_button_color">#3a559f</color>
 </resources>

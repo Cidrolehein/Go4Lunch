@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#e65100</color>
+    <color name="colorPrimaryDark">#ac1900</color>
+    <color name="colorPrimaryLight">#ff833a</color>
+    <color name="colorAccent">#e65100</color>
+    <color name="icon_background_color">#FFF</color>
+    <color name="text_button">#FFF</color>
+    <color name="google_button_color">#eb5e4b</color>
 </resources>

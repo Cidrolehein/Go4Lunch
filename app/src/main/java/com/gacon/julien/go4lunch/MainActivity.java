@@ -8,6 +8,8 @@ import android.os.Bundle;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.gacon.julien.go4lunch.auth.BaseActivity;
+import com.gacon.julien.go4lunch.auth.ProfileActivity;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -16,7 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     //FOR DESIGN
     // - Get Coordinator Layout
@@ -32,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        // Start appropriate activity
+        if (this.isCurrentUserLogged()) {
+            this.startProfileActivity();
+        } else {
+            this.startSignInActivity();
+        }
     }
 
     // --------------------
@@ -65,6 +73,12 @@ public class MainActivity extends AppCompatActivity {
                         .setIsSmartLockEnabled(false, true)
                         .build(),
                 RC_SIGN_IN);
+    }
+
+    // - Launching Profile Activity
+    private void startProfileActivity(){
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
     }
 
     // --------------------

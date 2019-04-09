@@ -8,6 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Generic Button style -->
+    <style name="AppTheme.Generic.ButtonStyle" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/generic_button_rounded_shape</item>
+        <item name="android:textColor">@color/text_button</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="android:paddingStart">10dp</item>
+    </style>
+
     <!-- Facebook Button style -->
     <style name="AppTheme.Facebook.ButtonStyle" parent="Widget.AppCompat.Button.Colored">
         <item name="android:background">@drawable/facebook_button_rounded_shape</item>

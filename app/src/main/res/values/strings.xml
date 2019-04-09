@@ -1,7 +1,13 @@
 <resources>
+    <!-- Activities titles -->
     <string name="app_name">Go4Lunch</string>
+    <string name="toolbar_title_login_activity">Yummie !</string>
+    <!-- Text button -->
     <string name="google_button_txt">Sign in with Google</string>
-    <string name="google_facebook_txt">Sign in with Facebook</string>
+    <string name="facebook_button_txt">Sign in with Facebook</string>
+    <string name="log_out_button_txt">Log out</string>
+    toolbar_title_login_activity
+    <!-- Text logging -->
     <string name="connection_succeed">Connection succeed !</string>
     <string name="error_authentication_canceled">Error authentication canceled</string>
     <string name="error_no_internet">Error no internet</string>

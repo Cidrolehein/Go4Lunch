@@ -26,10 +26,10 @@
         android:text="@string/google_button_txt" />
 
     <!-- Coordinator Layout for SnackBar -->
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </LinearLayout>

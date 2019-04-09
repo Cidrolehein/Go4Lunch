@@ -1,9 +1,9 @@
 package com.gacon.julien.go4lunch;
 
 import android.content.Intent;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -102,6 +102,7 @@ public class MainActivity extends BaseActivity {
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) { // SUCCESS
                 showSnackBar(this.coordinatorLayout, getString(R.string.connection_succeed));
+                this.startProfileActivity(); // repeat for synchronization
             } else { // ERRORS
                 if (response == null) {
                     showSnackBar(this.coordinatorLayout, getString(R.string.error_authentication_canceled));

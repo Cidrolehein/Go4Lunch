@@ -5,12 +5,35 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".controller.activities.MainActivity">
+    tools:context=".controller.activities.MainActivity"
+    android:background="@drawable/go4lunch_connexion_background">
+
+    <!-- Icon Go4Lunch -->
+    <ImageView
+        android:layout_width="@dimen/lunch_icon_width"
+        android:layout_height="@dimen/lunch_icon_height"
+        android:background="@drawable/lunch_icon"
+        android:contentDescription="@string/lunch_icon" />
+
+    <!-- Text title -->
+    <TextView
+        style="@style/TitleConnection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"/>
+
+    <!-- Sub title -->
+    <TextView
+        style="@style/SubTitleConnection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:text="@string/sub_title_connection"/>
 
     <!-- Facebook button -->
     <Button
-        style="@style/AppTheme.Facebook.ButtonStyle"
         android:id="@+id/facebook_button_login"
+        style="@style/AppTheme.Facebook.ButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/facebook_icon_layer_list"
@@ -18,8 +41,8 @@
 
     <!-- Google button -->
     <Button
-        style="@style/AppTheme.Google.ButtonStyle"
         android:id="@+id/google_button_login"
+        style="@style/AppTheme.Google.ButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"

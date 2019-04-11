@@ -8,6 +8,19 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Text connexion title -->
+    <style name="TitleConnection" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/text_button</item>
+        <item name="android:textSize">50sp</item>
+        <item name="android:fontFamily">@font/impact</item>
+    </style>
+
+    <!-- Text connexion title -->
+    <style name="SubTitleConnection" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/text_button</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <!-- Generic Button style -->
     <style name="AppTheme.Generic.ButtonStyle" parent="Widget.AppCompat.Button.Colored">
         <item name="android:background">@drawable/generic_button_rounded_shape</item>

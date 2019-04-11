@@ -3,4 +3,7 @@
     <!-- Google Icon -->
     <dimen name="google_icon_height">30dp</dimen>
     <dimen name="google_icon_width">30dp</dimen>
+    <!-- Lunch Icon -->
+    <dimen name="lunch_icon_height">200dp</dimen>
+    <dimen name="lunch_icon_width">200dp</dimen>
 </resources>

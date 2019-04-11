@@ -1,4 +1,4 @@
-package com.gacon.julien.go4lunch.auth;
+package com.gacon.julien.go4lunch.controller.utils.auth;
 
 import android.os.Bundle;
 
@@ -26,8 +26,10 @@ public class ProfileActivity extends BaseActivity {
     // --------------------
     // REST REQUESTS
     // --------------------
-    // - Create http requests (SignOut)
 
+    /**
+     * Create http requests (SignOut)
+     */
     private void signOutUserFromFirebase() {
         AuthUI.getInstance()
                 .signOut(this)
@@ -39,13 +41,13 @@ public class ProfileActivity extends BaseActivity {
     // --------------------
 
     // - Create OnCompleteListener called after tasks ended
+
+    /**
+     * Create OnCompleteListener called after tasks ended
+     * @return is REST Resquests completed ?
+     */
     private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted() {
-        return new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                finish();
-            }
-        };
+        return aVoid -> finish();
     }
 
 }

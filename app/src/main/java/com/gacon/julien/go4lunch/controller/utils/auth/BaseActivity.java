@@ -1,4 +1,4 @@
-package com.gacon.julien.go4lunch.auth;
+package com.gacon.julien.go4lunch.controller.utils.auth;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;

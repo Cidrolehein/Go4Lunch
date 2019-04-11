@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".auth.ProfileActivity">
+    tools:context=".controller.utils.auth.ProfileActivity">
 
     <!-- Generic button -->
     <Button

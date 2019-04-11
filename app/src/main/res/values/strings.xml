@@ -1,7 +1,7 @@
 <resources>
     <!-- Activities titles -->
     <string name="app_name">Go4Lunch</string>
-    <string name="toolbar_title_login_activity">Yummie !</string>
+    <string name="toolbar_title_login_activity">I\'m Hungry !</string>
     <!-- Text button -->
     <string name="google_button_txt">Sign in with Google</string>
     <string name="facebook_button_txt">Sign in with Facebook</string>

@@ -1,12 +1,14 @@
 package com.gacon.julien.go4lunch.controller.activities;
 
 import android.content.Intent;
+
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.gacon.julien.go4lunch.R;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.os.Bundle;
+
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -22,14 +24,13 @@ import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
 
+    //FOR DATA
+    // - Identifier for Sign-In Activity
+    private static final int RC_SIGN_IN = 123;
     //FOR DESIGN
     // - Get Coordinator Layout
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout coordinatorLayout;
-
-    //FOR DATA
-    // - Identifier for Sign-In Activity
-    private static final int RC_SIGN_IN = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +40,6 @@ public class MainActivity extends BaseActivity {
         // Start appropriate activity
         if (this.isCurrentUserLogged()) {
             this.startProfileActivity();
-        } else {
-            this.startSignInActivity();
         }
     }
 
@@ -59,9 +58,10 @@ public class MainActivity extends BaseActivity {
 
     /**
      * Lounch activity with user data
+     *
      * @param requestCode code to call activity
-     * @param resultCode feedback
-     * @param data user data
+     * @param resultCode  feedback
+     * @param data        user data
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -77,7 +77,7 @@ public class MainActivity extends BaseActivity {
     /**
      * Launch Sign-In Activity
      */
-    private void startSignInActivity(){
+    private void startSignInActivity() {
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
@@ -91,7 +91,7 @@ public class MainActivity extends BaseActivity {
     /**
      * Launching Profile Activity
      */
-    private void startProfileActivity(){
+    private void startProfileActivity() {
         Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
     }
@@ -104,10 +104,11 @@ public class MainActivity extends BaseActivity {
 
     /**
      * Show Snack Bar with a message
+     *
      * @param coordinatorLayout check layout
-     * @param message show result message
+     * @param message           show result message
      */
-    private void showSnackBar(CoordinatorLayout coordinatorLayout, String message){
+    private void showSnackBar(CoordinatorLayout coordinatorLayout, String message) {
         Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
@@ -117,11 +118,12 @@ public class MainActivity extends BaseActivity {
 
     /**
      * Method that handles response after SignIn Activity close
+     *
      * @param requestCode code to access activity
-     * @param resultCode activity feedback
-     * @param data user data
+     * @param resultCode  activity feedback
+     * @param data        user data
      */
-    private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data){
+    private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data) {
 
         IdpResponse response = IdpResponse.fromResultIntent(data);
 

@@ -4,6 +4,8 @@ buildscript {
     repositories {
         google()
         jcenter()
+        // For Facebook App
+        mavenCentral()
         
     }
     dependencies {

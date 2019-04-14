@@ -1,53 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/ConnexionTheme"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
     tools:context=".controller.activities.MainActivity"
     android:background="@drawable/go4lunch_connexion_background">
 
-    <!-- Icon Go4Lunch -->
-    <ImageView
-        android:layout_width="@dimen/lunch_icon_width"
-        android:layout_height="@dimen/lunch_icon_height"
-        android:background="@drawable/lunch_icon"
-        android:contentDescription="@string/lunch_icon" />
-
-    <!-- Text title -->
-    <TextView
-        style="@style/TitleConnection"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"/>
+        android:orientation="vertical">
 
-    <!-- Sub title -->
-    <TextView
-        style="@style/SubTitleConnection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="italic"
-        android:text="@string/sub_title_connection"/>
+        <!-- Icon Go4Lunch -->
+        <ImageView
+            android:layout_width="@dimen/lunch_icon_width"
+            android:layout_height="@dimen/lunch_icon_height"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/lunch_icon"
+            android:contentDescription="@string/lunch_icon" />
 
-    <!-- Facebook button -->
-    <Button
-        android:id="@+id/facebook_button_login"
-        style="@style/AppTheme.Facebook.ButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableStart="@drawable/facebook_icon_layer_list"
-        android:text="@string/facebook_button_txt" />
+                <!-- Text title -->
+        <TextView
+            style="@style/TitleConnection"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="@string/app_name" />
 
-    <!-- Google button -->
-    <Button
-        android:id="@+id/google_button_login"
-        style="@style/AppTheme.Google.ButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:drawableStart="@drawable/google_icon_layer_list"
-        android:text="@string/google_button_txt" />
+                <!-- Sub title -->
+                <TextView
+                    style="@style/SubTitleConnection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="italic|bold"
+                    android:text="@string/sub_title_connection"
+                    android:gravity="center"/>
+
+            <!-- Facebook button -->
+        <Button
+            android:id="@+id/facebook_button_login"
+            style="@style/AppTheme.Facebook.ButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dp"
+            android:drawableStart="@drawable/facebook_icon_layer_list"
+            android:text="@string/facebook_button_txt" />
+
+            <!-- Google button -->
+        <Button
+            android:id="@+id/google_button_login"
+            style="@style/AppTheme.Google.ButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:drawableStart="@drawable/google_icon_layer_list"
+            android:text="@string/google_button_txt" />
+
+    </LinearLayout>
 
     <!-- Coordinator Layout for SnackBar -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout

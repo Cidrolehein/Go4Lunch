@@ -4,27 +4,32 @@
 
     <!-- Allow Backup for API 23+ -->
     <application
-        android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
         android:fullBackupContent="@xml/my_backup_rules"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <!-- PROFILE ACTIVITY -->
-        <activity android:name=".controller.utils.auth.ProfileActivity"
+        <activity
+            android:name=".controller.utils.auth.ProfileActivity"
             android:label="@string/toolbar_title_login_activity"
-            android:parentActivityName=".controller.activities.MainActivity"/>
+            android:parentActivityName=".controller.activities.MainActivity" />
         <!-- BASE ACTIVITY Interface -->
-        <activity android:name=".controller.utils.auth.BaseActivity"
+        <activity
+            android:name=".controller.utils.auth.BaseActivity"
             android:label="@string/toolbar_title_login_activity"
-            android:parentActivityName=".controller.activities.MainActivity"/>
+            android:parentActivityName=".controller.activities.MainActivity" />
         <!-- MAIN ACTIVITY -->
-        <activity android:name=".controller.activities.MainActivity">
+        <activity
+            android:name=".controller.activities.MainActivity"
+            android:theme="@style/ConnexionTheme">
             <intent-filter>
                 <!-- Add indexation information here -->
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

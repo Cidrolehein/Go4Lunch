@@ -19,5 +19,7 @@
     <!-- FACEBOOK PURPOSE -->
     <string name="facebook_application_id" translatable="false">451948795345925</string>
     <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb451948795345925</string>
+    <!-- Toolbar -->
+    <string name="search">Search</string>
 
 </resources>

@@ -30,7 +30,6 @@ public class ProfileActivity extends BaseActivity {
 
     /**
      * Create http requests (SignOut)
-     * TODO : configure sign out instance
      */
     private void signOutUserFromFirebase() {
         AuthUI.getInstance()

@@ -8,52 +8,39 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <!-- Connexion application theme. -->
-    <style name="ConnexionTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <!-- Connection application theme. -->
+    <style name="ConnexionTheme" parent="Widget.AppCompat.ActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimaryDark">@color/grey</item>
+        <item name="android:background">@color/grey</item>
     </style>
 
-    <!-- Text connexion title -->
-    <style name="TitleConnection" parent="TextAppearance.AppCompat">
+    <!-- Login Button style -->
+    <style name="AppTheme.Login.ButtonStyle" parent="Widget.AppCompat.Button.Colored">
         <item name="android:textColor">@color/text_button</item>
-        <item name="android:textSize">50sp</item>
-        <item name="android:fontFamily">@font/verdanab</item>
-    </style>
-
-    <!-- Text connexion title -->
-    <style name="SubTitleConnection" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/text_button</item>
-        <item name="android:textSize">10sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:drawablePadding">20dp</item>
+        <item name="android:paddingEnd">70dp</item>
+        <item name="android:paddingStart">20dp</item>
     </style>
 
     <!-- Generic Button style -->
     <style name="AppTheme.Generic.ButtonStyle" parent="Widget.AppCompat.Button.Colored">
-        <item name="android:background">@drawable/generic_button_rounded_shape</item>
         <item name="android:textColor">@color/text_button</item>
         <item name="android:drawablePadding">10dp</item>
         <item name="android:paddingEnd">20dp</item>
         <item name="android:paddingStart">10dp</item>
     </style>
 
-    <!-- Facebook Button style -->
-    <style name="AppTheme.Facebook.ButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/facebook_button_rounded_shape</item>
-        <item name="android:textColor">@color/text_button</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:drawablePadding">35dp</item>
-        <item name="android:paddingEnd">60dp</item>
-        <item name="android:paddingStart">10dp</item>
-    </style>
-
-    <!-- Google Button style -->
-    <style name="AppTheme.Google.ButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/google_button_rounded_shape</item>
-        <item name="android:textColor">@color/text_button</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:drawablePadding">25dp</item>
-        <item name="android:paddingEnd">75dp</item>
-        <item name="android:paddingStart">20dp</item>
+    <!-- Firebase connection style -->
+    <style name="FirebaseConnection" parent="AppTheme">
+        <item name="actionBarStyle">@style/ConnexionTheme</item>
+        <item name="android:windowBackground">@drawable/bg_connection</item>
+        <item name="buttonStyle">@style/AppTheme.Login.ButtonStyle</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorControlNormal">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorPrimaryDark</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
     </style>
 
 </resources>

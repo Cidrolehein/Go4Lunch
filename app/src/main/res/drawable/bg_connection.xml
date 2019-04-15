@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/go4lunch_connexion_background"/>
+    <item android:drawable="@drawable/logo" android:gravity="center|top" android:top="30dp" android:height="250dp" android:width="290dp"></item>
+</layer-list>

@@ -16,6 +16,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.gacon.julien.go4lunch.controller.utils.auth.BaseActivity;
 import com.gacon.julien.go4lunch.controller.utils.auth.ProfileActivity;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
@@ -29,7 +30,6 @@ public class MainActivity extends BaseActivity {
     //FOR DATA
     // - Identifier for Sign-In Activity
     private static final int RC_SIGN_IN = 123;
-    //FOR DESIGN
     // - Get Coordinator Layout
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout coordinatorLayout;
@@ -42,27 +42,10 @@ public class MainActivity extends BaseActivity {
         // Start appropriate activity
         if (this.isCurrentUserLogged()) {
             this.startProfileActivity();
+        } else {
+            this.startLoginSignInActivity();
         }
-    }
 
-    // --------------------
-    // ACTIONS
-    // --------------------
-
-    /**
-     * Launch Sign-In Activity when user clicked on Login Button
-     */
-    @OnClick({R.id.google_button_login, R.id.facebook_button_login})
-    public void onClickLoginButton(View view) {
-        switch (view.getId()) {
-            // 3 - Launch Sign-In Activity when user clicked on Login Button
-            case R.id.google_button_login:
-                this.startGoogleSignInActivity();
-                break;
-            case R.id.facebook_button_login:
-                this.startFacebookSignInActivity();
-                break;
-        }
     }
 
     /**
@@ -75,7 +58,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // 4 - Handle SignIn Activity response on activity result
+        // - Handle SignIn Activity response on activity result
         this.handleResponseAfterSignIn(requestCode, resultCode, data);
     }
 
@@ -84,30 +67,17 @@ public class MainActivity extends BaseActivity {
     // --------------------
 
     /**
-     * Launch Google Sign-In Activity
+     * Launch Login Sign-In Activity
      */
-    private void startGoogleSignInActivity() {
+    private void startLoginSignInActivity() {
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
+                        .setTheme(R.style.FirebaseConnection)
                         .setAvailableProviders(
-                                Collections.singletonList(
-                                        new AuthUI.IdpConfig.GoogleBuilder().build()))
-                        .setIsSmartLockEnabled(false, true)
-                        .build(),
-                RC_SIGN_IN);
-    }
-
-    /**
-     * Launch Facebook Sign-In Activity
-     */
-    private void startFacebookSignInActivity() {
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(
-                                Collections.singletonList(
-                                        new AuthUI.IdpConfig.FacebookBuilder().build()))// FACEBOOK
+                                Arrays.asList(
+                                        new AuthUI.IdpConfig.GoogleBuilder().build(),
+                                        new AuthUI.IdpConfig.FacebookBuilder().build()))
                         .setIsSmartLockEnabled(false, true)
                         .build(),
                 RC_SIGN_IN);

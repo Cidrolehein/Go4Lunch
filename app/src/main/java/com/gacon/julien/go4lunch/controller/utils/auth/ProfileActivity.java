@@ -49,7 +49,10 @@ public class ProfileActivity extends BaseActivity {
      * @return is REST Resquests completed ?
      */
     private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted() {
-        return aVoid -> finish();
+        return aVoid -> {
+            finish();
+            startLoginSignInActivity();
+        };
     }
 
 }

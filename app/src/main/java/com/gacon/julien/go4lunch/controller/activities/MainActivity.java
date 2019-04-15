@@ -27,9 +27,6 @@ import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
 
-    //FOR DATA
-    // - Identifier for Sign-In Activity
-    private static final int RC_SIGN_IN = 123;
     // - Get Coordinator Layout
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout coordinatorLayout;
@@ -65,23 +62,6 @@ public class MainActivity extends BaseActivity {
     // --------------------
     // NAVIGATION
     // --------------------
-
-    /**
-     * Launch Login Sign-In Activity
-     */
-    private void startLoginSignInActivity() {
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setTheme(R.style.FirebaseConnection)
-                        .setAvailableProviders(
-                                Arrays.asList(
-                                        new AuthUI.IdpConfig.GoogleBuilder().build(),
-                                        new AuthUI.IdpConfig.FacebookBuilder().build()))
-                        .setIsSmartLockEnabled(false, true)
-                        .build(),
-                RC_SIGN_IN);
-    }
 
     /**
      * Launching Profile Activity

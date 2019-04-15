@@ -25,8 +25,7 @@
             android:parentActivityName=".controller.activities.MainActivity" />
         <!-- MAIN ACTIVITY -->
         <activity
-            android:name=".controller.activities.MainActivity"
-            android:theme="@style/ConnexionTheme">
+            android:name=".controller.activities.MainActivity">
             <intent-filter>
                 <!-- Add indexation information here -->
                 <action android:name="android.intent.action.MAIN" />

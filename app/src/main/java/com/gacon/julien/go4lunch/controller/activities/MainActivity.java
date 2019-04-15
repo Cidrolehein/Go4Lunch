@@ -8,6 +8,7 @@ import com.gacon.julien.go4lunch.R;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -16,6 +17,7 @@ import com.gacon.julien.go4lunch.controller.utils.auth.BaseActivity;
 import com.gacon.julien.go4lunch.controller.utils.auth.ProfileActivity;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -50,10 +52,17 @@ public class MainActivity extends BaseActivity {
     /**
      * Launch Sign-In Activity when user clicked on Login Button
      */
-    @OnClick({R.id.google_button_login})
-    public void onClickLoginButton() {
-        // 3 - Launch Sign-In Activity when user clicked on Login Button
-        this.startSignInActivity();
+    @OnClick({R.id.google_button_login, R.id.facebook_button_login})
+    public void onClickLoginButton(View view) {
+        switch (view.getId()) {
+            // 3 - Launch Sign-In Activity when user clicked on Login Button
+            case R.id.google_button_login:
+                this.startGoogleSignInActivity();
+                break;
+            case R.id.facebook_button_login:
+                this.startFacebookSignInActivity();
+                break;
+        }
     }
 
     /**
@@ -75,14 +84,30 @@ public class MainActivity extends BaseActivity {
     // --------------------
 
     /**
-     * Launch Sign-In Activity
+     * Launch Google Sign-In Activity
      */
-    private void startSignInActivity() {
+    private void startGoogleSignInActivity() {
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(
-                                Arrays.asList(new AuthUI.IdpConfig.GoogleBuilder().build()))
+                                Collections.singletonList(
+                                        new AuthUI.IdpConfig.GoogleBuilder().build()))
+                        .setIsSmartLockEnabled(false, true)
+                        .build(),
+                RC_SIGN_IN);
+    }
+
+    /**
+     * Launch Facebook Sign-In Activity
+     */
+    private void startFacebookSignInActivity() {
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(
+                                Collections.singletonList(
+                                        new AuthUI.IdpConfig.FacebookBuilder().build()))// FACEBOOK
                         .setIsSmartLockEnabled(false, true)
                         .build(),
                 RC_SIGN_IN);

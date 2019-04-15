@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Activities titles -->
     <string name="app_name">Go4Lunch</string>
     <string name="toolbar_title_login_activity">I\'m Hungry !</string>
@@ -16,5 +16,8 @@
     <string name="error_unknown_error">Error unknown error</string>
     <!-- Content description -->
     <string name="lunch_icon">lunch icon</string>
+    <!-- FACEBOOK PURPOSE -->
+    <string name="facebook_application_id" translatable="false">451948795345925</string>
+    <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb451948795345925</string>
 
 </resources>

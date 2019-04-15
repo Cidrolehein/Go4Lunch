@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gacon.julien.go4lunch">
 
+    <!-- Allow Internet -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Allow Backup for API 23+ -->
     <application
         android:allowBackup="true"

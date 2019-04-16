@@ -6,12 +6,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="86dp"
         android:gravity="start"
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="264dp"
+            android:layout_width="259dp"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -33,7 +33,7 @@
                     android:id="@+id/type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginEnd="5dp"
                     android:text="French"
                     android:textSize="12sp" />
@@ -42,27 +42,34 @@
                     android:id="@+id/add"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:text="-"
                     android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/address"
                     android:layout_width="196dp"
-                    android:layout_height="32dp"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
                     android:text="12 rue du faubourg Poissonnière"
                     android:textSize="12sp" />
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/Date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Open until 7pm"
+                android:textSize="12sp"
+                android:textStyle="italic" />
 
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:orientation="vertical">
 
             <TextView
@@ -76,14 +83,40 @@
                 android:textColor="@color/grey"
                 android:textSize="15sp" />
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="icon"
+                    android:textColor="@color/grey"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/people_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="(3)"
+                    android:textColor="@color/grey"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+
             <TextView
-                android:id="@+id/icon"
+                android:id="@+id/star"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="icon"
+                android:text="stars"
                 android:textColor="@color/grey"
                 android:textSize="12sp" />
+
 
         </LinearLayout>
 
@@ -93,7 +126,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="120dp"
+                android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="end|top" />
 

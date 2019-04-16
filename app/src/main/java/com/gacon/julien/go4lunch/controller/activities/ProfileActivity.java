@@ -10,16 +10,27 @@ import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ProfileActivity extends BaseActivity {
+public class ProfileActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     // - FOR DESIGN
-    @BindView(R.id.activity_main_bottom_navigation)
+    @BindView(R.id.activity_main_toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.profile_main_drawer_layout)
+    DrawerLayout drawerLayout;
+    @BindView(R.id.profile_main_nav_view)
+    NavigationView navigationView;
+    @BindView(R.id.profile_main_bottom_navigation)
     BottomNavigationView bottomNavigationView;
 
     @Override
@@ -29,6 +40,7 @@ public class ProfileActivity extends BaseActivity {
         ButterKnife.bind(this);
         // Configuring Toolbar
         this.configureToolbar();
+        this.configureDrawerLayout();
         this.configureBottomView();
     }
 
@@ -69,6 +81,40 @@ public class ProfileActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Handle back click to close menu
+     */
+    @Override
+    public void onBackPressed() {
+        if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        // 4 - Handle Navigation Item Click
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.profile_lunch:
+                break;
+            case R.id.profile_sittings:
+                break;
+            case R.id.profile_logout:
+                break;
+            default:
+                break;
+        }
+
+        this.drawerLayout.closeDrawer(GravityCompat.START);
+
+        return true;
+    }
+
     // --------------------
     // REST REQUESTS
     // --------------------
@@ -88,6 +134,7 @@ public class ProfileActivity extends BaseActivity {
 
     /**
      * Create OnCompleteListener called after tasks ended
+     *
      * @return is REST Resquests completed ?
      */
     private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted() {
@@ -97,12 +144,17 @@ public class ProfileActivity extends BaseActivity {
         };
     }
 
+    // ---------------------
+    // CONFIGURATION
+    // ---------------------
+
     /**
      * Update Main Fragment design TODO : create fragments
+     *
      * @param integer Bottom View
      * @return Fragment
      */
-    private Boolean updateMainFragment(Integer integer){
+    private Boolean updateMainFragment(Integer integer) {
         switch (integer) {
             /*
             case R.id.action_android:
@@ -123,16 +175,30 @@ public class ProfileActivity extends BaseActivity {
      * Add Toolbar
      */
     private void configureToolbar() {
-        // Get the toolbar view inside the activity layout
-        Toolbar toolbar = findViewById(R.id.activity_main_toolbar);
         // Sets the Toolbar
         setSupportActionBar(toolbar);
     }
 
     /**
+     * Configure Drawer Layout
+     */
+    private void configureDrawerLayout() {
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    /**
+     * Configure NavigationView
+     */
+    private void configureNavigationView() {
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    /**
      * Configure BottomNavigationView Listener
      */
-    private void configureBottomView(){
+    private void configureBottomView() {
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> updateMainFragment(item.getItemId()));
     }
 

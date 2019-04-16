@@ -6,4 +6,6 @@
     <!-- Lunch Icon -->
     <dimen name="lunch_icon_height">200dp</dimen>
     <dimen name="lunch_icon_width">200dp</dimen>
+    <!-- Default NavigationView Header height -->
+    <dimen name="nav_header_height">250dp</dimen>
 </resources>

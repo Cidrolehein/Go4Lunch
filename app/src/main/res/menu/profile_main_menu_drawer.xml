@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/profile_lunch"
+            android:icon="@drawable/ic_local_dining_white_24dp"
+            android:title="@string/your_lunch" />
+
+        <item
+            android:id="@+id/profile_sittings"
+            android:icon="@drawable/ic_settings_white_24dp"
+            android:title="@string/settings" />
+
+        <item
+            android:id="@+id/profile_logout"
+            android:icon="@drawable/ic_power_settings_new_white_24dp"
+            android:title="@string/logout" />
+
+    </group>
+
+</menu>

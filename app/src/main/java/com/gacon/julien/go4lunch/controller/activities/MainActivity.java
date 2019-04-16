@@ -8,22 +8,15 @@ import com.gacon.julien.go4lunch.R;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.os.Bundle;
-import android.view.View;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.gacon.julien.go4lunch.controller.utils.auth.BaseActivity;
-import com.gacon.julien.go4lunch.controller.utils.auth.ProfileActivity;
+import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
 

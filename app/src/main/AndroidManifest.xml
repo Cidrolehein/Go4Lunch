@@ -15,12 +15,12 @@
         android:theme="@style/AppTheme">
         <!-- PROFILE ACTIVITY -->
         <activity
-            android:name=".controller.utils.auth.ProfileActivity"
+            android:name=".controller.activities.ProfileActivity"
             android:label="@string/toolbar_title_login_activity"
             android:parentActivityName=".controller.activities.MainActivity" />
         <!-- BASE ACTIVITY Interface -->
         <activity
-            android:name=".controller.utils.auth.BaseActivity"
+            android:name=".controller.activities.auth.utils.BaseActivity"
             android:label="@string/toolbar_title_login_activity"
             android:parentActivityName=".controller.activities.MainActivity" />
         <!-- MAIN ACTIVITY -->

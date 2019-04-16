@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="top|center"
-    tools:context=".controller.utils.auth.ProfileActivity">
+    tools:context=".controller.activities.ProfileActivity">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
@@ -25,5 +25,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:text="@string/log_out_button_txt" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="bottom|center">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/activity_main_bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/icon_background_color"
+            app:itemIconTint="@drawable/bottom_navigation_colors"
+            app:itemTextColor="@drawable/bottom_navigation_colors"
+            app:menu="@menu/bottom_navigation_menu" />
+    </LinearLayout>
+
 
 </LinearLayout>

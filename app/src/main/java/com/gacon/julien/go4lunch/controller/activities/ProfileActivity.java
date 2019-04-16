@@ -1,4 +1,4 @@
-package com.gacon.julien.go4lunch.controller.utils.auth;
+package com.gacon.julien.go4lunch.controller.activities;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -7,13 +7,20 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
+import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.widget.Toolbar;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ProfileActivity extends BaseActivity {
+
+    // - FOR DESIGN
+    @BindView(R.id.activity_main_bottom_navigation)
+    BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +29,7 @@ public class ProfileActivity extends BaseActivity {
         ButterKnife.bind(this);
         // Configuring Toolbar
         this.configureToolbar();
+        this.configureBottomView();
     }
 
     /**
@@ -34,6 +42,7 @@ public class ProfileActivity extends BaseActivity {
 
     /**
      * Inflate the menu and add it to the Toolbar
+     *
      * @param menu activity menu
      * @return the menu
      */
@@ -45,6 +54,7 @@ public class ProfileActivity extends BaseActivity {
 
     /**
      * Handle actions on menu items
+     *
      * @param item search
      * @return item selected
      */
@@ -62,7 +72,6 @@ public class ProfileActivity extends BaseActivity {
     // --------------------
     // REST REQUESTS
     // --------------------
-
 
     /**
      * Create http requests (SignOut)
@@ -89,13 +98,42 @@ public class ProfileActivity extends BaseActivity {
     }
 
     /**
+     * Update Main Fragment design TODO : create fragments
+     * @param integer Bottom View
+     * @return Fragment
+     */
+    private Boolean updateMainFragment(Integer integer){
+        switch (integer) {
+            /*
+            case R.id.action_android:
+                this.mainFragment.updateDesignWhenUserClickedBottomView(MainFragment.REQUEST_ANDROID);
+                break;
+            case R.id.action_logo:
+                this.mainFragment.updateDesignWhenUserClickedBottomView(MainFragment.REQUEST_LOGO);
+                break;
+            case R.id.action_landscape:
+                this.mainFragment.updateDesignWhenUserClickedBottomView(MainFragment.REQUEST_LANDSCAPE);
+                break;
+                */
+        }
+        return true;
+    }
+
+    /**
      * Add Toolbar
      */
-    private void configureToolbar(){
+    private void configureToolbar() {
         // Get the toolbar view inside the activity layout
         Toolbar toolbar = findViewById(R.id.activity_main_toolbar);
         // Sets the Toolbar
         setSupportActionBar(toolbar);
+    }
+
+    /**
+     * Configure BottomNavigationView Listener
+     */
+    private void configureBottomView(){
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> updateMainFragment(item.getItemId()));
     }
 
 }

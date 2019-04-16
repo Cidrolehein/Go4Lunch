@@ -21,5 +21,9 @@
     <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb451948795345925</string>
     <!-- Toolbar -->
     <string name="search">Search</string>
+    <!-- BOTTOM NAVIGATION VIEW -->
+    <string name="map_view">Map View</string>
+    <string name="list_view">List View</string>
+    <string name="Workmates">Workmates</string>
 
 </resources>

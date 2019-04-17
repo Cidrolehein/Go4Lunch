@@ -39,7 +39,7 @@ public class MainActivity extends BaseActivity {
     }
 
     /**
-     * Lounch activity with user data
+     * Lunch activity with user data
      *
      * @param requestCode code to call activity
      * @param resultCode  feedback

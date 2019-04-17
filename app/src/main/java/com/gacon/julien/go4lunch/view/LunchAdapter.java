@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gacon.julien.go4lunch.R;
-import com.gacon.julien.go4lunch.controller.Models.LunchModel;
+import com.gacon.julien.go4lunch.controller.models.LunchModel;
 
 import java.util.List;
 

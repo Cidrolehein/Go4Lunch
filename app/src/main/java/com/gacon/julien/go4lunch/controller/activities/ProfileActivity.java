@@ -1,5 +1,6 @@
 package com.gacon.julien.go4lunch.controller.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -140,7 +141,7 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted() {
         return aVoid -> {
             finish();
-            startLoginSignInActivity();
+            startActivity(new Intent(this, MainActivity.class));
         };
     }
 

@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity {
 
-    // - Get Coordinator Layout
+    // - Get Coordinator Layout -
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout coordinatorLayout;
 

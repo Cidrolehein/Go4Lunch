@@ -32,7 +32,9 @@
     <!-- Firebase connection style -->
     <style name="FirebaseConnection" parent="AppTheme">
         <item name="actionBarStyle">@style/ConnexionTheme</item>
-        <item name="android:windowBackground">@drawable/bg_connection</item>
+        <item name="android:windowBackground">@drawable/go4lunch_connection_bg</item>
+        <item name= "android:windowFullscreen">true</item>
+        <item name="android:scaleType">centerCrop</item>
         <item name="buttonStyle">@style/AppTheme.Login.ButtonStyle</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

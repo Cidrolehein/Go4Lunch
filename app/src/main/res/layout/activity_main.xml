@@ -4,8 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".controller.activities.MainActivity"
-    android:background="@drawable/go4lunch_connexion_background">
+    tools:context=".controller.activities.MainActivity">
+
+    <!-- Background image -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/go4lunch_connection_bg"
+            android:contentDescription="@string/background_image" />
+
+    </RelativeLayout>
+
 
     <!-- Coordinator Layout for SnackBar -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout

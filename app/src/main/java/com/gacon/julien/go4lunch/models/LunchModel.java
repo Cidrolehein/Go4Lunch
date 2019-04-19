@@ -1,4 +1,4 @@
-package com.gacon.julien.go4lunch.controller.models;
+package com.gacon.julien.go4lunch.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

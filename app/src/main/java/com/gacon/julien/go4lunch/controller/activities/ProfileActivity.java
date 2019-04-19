@@ -10,6 +10,8 @@ import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -39,10 +41,13 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
-        // Configuring Toolbar
+        // Configuring Toolbar, DrawerLayout and BottomView
         this.configureToolbar();
         this.configureDrawerLayout();
         this.configureBottomView();
+        // Initialize Places
+        this.initPlaces();
+        this.getCurrentPlaces();
     }
 
     /**
@@ -73,13 +78,11 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_activity_main_search:
-                Toast.makeText(this, "No search", Toast.LENGTH_LONG).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.menu_activity_main_search) {
+            Toast.makeText(this, "No search", Toast.LENGTH_LONG).show();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

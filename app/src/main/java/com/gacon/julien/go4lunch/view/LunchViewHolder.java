@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.gacon.julien.go4lunch.R;
-import com.gacon.julien.go4lunch.controller.models.LunchModel;
+import com.gacon.julien.go4lunch.models.LunchModel;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;

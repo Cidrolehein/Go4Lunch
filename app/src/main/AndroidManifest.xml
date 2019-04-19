@@ -4,6 +4,8 @@
 
     <!-- Allow Internet -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Allow Location -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <!-- Allow Backup for API 23+ -->
     <application
         android:allowBackup="true"

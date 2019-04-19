@@ -29,7 +29,7 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchViewHolder> {
         // CREATE VIEW HOLDER AND INFLATING ITS XML LAYOUT
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.fragment_list_view, parent, false);
+        View view = inflater.inflate(R.layout.fragment_list_view_items, parent, false);
         return new LunchViewHolder(view);
     }
 
@@ -40,6 +40,6 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchViewHolder> {
 
     @Override
     public int getItemCount() {
-        return this.mLunchModelList.size();
+        return mLunchModelList.size();
     }
 }

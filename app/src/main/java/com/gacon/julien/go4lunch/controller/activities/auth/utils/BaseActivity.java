@@ -1,9 +1,7 @@
 package com.gacon.julien.go4lunch.controller.activities.auth.utils;
 
-import android.Manifest;
 import android.content.pm.PackageManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +10,8 @@ import androidx.core.content.ContextCompat;
 
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
+import com.gacon.julien.go4lunch.models.LunchModel;
+import com.gacon.julien.go4lunch.view.LunchAdapter;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -20,10 +20,10 @@ import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,14 +36,17 @@ public class BaseActivity extends AppCompatActivity {
 
     //FOR DATA
     // - Identifier for Sign-In Activity
+    protected List<Place.Field> placeFields;
     protected static final int RC_SIGN_IN = 123;
     private static final String TAG = "PLACES_API";
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 123;
+    protected ArrayList<LunchModel> placesNameList;
     // Places API
     PlacesClient mPlacesClient;
 
+    protected LunchAdapter mAdapter;
 
-    // --------------------
+// --------------------
     // UTILS
     // --------------------
 
@@ -92,7 +95,8 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void getCurrentPlaces() {
         // Use fields to define the data types to return.
-        List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME);
+        placeFields = Arrays.asList(Place.Field.NAME);
+        placesNameList = new ArrayList<>();
 
 // Use the builder to create a FindCurrentPlaceRequest.
         FindCurrentPlaceRequest request =
@@ -107,9 +111,10 @@ public class BaseActivity extends AppCompatActivity {
                     assert response != null;
                     for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
                         Log.i(TAG, String.format("Place '%s' has likelihood: %f",
-                                placeLikelihood.getPlace().getName(),
+                                placesNameList.add(new LunchModel(placeLikelihood.getPlace().getName())),
                                 placeLikelihood.getLikelihood()));
                     }
+                    this.updateUi(placesNameList);
                 } else {
                     Exception exception = task.getException();
                     if (exception instanceof ApiException) {
@@ -151,6 +156,15 @@ public class BaseActivity extends AppCompatActivity {
         } else {
             // Permission has already been granted
         }
+    }
+
+    public ArrayList getPlacesNameList() {
+        return placesNameList;
+    }
+
+    protected void updateUi(List<LunchModel> lunchPlaces){
+        placesNameList.addAll(lunchPlaces);
+        mAdapter.notifyDataSetChanged();
     }
 
 }

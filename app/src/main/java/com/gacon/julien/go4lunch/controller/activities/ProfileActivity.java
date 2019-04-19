@@ -1,14 +1,20 @@
 package com.gacon.julien.go4lunch.controller.activities;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Adapter;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
+import com.gacon.julien.go4lunch.models.LunchModel;
+import com.gacon.julien.go4lunch.view.LunchAdapter;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -20,6 +26,11 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,6 +46,8 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     NavigationView navigationView;
     @BindView(R.id.profile_main_bottom_navigation)
     BottomNavigationView bottomNavigationView;
+    @BindView(R.id.recycler_view_list_view)
+    RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +61,12 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         // Initialize Places
         this.initPlaces();
         this.getCurrentPlaces();
+        // RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        mAdapter = new LunchAdapter(this.placesNameList);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     /**

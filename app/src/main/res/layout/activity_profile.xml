@@ -25,6 +25,13 @@
             android:minHeight="?attr/actionBarSize"
             app:titleTextColor="@android:color/white" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
         <!-- Generic button -->
         <Button
             android:id="@+id/button_log_out"

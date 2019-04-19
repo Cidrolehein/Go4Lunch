@@ -9,6 +9,10 @@ public class LunchModel {
     @Expose
     private String title;
 
+    public LunchModel(String title) {
+        this.title = title;
+    }
+
     public String getTitle() {
         return title;
     }

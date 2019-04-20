@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceLikelihood;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -34,17 +35,16 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
  */
 public class BaseActivity extends AppCompatActivity {
 
-    //FOR DATA
-    // - Identifier for Sign-In Activity
-    protected List<Place.Field> placeFields;
     protected static final int RC_SIGN_IN = 123;
     private static final String TAG = "PLACES_API";
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 123;
+    //FOR DATA
+    // - Identifier for Sign-In Activity
+    protected List<Place.Field> placeFields;
     protected ArrayList<LunchModel> placesNameList, placesAddressList;
+    protected LunchAdapter mAdapter;
     // Places API
     PlacesClient mPlacesClient;
-
-    protected LunchAdapter mAdapter;
 
 // --------------------
     // UTILS
@@ -90,12 +90,15 @@ public class BaseActivity extends AppCompatActivity {
         // Initialize Places. TODO : secure api key
         Places.initialize(getApplicationContext(), "AIzaSyD95VyLsXgPACvDl1lAhl85lI3U2v6vNHs");
         // Create a new Places client instance.
-        mPlacesClient  = Places.createClient(this);
+        mPlacesClient = Places.createClient(this);
     }
 
     protected void getCurrentPlaces() {
+        // Define a Place ID.
+        String placeId = "PLACE_ID";
         // Use fields to define the data types to return.
-        placeFields = Arrays.asList(Place.Field.NAME);
+        placeFields = Arrays.asList(Place.Field.NAME,
+                Place.Field.ADDRESS);
         placesNameList = new ArrayList<>();
 
 // Use the builder to create a FindCurrentPlaceRequest.
@@ -104,23 +107,20 @@ public class BaseActivity extends AppCompatActivity {
 
 // Call findCurrentPlace and handle the response (first check that the user has granted permission).
         if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Task<FindCurrentPlaceResponse> placeResponse = mPlacesClient.findCurrentPlace(request);
-            placeResponse.addOnCompleteListener(task -> {
-                if (task.isSuccessful()){
-                    FindCurrentPlaceResponse response = task.getResult();
-                    assert response != null;
-                    for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
-                        Log.i(TAG, String.format("Place '%s' has likelihood: %f",
-                                placesNameList.add(new LunchModel(placeLikelihood.getPlace().getName(), placeLikelihood.getPlace().getAddress())),
-                                placeLikelihood.getLikelihood()));
-                    }
-                    this.updateUi(placesNameList);
-                } else {
-                    Exception exception = task.getException();
-                    if (exception instanceof ApiException) {
-                        ApiException apiException = (ApiException) exception;
-                        Log.e(TAG, "Place not found: " + apiException.getStatusCode());
-                    }
+            mPlacesClient.findCurrentPlace(request).addOnSuccessListener(((response) -> {
+                for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
+                    Log.i(TAG, String.format("Place '%s' with address '%s' has likelihood: %f",
+                            placeLikelihood.getPlace().getName(),
+                            placeLikelihood.getPlace().getAddress(),
+                            placeLikelihood.getLikelihood()));
+                    placesNameList.add(new LunchModel(placeLikelihood.getPlace().getName(),
+                            placeLikelihood.getPlace().getAddress()));
+                }
+                updateUi(placesNameList);
+            })).addOnFailureListener((exception) -> {
+                if (exception instanceof ApiException) {
+                    ApiException apiException = (ApiException) exception;
+                    Log.e(TAG, "Place not found: " + apiException.getStatusCode());
                 }
             });
         } else {
@@ -162,7 +162,7 @@ public class BaseActivity extends AppCompatActivity {
         return placesNameList;
     }
 
-    protected void updateUi(List<LunchModel> lunchPlaces){
+    protected void updateUi(List<LunchModel> lunchPlaces) {
         placesNameList.addAll(lunchPlaces);
         mAdapter.notifyDataSetChanged();
     }

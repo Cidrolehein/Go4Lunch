@@ -8,7 +8,6 @@ public class LunchModel {
     @SerializedName("title")
     @Expose
     private String title;
-
     @SerializedName("address")
     @Expose
     private String address;

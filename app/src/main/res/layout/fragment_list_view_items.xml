@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="Le Zinc"
+                android:text="@string/place_title"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
@@ -35,14 +35,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="5dp"
-                    android:text="French"
+                    android:text="@string/type"
                     android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/add"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="-"
+                    android:text="@string/separator"
                     android:textSize="12sp" />
 
                 <TextView
@@ -50,7 +50,7 @@
                     android:layout_width="196dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
-                    android:text="12 rue du faubourg Poissonnière"
+                    android:text="@string/address"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="Open until 7pm"
+                android:text="@string/open_date"
                 android:textSize="12sp"
                 android:textStyle="italic" />
 
@@ -79,7 +79,7 @@
                 android:layout_marginTop="10dp"
 
                 android:gravity="end"
-                android:text="120m"
+                android:text="@string/distance"
                 android:textColor="@color/grey"
                 android:textSize="15sp" />
 
@@ -102,7 +102,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
-                    android:text="(3)"
+                    android:text="@string/people_number"
                     android:textColor="@color/grey"
                     android:textSize="12sp" />
             </LinearLayout>

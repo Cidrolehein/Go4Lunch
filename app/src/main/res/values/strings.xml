@@ -37,5 +37,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="background_image">background image</string>
+    <string name="place_title">Title</string>
+    <string name="separator">-</string>
+    <string name="address">12 rue du faubourg Poissonnière</string>
+    <string name="type">French</string>
+    <string name="open_date">Open until 7pm</string>
+    <string name="distance">120m</string>
+    <string name="people_number">(3)</string>
 
 </resources>

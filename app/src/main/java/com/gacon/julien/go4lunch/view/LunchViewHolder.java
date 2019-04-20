@@ -15,6 +15,8 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.title)
     TextView mTextViewTitle;
+    @BindView(R.id.address)
+    TextView mTextViewAddress;
 
     LunchViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -23,5 +25,6 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
 
     void updateWithLunch(LunchModel newLunch) {
         this.mTextViewTitle.setText(newLunch.getTitle());
+        this.mTextViewAddress.setText(newLunch.getAddress());
     }
 }

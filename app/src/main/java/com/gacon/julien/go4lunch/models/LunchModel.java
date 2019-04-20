@@ -9,8 +9,17 @@ public class LunchModel {
     @Expose
     private String title;
 
-    public LunchModel(String title) {
+    @SerializedName("address")
+    @Expose
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public LunchModel(String title, String address) {
         this.title = title;
+        this.address = address;
     }
 
     public String getTitle() {

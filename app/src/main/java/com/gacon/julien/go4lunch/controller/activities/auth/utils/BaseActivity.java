@@ -40,7 +40,7 @@ public class BaseActivity extends AppCompatActivity {
     protected static final int RC_SIGN_IN = 123;
     private static final String TAG = "PLACES_API";
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 123;
-    protected ArrayList<LunchModel> placesNameList;
+    protected ArrayList<LunchModel> placesNameList, placesAddressList;
     // Places API
     PlacesClient mPlacesClient;
 
@@ -111,7 +111,7 @@ public class BaseActivity extends AppCompatActivity {
                     assert response != null;
                     for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
                         Log.i(TAG, String.format("Place '%s' has likelihood: %f",
-                                placesNameList.add(new LunchModel(placeLikelihood.getPlace().getName())),
+                                placesNameList.add(new LunchModel(placeLikelihood.getPlace().getName(), placeLikelihood.getPlace().getAddress())),
                                 placeLikelihood.getLikelihood()));
                     }
                     this.updateUi(placesNameList);

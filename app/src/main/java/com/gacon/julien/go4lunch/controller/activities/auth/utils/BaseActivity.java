@@ -1,6 +1,7 @@
 package com.gacon.julien.go4lunch.controller.activities.auth.utils;
 
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -15,8 +16,10 @@ import com.gacon.julien.go4lunch.view.LunchAdapter;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceLikelihood;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
@@ -109,10 +112,38 @@ public class BaseActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mPlacesClient.findCurrentPlace(request).addOnSuccessListener(((response) -> {
                 for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
-                    Log.i(TAG, String.format("Place '%s' with address '%s' has likelihood: %f",
+                    Log.i(TAG, String.format("Place '%s' with address '%s' with photo metadata '%s' has likelihood: %f",
                             placeLikelihood.getPlace().getName(),
                             placeLikelihood.getPlace().getAddress(),
+                            placeLikelihood.getPlace().getPhotoMetadatas(),
                             placeLikelihood.getLikelihood()));
+
+                    if (placeLikelihood.getPlace().getPhotoMetadatas() != null) {
+                        // Get the photo metadata.
+                        PhotoMetadata photoMetadata = placeLikelihood.getPlace().getPhotoMetadatas().get(0);
+
+                        // Get the attribution text.
+                        String attributions = photoMetadata.getAttributions();
+
+                        // Create a FetchPhotoRequest.
+                        FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                                .setMaxWidth(100) // Optional.
+                                .setMaxHeight(100) // Optional.
+                                .build();
+                        mPlacesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                            Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                            Log.i(TAG, "Les images bitmap sont " + bitmap.toString());
+                        }).addOnFailureListener((exception) -> {
+                            if (exception instanceof ApiException) {
+                                ApiException apiException = (ApiException) exception;
+                                int statusCode = apiException.getStatusCode();
+                                // Handle error with given status code.
+                                Log.e(TAG, "Place not found: " + exception.getMessage());
+                            }
+                        });
+                    }
+
+
                     placesNameList.add(new LunchModel(placeLikelihood.getPlace().getName(),
                             placeLikelihood.getPlace().getAddress()));
                 }

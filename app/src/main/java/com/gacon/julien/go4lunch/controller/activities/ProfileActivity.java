@@ -10,6 +10,7 @@ import android.widget.Adapter;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
@@ -65,7 +66,7 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         // RecyclerView
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mAdapter = new LunchAdapter(this.placesNameList);
+        mAdapter = new LunchAdapter(this.placesNameList, Glide.with(this));
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }

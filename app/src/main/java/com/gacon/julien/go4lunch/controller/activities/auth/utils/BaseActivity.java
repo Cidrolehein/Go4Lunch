@@ -97,11 +97,11 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void getCurrentPlaces() {
-        // Define a Place ID.
-        String placeId = "PLACE_ID";
         // Use fields to define the data types to return.
         placeFields = Arrays.asList(Place.Field.NAME,
-                Place.Field.ADDRESS);
+                Place.Field.ADDRESS,
+                Place.Field.PHOTO_METADATAS,
+                Place.Field.TYPES);
         placesNameList = new ArrayList<>();
 
 // Use the builder to create a FindCurrentPlaceRequest.
@@ -112,10 +112,12 @@ public class BaseActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mPlacesClient.findCurrentPlace(request).addOnSuccessListener(((response) -> {
                 for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
-                    Log.i(TAG, String.format("Place '%s' with address '%s' with photo metadata '%s' has likelihood: %f",
+                    String attributions = "";
+                    Log.i(TAG, String.format("Place '%s' with address '%s' with photo metadata '%s' and type '%s' has likelihood: %f",
                             placeLikelihood.getPlace().getName(),
                             placeLikelihood.getPlace().getAddress(),
                             placeLikelihood.getPlace().getPhotoMetadatas(),
+                            placeLikelihood.getPlace().getTypes(),
                             placeLikelihood.getLikelihood()));
 
                     if (placeLikelihood.getPlace().getPhotoMetadatas() != null) {
@@ -123,7 +125,7 @@ public class BaseActivity extends AppCompatActivity {
                         PhotoMetadata photoMetadata = placeLikelihood.getPlace().getPhotoMetadatas().get(0);
 
                         // Get the attribution text.
-                        String attributions = photoMetadata.getAttributions();
+                        attributions = photoMetadata.getAttributions();
 
                         // Create a FetchPhotoRequest.
                         FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
@@ -143,9 +145,8 @@ public class BaseActivity extends AppCompatActivity {
                         });
                     }
 
-
                     placesNameList.add(new LunchModel(placeLikelihood.getPlace().getName(),
-                            placeLikelihood.getPlace().getAddress()));
+                            placeLikelihood.getPlace().getAddress(), attributions));
                 }
                 updateUi(placesNameList);
             })).addOnFailureListener((exception) -> {

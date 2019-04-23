@@ -44,5 +44,9 @@
     <string name="open_date">Open until 7pm</string>
     <string name="distance">120m</string>
     <string name="people_number">(3)</string>
+    <string name="info_no_username_found">No username found</string>
+    <string name="info_no_email_found">No email found</string>
+    <string name="first_name_and_second_name">First name and Second Name</string>
+    <string name="e_mail">E-Mail</string>
 
 </resources>

@@ -27,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/avatar"
+            android:layout_margin="20dp"
             app:srcCompat="@drawable/logo" />
 
         <LinearLayout
@@ -36,16 +37,18 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="First name and Second Name"
+                android:text="@string/first_name_and_second_name"
                 android:textColor="@color/icon_background_color"
                 android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="E-Mail"
+                android:text="@string/e_mail"
                 android:textColor="@color/icon_background_color"
                 android:textSize="12sp" />
         </LinearLayout>

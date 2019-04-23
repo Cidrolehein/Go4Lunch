@@ -1,25 +1,22 @@
 package com.gacon.julien.go4lunch.controller.activities;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Adapter;
-import android.widget.LinearLayout;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
-import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.view.LunchAdapter;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -30,8 +27,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,6 +55,7 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         this.configureToolbar();
         this.configureDrawerLayout();
         this.configureBottomView();
+        this.configureNavigationView();
         // Initialize Places
         this.initPlaces();
         this.getCurrentPlaces();
@@ -121,7 +117,7 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        // 4 - Handle Navigation Item Click
+        // - Handle Navigation Item Click
         int id = item.getItemId();
 
         switch (id) {
@@ -156,6 +152,7 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     // --------------------
     // UI
     // --------------------
+
 
     /**
      * Create OnCompleteListener called after tasks ended
@@ -217,7 +214,31 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
      * Configure NavigationView
      */
     private void configureNavigationView() {
+
         navigationView.setNavigationItemSelectedListener(this);
+        if (this.getCurrentUser() != null) {
+            // Customize image profile
+            View headView = navigationView.getHeaderView(0);
+            ImageView imgProfile = headView.findViewById(R.id.imageAvatar);
+            //Get picture URL from Firebase
+            if (this.getCurrentUser().getPhotoUrl() != null) {
+                Glide.with(this)
+                        .load(this.getCurrentUser().getPhotoUrl())
+                        .override(200, 200)
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(imgProfile);
+                //Customize user data username and name
+                String username = TextUtils.isEmpty(this.getCurrentUser().getDisplayName()) ?
+                        getString(R.string.info_no_username_found) : this.getCurrentUser().getDisplayName();
+                String email = TextUtils.isEmpty(this.getCurrentUser().getEmail()) ?
+                        getString(R.string.info_no_email_found) : this.getCurrentUser().getEmail();
+
+                TextView textUsername = headView.findViewById(R.id.name);
+                textUsername.setText(username);
+                TextView textEmail = headView.findViewById(R.id.email);
+                textEmail.setText(email);
+            }
+        }
     }
 
     /**

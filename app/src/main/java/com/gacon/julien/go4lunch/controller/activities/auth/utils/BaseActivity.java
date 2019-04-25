@@ -41,6 +41,8 @@ public class BaseActivity extends AppCompatActivity {
     protected static final int RC_SIGN_IN = 123;
     private static final String TAG = "PLACES_API";
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 123;
+    // Define a Place ID.
+    private String placeId = "INSERT_PLACE_ID_HERE";
     //FOR DATA
     // - Identifier for Sign-In Activity
     protected List<Place.Field> placeFields;
@@ -99,6 +101,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void getCurrentPlaces() {
         // Use fields to define the data types to return.
         placeFields = Arrays.asList(Place.Field.NAME,
+                Place.Field.ID,
                 Place.Field.ADDRESS,
                 Place.Field.PHOTO_METADATAS,
                 Place.Field.TYPES);
@@ -113,12 +116,24 @@ public class BaseActivity extends AppCompatActivity {
             mPlacesClient.findCurrentPlace(request).addOnSuccessListener(((response) -> {
                 for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
                     String attributions = "";
-                    Log.i(TAG, String.format("Place '%s' with address '%s' with photo metadata '%s' and type '%s' has likelihood: %f",
+                    Log.i(TAG, String.format("Place '%s' with Id '%s' with address '%s' with photo metadata '%s' and type '%s' has likelihood: %f",
                             placeLikelihood.getPlace().getName(),
+                            placeLikelihood.getPlace().getId(),
                             placeLikelihood.getPlace().getAddress(),
                             placeLikelihood.getPlace().getPhotoMetadatas(),
                             placeLikelihood.getPlace().getTypes(),
                             placeLikelihood.getLikelihood()));
+// get place detail for current hour
+                    if (placeLikelihood.getPlace().getId() != null){
+                        placeId = placeLikelihood.getPlace().getId();
+                        List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.OPENING_HOURS);
+                        // Construct a request object, passing the place ID and fields array.
+                        FetchPlaceRequest requestById = FetchPlaceRequest.builder(placeId, placeFields).build();
+                        mPlacesClient.fetchPlace(requestById).addOnSuccessListener((responseId) -> {
+                            Place place = responseId.getPlace();
+                            Log.i(TAG, "Place found: " + place.getName() + "with opening hour: " + place.getOpeningHours());
+                        });
+                    }
 
                     if (placeLikelihood.getPlace().getPhotoMetadatas() != null) {
                         // Get the photo metadata.

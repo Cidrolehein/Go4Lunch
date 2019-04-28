@@ -1,8 +1,8 @@
 package com.gacon.julien.go4lunch.controller.activities.auth.utils;
 
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,12 +16,9 @@ import com.gacon.julien.go4lunch.view.LunchAdapter;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.DayOfWeek;
 import com.google.android.libraries.places.api.model.Period;
-import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceLikelihood;
-import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
@@ -42,15 +39,15 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
  */
 public class BaseActivity extends AppCompatActivity {
 
+    //FOR DATA
+    // - Identifier for Sign-In Activity
     protected static final int RC_SIGN_IN = 123;
     private static final String TAG = "PLACES_API";
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 123;
-    private ArrayList arrayListPlaceId;
-    //FOR DATA
-    // - Identifier for Sign-In Activity
+    private ArrayList<String> arrayListPlaceId;
     protected List<Place.Field> placeFields;
     protected List<Place.Field> placesFields;
-    protected ArrayList<LunchModel> placesNameList, placesAddressList;
+    protected ArrayList<LunchModel> placesNameList;
     protected LunchAdapter mAdapter;
     // Places API
     PlacesClient mPlacesClient;
@@ -106,37 +103,43 @@ public class BaseActivity extends AppCompatActivity {
         mPlacesDetails = Places.createClient(this);
     }
 
+    /**
+     * Call findCurrentPlace and handle the response (first check that the user has granted permission).
+     * Call FetchPlaceRequest to get place details
+     */
     protected void getCurrentPlaces() {
         // Use fields to define the data types to return.
-        placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS);
+        placeFields = Collections.singletonList(Place.Field.ID);
+        // Places fields to Place Details
         placesFields = Arrays.asList(Place.Field.ID,
                 Place.Field.NAME,
                 Place.Field.ADDRESS,
                 Place.Field.OPENING_HOURS,
-                Place.Field.TYPES);
+                Place.Field.TYPES,
+                Place.Field.RATING,
+                Place.Field.PHOTO_METADATAS,
+                Place.Field.WEBSITE_URI);
         placesNameList = new ArrayList<>();
 
 // Use the builder to create a FindCurrentPlaceRequest.
         FindCurrentPlaceRequest request =
                 FindCurrentPlaceRequest.builder(placeFields).build();
 
-// Call findCurrentPlace and handle the response (first check that the user has granted permission).
-        arrayListPlaceId = new ArrayList();
         if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // Ad place Id of current places in arraylist
+            arrayListPlaceId = new ArrayList<>();
             Task<FindCurrentPlaceResponse> placeResponse = mPlacesClient.findCurrentPlace(request);
             placeResponse.addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
                     FindCurrentPlaceResponse response = task.getResult();
+                    assert response != null;
                     for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
-                        String attributions = "";
                         Log.i(TAG, String.format("Place '%s' with Id",
                                 placeLikelihood.getPlace().getId()));
                                 placeLikelihood.getPlace().getName();
                         // Get place detail for current hour
                         placeId = placeLikelihood.getPlace().getId();
                         arrayListPlaceId.add(placeId);
-                        String placeName = placeLikelihood.getPlace().getName();
-                        String placeAddress = placeLikelihood.getPlace().getAddress();
                     }
                 } else {
                         Exception exception = task.getException();
@@ -145,24 +148,35 @@ public class BaseActivity extends AppCompatActivity {
                             Log.e(TAG, "Place not found: " + apiException.getStatusCode());
                         }
                 }
+
+                // Get place details from current places id
                 for (int i = 0; i < arrayListPlaceId.size(); i++){
-                    placeId = (String) arrayListPlaceId.get(i);
+                    placeId = arrayListPlaceId.get(i);
                     if (placeId != null) {
                         FetchPlaceRequest requestById = FetchPlaceRequest.builder(placeId, placesFields).build();
                         // Construct a request object, passing the place ID and fields array.
                         mPlacesDetails.fetchPlace(requestById).addOnSuccessListener((responseId) -> {
                             Place place = responseId.getPlace();
                                 Log.i(TAG, "Place found: " + place.getName());
-                                List<Period> periodList = new ArrayList<>();
+                                // Add period of hours
+                                List<Period> periodList;
                                 if (place.getOpeningHours() != null) {
                                     periodList = place.getOpeningHours().getPeriods();
                                 } else periodList = null;
+                                // Add rating
+                                double rating = 1;
+                                if (place.getRating() != null) {
+                                    rating = place.getRating();
+                                }
                                 ArrayList<LunchModel> model;
                                 model = new ArrayList<>();
                                 model.add(new LunchModel(place.getName(),
                                         place.getAddress(),
                                         periodList,
-                                        place.getTypes().get(0).toString()));
+                                        Objects.requireNonNull(place.getTypes()).get(0).toString(),
+                                                rating,
+                                        place.getPhotoMetadatas(),
+                                        place.getWebsiteUri()));
                                 updateUi(model);
                         });
                     }
@@ -189,6 +203,8 @@ public class BaseActivity extends AppCompatActivity {
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
+                Toast toast = Toast.makeText(this, "Please accept your localisation", Toast.LENGTH_SHORT);
+                toast.show();
             } else {
                 // No explanation needed; request the permission
                 ActivityCompat.requestPermissions(this,
@@ -201,11 +217,9 @@ public class BaseActivity extends AppCompatActivity {
             }
         } else {
             // Permission has already been granted
+            Toast toast = Toast.makeText(this, "Your permission has already been granted", Toast.LENGTH_SHORT);
+            toast.show();
         }
-    }
-
-    public ArrayList getPlacesNameList() {
-        return placesNameList;
     }
 
     protected void updateUi(List<LunchModel> lunchPlaces) {

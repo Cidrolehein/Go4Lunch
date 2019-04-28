@@ -1,9 +1,11 @@
 package com.gacon.julien.go4lunch.models;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import com.google.android.libraries.places.api.model.DayOfWeek;
 import com.google.android.libraries.places.api.model.Period;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -28,12 +30,24 @@ public class LunchModel {
     @SerializedName("Place Type")
     @Expose
     private String place_type;
+    @SerializedName("Rating")
+    @Expose
+    private double place_rating;
+    @SerializedName("Photo")
+    @Expose
+    private List<PhotoMetadata> photoMetadatasOfPlace;
+    @SerializedName("WebSite")
+    @Expose
+    private Uri websiteUriPlace;
 
-    public LunchModel(String title, String address, List<Period> periods, String type) {
+    public LunchModel(String title, String address, List<Period> periods, String type, Double rating, List<PhotoMetadata> photoMetadatas, Uri websiteUri) {
         this.title = title;
         this.address = address;
         this.mPeriods = periods;
         this.place_type = type;
+        this.place_rating = rating;
+        this.photoMetadatasOfPlace = photoMetadatas;
+        this.websiteUriPlace = websiteUri;
     }
 
     public String getTitle() {

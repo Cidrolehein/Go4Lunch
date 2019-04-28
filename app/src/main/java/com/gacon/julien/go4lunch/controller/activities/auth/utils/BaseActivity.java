@@ -44,7 +44,6 @@ public class BaseActivity extends AppCompatActivity {
     protected static final int RC_SIGN_IN = 123;
     private static final String TAG = "PLACES_API";
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 123;
-    private ArrayList<String> arrayListPlaceId;
     protected List<Place.Field> placeFields;
     protected List<Place.Field> placesFields;
     protected ArrayList<LunchModel> placesNameList;
@@ -52,6 +51,7 @@ public class BaseActivity extends AppCompatActivity {
     // Places API
     PlacesClient mPlacesClient;
     PlacesClient mPlacesDetails;
+    private ArrayList<String> arrayListPlaceId;
     // Define a Place ID.
     private String placeId = "INSERT_PLACE_ID_HERE";
 
@@ -130,54 +130,54 @@ public class BaseActivity extends AppCompatActivity {
             arrayListPlaceId = new ArrayList<>();
             Task<FindCurrentPlaceResponse> placeResponse = mPlacesClient.findCurrentPlace(request);
             placeResponse.addOnCompleteListener(task -> {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     FindCurrentPlaceResponse response = task.getResult();
                     assert response != null;
                     for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
                         Log.i(TAG, String.format("Place '%s' with Id",
                                 placeLikelihood.getPlace().getId()));
-                                placeLikelihood.getPlace().getName();
+                        placeLikelihood.getPlace().getName();
                         // Get place detail for current hour
                         placeId = placeLikelihood.getPlace().getId();
                         arrayListPlaceId.add(placeId);
                     }
                 } else {
-                        Exception exception = task.getException();
-                        if (exception instanceof ApiException) {
-                            ApiException apiException = (ApiException) exception;
-                            Log.e(TAG, "Place not found: " + apiException.getStatusCode());
-                        }
+                    Exception exception = task.getException();
+                    if (exception instanceof ApiException) {
+                        ApiException apiException = (ApiException) exception;
+                        Log.e(TAG, "Place not found: " + apiException.getStatusCode());
+                    }
                 }
 
                 // Get place details from current places id
-                for (int i = 0; i < arrayListPlaceId.size(); i++){
+                for (int i = 0; i < arrayListPlaceId.size(); i++) {
                     placeId = arrayListPlaceId.get(i);
                     if (placeId != null) {
                         FetchPlaceRequest requestById = FetchPlaceRequest.builder(placeId, placesFields).build();
                         // Construct a request object, passing the place ID and fields array.
                         mPlacesDetails.fetchPlace(requestById).addOnSuccessListener((responseId) -> {
                             Place place = responseId.getPlace();
-                                Log.i(TAG, "Place found: " + place.getName());
-                                // Add period of hours
-                                List<Period> periodList;
-                                if (place.getOpeningHours() != null) {
-                                    periodList = place.getOpeningHours().getPeriods();
-                                } else periodList = null;
-                                // Add rating
-                                double rating = 1;
-                                if (place.getRating() != null) {
-                                    rating = place.getRating();
-                                }
-                                ArrayList<LunchModel> model;
-                                model = new ArrayList<>();
-                                model.add(new LunchModel(place.getName(),
-                                        place.getAddress(),
-                                        periodList,
-                                        Objects.requireNonNull(place.getTypes()).get(0).toString(),
-                                                rating,
-                                        place.getPhotoMetadatas(),
-                                        place.getWebsiteUri()));
-                                updateUi(model);
+                            Log.i(TAG, "Place found: " + place.getName());
+                            // Add period of hours
+                            List<Period> periodList;
+                            if (place.getOpeningHours() != null) {
+                                periodList = place.getOpeningHours().getPeriods();
+                            } else periodList = null;
+                            // Add rating
+                            double rating = 1;
+                            if (place.getRating() != null) {
+                                rating = place.getRating();
+                            }
+                            ArrayList<LunchModel> model;
+                            model = new ArrayList<>();
+                            model.add(new LunchModel(place.getName(),
+                                    place.getAddress(),
+                                    periodList,
+                                    Objects.requireNonNull(place.getTypes()).get(0).toString(),
+                                    rating,
+                                    place.getPhotoMetadatas(),
+                                    place.getWebsiteUri()));
+                            updateUi(model);
                         });
                     }
                 }

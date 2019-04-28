@@ -26,6 +26,8 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
     TextView mTextViewAddress;
     @BindView(R.id.place_image)
     ImageView imageView;
+    @BindView(R.id.type)
+    TextView mTextViewType;
 
 
 
@@ -37,6 +39,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
     void updateWithLunch(LunchModel newLunch, RequestManager glide) {
         this.mTextViewTitle.setText(newLunch.getTitle());
         this.mTextViewAddress.setText(newLunch.getAddress());
+        this.mTextViewType.setText(newLunch.getPlace_type());
         this.getImage(newLunch, glide);
     }
 

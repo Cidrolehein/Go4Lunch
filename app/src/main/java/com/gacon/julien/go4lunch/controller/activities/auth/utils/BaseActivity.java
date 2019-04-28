@@ -168,16 +168,21 @@ public class BaseActivity extends AppCompatActivity {
                             if (place.getRating() != null) {
                                 rating = place.getRating();
                             }
-                            ArrayList<LunchModel> model;
-                            model = new ArrayList<>();
-                            model.add(new LunchModel(place.getName(),
-                                    place.getAddress(),
-                                    periodList,
-                                    Objects.requireNonNull(place.getTypes()).get(0).toString(),
-                                    rating,
-                                    place.getPhotoMetadatas(),
-                                    place.getWebsiteUri()));
-                            updateUi(model);
+                            // select a type of interest
+                            if (Objects.requireNonNull(place.getTypes()).toString().contains("RESTAURANT")
+                                    || Objects.requireNonNull(place.getTypes()).toString().contains("FOOD")
+                                    || Objects.requireNonNull(place.getTypes()).toString().contains("BAKERY")) {
+                                ArrayList<LunchModel> model;
+                                model = new ArrayList<>();
+                                model.add(new LunchModel(place.getName(),
+                                        place.getAddress(),
+                                        periodList,
+                                        Objects.requireNonNull(place.getTypes()).get(0).toString(),
+                                        rating,
+                                        place.getPhotoMetadatas(),
+                                        place.getWebsiteUri()));
+                                updateUi(model);
+                            }
                         });
                     }
                 }

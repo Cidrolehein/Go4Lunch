@@ -65,4 +65,8 @@ public class LunchModel {
     public String getPlace_type() {
         return place_type;
     }
+
+    public double getPlace_rating() {
+        return place_rating;
+    }
 }

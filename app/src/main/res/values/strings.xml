@@ -48,5 +48,9 @@
     <string name="info_no_email_found">No email found</string>
     <string name="first_name_and_second_name">First name and Second Name</string>
     <string name="e_mail">E-Mail</string>
+    <string name="star_rating_1">star rating 1</string>
+    <string name="star_rating_2">star rating 2</string>
+    <string name="star_rating_3">star rating 3</string>
+    <string name="star_rating_4">star rating 4</string>
 
 </resources>

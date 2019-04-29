@@ -45,8 +45,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     NavigationView navigationView;
     @BindView(R.id.profile_main_bottom_navigation)
     BottomNavigationView bottomNavigationView;
-    @BindView(R.id.recycler_view_list_view)
-    RecyclerView mRecyclerView;
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             item -> {

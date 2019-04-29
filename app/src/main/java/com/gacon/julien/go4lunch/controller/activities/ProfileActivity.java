@@ -18,7 +18,6 @@ import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.controller.fragments.ListViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.MapViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.WorkmatesFragment;
-import com.gacon.julien.go4lunch.view.LunchAdapter;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -29,7 +28,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import butterknife.BindView;
@@ -49,6 +47,7 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     BottomNavigationView bottomNavigationView;
     @BindView(R.id.recycler_view_list_view)
     RecyclerView mRecyclerView;
+
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             item -> {
                 Fragment selectedFragment = null;
@@ -82,15 +81,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         this.configureDrawerLayout();
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         this.configureNavigationView();
-        // Initialize Places
-        this.initPlaces();
-        this.getCurrentPlaces();
-        // RecyclerView
-        mRecyclerView.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mAdapter = new LunchAdapter(this.placesNameList, Glide.with(this));
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setAdapter(mAdapter);
 
     }
 

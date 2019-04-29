@@ -170,7 +170,11 @@ public class ListViewFragment extends Fragment {
                                         Objects.requireNonNull(place.getTypes()).get(0).toString(),
                                         rating,
                                         place.getPhotoMetadatas(),
-                                        place.getWebsiteUri()));
+                                        place.getWebsiteUri(),
+                                        placesFields,
+                                        placeId,
+                                        place,
+                                        mPlacesClient));
                                 updateUi(model);
                             }
                         });

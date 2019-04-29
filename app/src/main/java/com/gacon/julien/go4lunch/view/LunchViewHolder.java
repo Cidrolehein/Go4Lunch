@@ -1,5 +1,6 @@
 package com.gacon.julien.go4lunch.view;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,10 +13,20 @@ import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
+import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -51,6 +62,10 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
         this.mTextViewType.setText(newLunch.getPlace_type());
         this.getRatingStar(newLunch);
         this.getImage(newLunch, glide);
+        if(newLunch.getPhotoMetadatasOfPlace() != null){
+            addImages(newLunch, newLunch.getPlaceId(), newLunch.getPlace(), newLunch.getPlacesClient());
+        }
+
     }
 
     private void getImage(LunchModel placeImage, RequestManager glide) {
@@ -84,6 +99,21 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
             mStarRating3.setVisibility(View.VISIBLE);
             mStarRating4.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void addImages(LunchModel lunchModelPhotoMetaData, String id, Place place, PlacesClient placesClient){
+        List<Place.Field> fields = Collections.singletonList(lunchModelPhotoMetaData.getFieldList().get(6));
+        FetchPlaceRequest placeRequest = FetchPlaceRequest.builder(id, fields).build();
+        PhotoMetadata photoMetadata = Objects.requireNonNull(place.getPhotoMetadatas()).get(0);
+        // Create a FetchPhotoRequest.
+        FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                .setMaxWidth(500) // Optional.
+                .setMaxHeight(500) // Optional.
+                .build();
+        placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+            Bitmap bitmap = fetchPhotoResponse.getBitmap();
+            imageView.setImageBitmap(bitmap);
+        });
     }
 
 }

@@ -7,6 +7,7 @@ import com.google.android.libraries.places.api.model.DayOfWeek;
 import com.google.android.libraries.places.api.model.Period;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -39,8 +40,22 @@ public class LunchModel {
     @SerializedName("WebSite")
     @Expose
     private Uri websiteUriPlace;
+    @SerializedName("ListField")
+    @Expose
+    private List<Place.Field> mFieldList;
+    @SerializedName("Place id")
+    @Expose
+    private String mPlaceId;
+    @SerializedName("Place")
+    @Expose
+    private Place mPlace;
+    @SerializedName("Place client")
+    @Expose
+    private PlacesClient mPlacesClient;
 
-    public LunchModel(String title, String address, List<Period> periods, String type, Double rating, List<PhotoMetadata> photoMetadatas, Uri websiteUri) {
+    public LunchModel(String title, String address, List<Period> periods, String type, Double rating,
+                      List<PhotoMetadata> photoMetadatas, Uri websiteUri, List<Place.Field> placesFields,
+                      String placeId, Place place, PlacesClient client) {
         this.title = title;
         this.address = address;
         this.mPeriods = periods;
@@ -48,6 +63,10 @@ public class LunchModel {
         this.place_rating = rating;
         this.photoMetadatasOfPlace = photoMetadatas;
         this.websiteUriPlace = websiteUri;
+        this.mFieldList = placesFields;
+        this.mPlaceId = placeId;
+        this.mPlace = place;
+        this.mPlacesClient = client;
     }
 
     public String getTitle() {
@@ -68,5 +87,25 @@ public class LunchModel {
 
     public double getPlace_rating() {
         return place_rating;
+    }
+
+    public List<PhotoMetadata> getPhotoMetadatasOfPlace() {
+        return photoMetadatasOfPlace;
+    }
+
+    public List<Place.Field> getFieldList() {
+        return mFieldList;
+    }
+
+    public String getPlaceId() {
+        return mPlaceId;
+    }
+
+    public Place getPlace() {
+        return mPlace;
+    }
+
+    public PlacesClient getPlacesClient() {
+        return mPlacesClient;
     }
 }

@@ -148,10 +148,11 @@ public class ListViewFragment extends Fragment {
                             Place place = responseId.getPlace();
                             Log.i(TAG, "Place found: " + place.getName());
                             // Add period of hours
-                            List<Period> periodList;
+                            List<Period> periodList = null;
                             if (place.getOpeningHours() != null) {
-                                periodList = place.getOpeningHours().getPeriods();
-                            } else periodList = null;
+                                periodList = new ArrayList<>();
+                                periodList.addAll(place.getOpeningHours().getPeriods());
+                            }
                             // Add rating
                             double rating = 1;
                             if (place.getRating() != null) {
@@ -161,6 +162,7 @@ public class ListViewFragment extends Fragment {
                             if (Objects.requireNonNull(place.getTypes()).toString().contains("RESTAURANT")
                                     || Objects.requireNonNull(place.getTypes()).toString().contains("FOOD")
                                     || Objects.requireNonNull(place.getTypes()).toString().contains("PREMISE")
+                                    || Objects.requireNonNull(place.getTypes()).toString().contains("ESTABLISHMENT")
                                     || Objects.requireNonNull(place.getTypes()).toString().contains("BAKERY")) {
                                 ArrayList<LunchModel> model;
                                 model = new ArrayList<>();

@@ -108,4 +108,8 @@ public class LunchModel {
     public PlacesClient getPlacesClient() {
         return mPlacesClient;
     }
+
+    public List<Period> getPeriods() {
+        return mPeriods;
+    }
 }

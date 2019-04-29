@@ -171,6 +171,7 @@ public class BaseActivity extends AppCompatActivity {
                             // select a type of interest
                             if (Objects.requireNonNull(place.getTypes()).toString().contains("RESTAURANT")
                                     || Objects.requireNonNull(place.getTypes()).toString().contains("FOOD")
+                                    || Objects.requireNonNull(place.getTypes()).toString().contains("PREMISE")
                                     || Objects.requireNonNull(place.getTypes()).toString().contains("BAKERY")) {
                                 ArrayList<LunchModel> model;
                                 model = new ArrayList<>();

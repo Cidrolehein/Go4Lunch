@@ -15,6 +15,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
+import com.gacon.julien.go4lunch.controller.fragments.ListViewFragment;
+import com.gacon.julien.go4lunch.controller.fragments.MapViewFragment;
+import com.gacon.julien.go4lunch.controller.fragments.WorkmatesFragment;
 import com.gacon.julien.go4lunch.view.LunchAdapter;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -25,6 +28,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,6 +49,28 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     BottomNavigationView bottomNavigationView;
     @BindView(R.id.recycler_view_list_view)
     RecyclerView mRecyclerView;
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            item -> {
+                Fragment selectedFragment = null;
+
+                switch (item.getItemId()) {
+                    case R.id.map_view:
+                        selectedFragment = new MapViewFragment();
+                        break;
+                    case R.id.list_view:
+                        selectedFragment = new ListViewFragment();
+                        break;
+                    case R.id.workmates:
+                        selectedFragment = new WorkmatesFragment();
+                        break;
+                }
+
+                assert selectedFragment != null;
+                getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_frame_layout,
+                        selectedFragment).commit();
+
+                return true;
+            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +80,7 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         // Configuring Toolbar, DrawerLayout and BottomView
         this.configureToolbar();
         this.configureDrawerLayout();
-        this.configureBottomView();
+        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         this.configureNavigationView();
         // Initialize Places
         this.initPlaces();
@@ -65,6 +91,7 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         mAdapter = new LunchAdapter(this.placesNameList, Glide.with(this));
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
+
     }
 
     /**
@@ -171,29 +198,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     // ---------------------
 
     /**
-     * Update Main Fragment design TODO : create fragments
-     *
-     * @param integer Bottom View
-     * @return Fragment
-     */
-    private Boolean updateMainFragment(Integer integer) {
-        switch (integer) {
-            /*
-            case R.id.action_android:
-                this.mainFragment.updateDesignWhenUserClickedBottomView(MainFragment.REQUEST_ANDROID);
-                break;
-            case R.id.action_logo:
-                this.mainFragment.updateDesignWhenUserClickedBottomView(MainFragment.REQUEST_LOGO);
-                break;
-            case R.id.action_landscape:
-                this.mainFragment.updateDesignWhenUserClickedBottomView(MainFragment.REQUEST_LANDSCAPE);
-                break;
-                */
-        }
-        return true;
-    }
-
-    /**
      * Add Toolbar
      */
     private void configureToolbar() {
@@ -239,13 +243,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
                 textEmail.setText(email);
             }
         }
-    }
-
-    /**
-     * Configure BottomNavigationView Listener
-     */
-    private void configureBottomView() {
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> updateMainFragment(item.getItemId()));
     }
 
 }

@@ -3,6 +3,7 @@ package com.gacon.julien.go4lunch.models;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.DayOfWeek;
 import com.google.android.libraries.places.api.model.Period;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
@@ -52,10 +53,14 @@ public class LunchModel {
     @SerializedName("Place client")
     @Expose
     private PlacesClient mPlacesClient;
+    @SerializedName("Distance in Meters")
+    @Expose
+    private float mDisanceInMeters;
+
 
     public LunchModel(String title, String address, List<Period> periods, String type, Double rating,
                       List<PhotoMetadata> photoMetadatas, Uri websiteUri, List<Place.Field> placesFields,
-                      String placeId, Place place, PlacesClient client) {
+                      String placeId, Place place, PlacesClient client, float distanceInMeters) {
         this.title = title;
         this.address = address;
         this.mPeriods = periods;
@@ -67,6 +72,7 @@ public class LunchModel {
         this.mPlaceId = placeId;
         this.mPlace = place;
         this.mPlacesClient = client;
+        this.mDisanceInMeters = distanceInMeters;
     }
 
     public String getTitle() {
@@ -111,5 +117,9 @@ public class LunchModel {
 
     public List<Period> getPeriods() {
         return mPeriods;
+    }
+
+    public float getDisanceInMeters() {
+        return mDisanceInMeters;
     }
 }

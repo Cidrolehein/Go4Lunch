@@ -1,7 +1,10 @@
 package com.gacon.julien.go4lunch.controller.fragments;
 
 
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +25,10 @@ import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.view.LunchAdapter;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Period;
@@ -42,18 +49,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static androidx.core.content.ContextCompat.getSystemService;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ListViewFragment extends Fragment {
 
-    @BindView(R.id.recycler_view_list_view)
-    RecyclerView mRecyclerView;
-
     private static final String TAG = "PLACES_API";
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 123;
-
+    @BindView(R.id.recycler_view_list_view)
+    RecyclerView mRecyclerView;
     private LunchAdapter mAdapter;
     private List<Place.Field> placesFields;
     private ArrayList<LunchModel> placesNameList;
@@ -63,6 +69,10 @@ public class ListViewFragment extends Fragment {
     private ArrayList<String> arrayListPlaceId;
     // Define a Place ID.
     private String placeId = "INSERT_PLACE_ID_HERE";
+    // For location
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private LatLng latLng;
+    private Location currentLocation;
 
     public ListViewFragment() {
         // Required empty public constructor
@@ -107,7 +117,8 @@ public class ListViewFragment extends Fragment {
                 Place.Field.TYPES,
                 Place.Field.RATING,
                 Place.Field.PHOTO_METADATAS,
-                Place.Field.WEBSITE_URI);
+                Place.Field.WEBSITE_URI,
+                Place.Field.LAT_LNG);
         placesNameList = new ArrayList<>();
 
 // Use the builder to create a FindCurrentPlaceRequest.
@@ -115,6 +126,7 @@ public class ListViewFragment extends Fragment {
                 FindCurrentPlaceRequest.builder(placeFields).build();
 
         if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getDeviceLocation();
             // Ad place Id of current places in arraylist
             arrayListPlaceId = new ArrayList<>();
             Task<FindCurrentPlaceResponse> placeResponse = mPlacesClient.findCurrentPlace(request);
@@ -158,6 +170,14 @@ public class ListViewFragment extends Fragment {
                             if (place.getRating() != null) {
                                 rating = place.getRating();
                             }
+                            // Distance between place in meters
+                            float distanceInMeters = 0;
+                            if(place.getLatLng() != null && currentLocation != null) {
+                                Location placeLocation = new Location("");
+                                placeLocation.setLatitude(place.getLatLng().latitude);
+                                placeLocation.setLongitude(place.getLatLng().longitude);
+                                distanceInMeters = currentLocation.distanceTo(placeLocation);
+                            }
                             // select a type of interest
                             if (Objects.requireNonNull(place.getTypes()).toString().contains("RESTAURANT")
                                     || Objects.requireNonNull(place.getTypes()).toString().contains("FOOD")
@@ -176,7 +196,8 @@ public class ListViewFragment extends Fragment {
                                         placesFields,
                                         placeId,
                                         place,
-                                        mPlacesClient));
+                                        mPlacesClient,
+                                        distanceInMeters));
                                 updateUi(model);
                             }
                         });
@@ -188,6 +209,22 @@ public class ListViewFragment extends Fragment {
             // A local method to request required permissions;
             // See https://developer.android.com/training/permissions/requesting
             getLocationPermission();
+        }
+    }
+
+    private void getDeviceLocation() {
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getActivity()));
+        try {
+            Task location = mFusedLocationProviderClient.getLastLocation();
+            location.addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    currentLocation = (Location) task.getResult();
+                    assert currentLocation != null;
+                    latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                }
+            });
+        } catch (SecurityException e) {
+            Log.e(TAG, "getDeviceLocation : SecurityException: " + e.getMessage());
         }
     }
 
@@ -222,6 +259,7 @@ public class ListViewFragment extends Fragment {
             toast.show();
         }
     }
+
     private void updateUi(List<LunchModel> lunchPlaces) {
         placesNameList.addAll(lunchPlaces);
         mAdapter.notifyDataSetChanged();

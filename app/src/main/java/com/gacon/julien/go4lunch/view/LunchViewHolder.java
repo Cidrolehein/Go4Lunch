@@ -52,6 +52,8 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
     TextView mTextViewType;
     @BindView(R.id.Date)
     TextView mTextViewIsItOpen;
+    @BindView(R.id.distance)
+    TextView mTextViewDistance;
     @BindView(R.id.star_rating_1)
     ImageView mStarRating1;
     @BindView(R.id.star_rating_2)
@@ -79,7 +81,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
         if (newLunch.getPhotoMetadatasOfPlace() != null) {
             addImages(newLunch, newLunch.getPlaceId(), newLunch.getPlace(), newLunch.getPlacesClient());
         }
-
+        this.mTextViewDistance.setText(convertMeters(newLunch.getDisanceInMeters())+"M");
     }
 
     private void getImage(LunchModel placeImage, RequestManager glide) {
@@ -139,7 +141,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
         weekDay = weekDay.toUpperCase(); // Convert day to uppercase
         Log.i("Current day", "Current day is :" + weekDay);
         //Get the days open
-        ArrayList<String> openDays = new ArrayList<String>();
+        ArrayList<String> openDays = new ArrayList<>();
         ArrayList<Integer> openHours = new ArrayList<>();
         int openHour;
         int closeHour;
@@ -171,5 +173,11 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
                 }
         }
         return isItOpen;
+    }
+
+    private int convertMeters(float m){
+        int meters;
+        meters = Math.round(m);
+        return meters;
     }
 }

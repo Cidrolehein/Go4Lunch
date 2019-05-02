@@ -4,13 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.bumptech.glide.RequestManager;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.models.LunchModel;
-
 import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,13 +14,10 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchViewHolder> {
 
     // For data
     private List<LunchModel> mLunchModelList;
-    // - Declaring a Glide object
-    private RequestManager glide;
 
     // Constructor
-    public LunchAdapter(List<LunchModel> lunchList, RequestManager glide) {
+    public LunchAdapter(List<LunchModel> lunchList) {
         this.mLunchModelList = lunchList;
-        this.glide = glide;
     }
 
     @NonNull
@@ -39,7 +32,7 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull LunchViewHolder holder, int position) {
-        holder.updateWithLunch(this.mLunchModelList.get(position), this.glide);
+        holder.updateWithLunch(this.mLunchModelList.get(position));
     }
 
     @Override

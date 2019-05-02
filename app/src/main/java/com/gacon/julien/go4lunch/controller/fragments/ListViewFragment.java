@@ -1,34 +1,25 @@
 package com.gacon.julien.go4lunch.controller.fragments;
 
-
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.view.LunchAdapter;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Period;
@@ -38,18 +29,15 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static androidx.core.content.ContextCompat.getSystemService;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,9 +57,6 @@ public class ListViewFragment extends Fragment {
     private ArrayList<String> arrayListPlaceId;
     // Define a Place ID.
     private String placeId = "INSERT_PLACE_ID_HERE";
-    // For location
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    private LatLng latLng;
     private Location currentLocation;
 
     public ListViewFragment() {
@@ -89,7 +74,7 @@ public class ListViewFragment extends Fragment {
         this.initPlaces();
         this.getCurrentPlaces();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new LunchAdapter(this.placesNameList, Glide.with(this));
+        mAdapter = new LunchAdapter(this.placesNameList);
         mRecyclerView.setAdapter(mAdapter);
         return view;
     }
@@ -161,8 +146,7 @@ public class ListViewFragment extends Fragment {
                             // Add period of hours
                             List<Period> periodList = null;
                             if (place.getOpeningHours() != null) {
-                                periodList = new ArrayList<>();
-                                periodList.addAll(place.getOpeningHours().getPeriods());
+                                periodList = new ArrayList<>(place.getOpeningHours().getPeriods());
                             }
                             // Add rating
                             double rating = 1;
@@ -180,8 +164,6 @@ public class ListViewFragment extends Fragment {
                             // select a type of interest
                             if (Objects.requireNonNull(place.getTypes()).toString().contains("RESTAURANT")
                                     || Objects.requireNonNull(place.getTypes()).toString().contains("FOOD")
-                                    || Objects.requireNonNull(place.getTypes()).toString().contains("PREMISE")
-                                    || Objects.requireNonNull(place.getTypes()).toString().contains("ESTABLISHMENT")
                                     || Objects.requireNonNull(place.getTypes()).toString().contains("BAKERY")) {
                                 ArrayList<LunchModel> model;
                                 model = new ArrayList<>();
@@ -212,16 +194,16 @@ public class ListViewFragment extends Fragment {
     }
 
     private void getDeviceLocation() {
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getActivity()));
+        // For location
+        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getActivity()));
         try {
-            Task location = mFusedLocationProviderClient.getLastLocation();
-            location.addOnCompleteListener(task -> {
+            Task location = fusedLocationProviderClient.getLastLocation();
+            location.addOnCompleteListener(getActivity(), task -> {
                 if (task.isSuccessful()) {
                     currentLocation = (Location) task.getResult();
                     assert currentLocation != null;
-                    latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                }
-            });
+            }
+        });
         } catch (SecurityException e) {
             Log.e(TAG, "getDeviceLocation : SecurityException: " + e.getMessage());
         }

@@ -1,6 +1,7 @@
 package com.gacon.julien.go4lunch.view;
 
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.reflect.Array;
@@ -26,7 +28,11 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -75,13 +81,13 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
         this.mTextViewType.setText(newLunch.getPlace_type());
         this.getRatingStar(newLunch);
         this.getImage(newLunch, glide);
-        if(newLunch.getPeriods() != null){
+        if (newLunch.getPeriods() != null) {
             this.mTextViewIsItOpen.setText(getDayOpen(newLunch));
         }
         if (newLunch.getPhotoMetadatasOfPlace() != null) {
-            addImages(newLunch, newLunch.getPlaceId(), newLunch.getPlace(), newLunch.getPlacesClient());
+            addImages(newLunch.getPlace(), newLunch.getPlacesClient());
         }
-        this.mTextViewDistance.setText(convertMeters(newLunch.getDisanceInMeters())+"M");
+        this.mTextViewDistance.setText(convertMeters(newLunch.getDisanceInMeters()) + "M");
     }
 
     private void getImage(LunchModel placeImage, RequestManager glide) {
@@ -117,9 +123,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private void addImages(LunchModel lunchModelPhotoMetaData, String id, Place place, PlacesClient placesClient) {
-        List<Place.Field> fields = Collections.singletonList(lunchModelPhotoMetaData.getFieldList().get(6));
-        FetchPlaceRequest placeRequest = FetchPlaceRequest.builder(id, fields).build();
+    private void addImages(Place place, PlacesClient placesClient) {
         PhotoMetadata photoMetadata = Objects.requireNonNull(place.getPhotoMetadatas()).get(0);
         // Create a FetchPhotoRequest.
         FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
@@ -134,48 +138,53 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
 
     private String getDayOpen(LunchModel lunch) {
         String isItOpen = "";
-        // Get the current day
+        int openPlaceHour, closePlaceHour;
+        // Get the current day & hour
         Calendar calendar = Calendar.getInstance();
-        String weekDay = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        weekDay = weekDay.toUpperCase(); // Convert day to uppercase
-        Log.i("Current day", "Current day is :" + weekDay);
-        //Get the days open
-        ArrayList<String> openDays = new ArrayList<>();
-        ArrayList<Integer> openHours = new ArrayList<>();
-        int openHour;
-        int closeHour;
+        String dayOfWeek = getCurrentDay(calendar);
+        int currentHour = getCurrentHour(calendar);
+        // Get openPlaceDay, openPlaceHour, closePlaceHour
         if (lunch.getPeriods() != null) {
+            ArrayList daysOpen = getArrayOfDays(lunch); // open's days
             for (int i = 0; i < lunch.getPeriods().size(); i++) {
-                openDays.add(Objects.requireNonNull(lunch.getPeriods().get(i).getOpen()).getDay().toString());
-                if(lunch.getPeriods().get(i).getOpen() != null && lunch.getPeriods().get(i).getClose() != null){
-                    // Get hour
-                    openHour = Objects.requireNonNull(lunch.getPeriods().get(i).getOpen()).getTime().getHours();
-                    closeHour = Objects.requireNonNull(lunch.getPeriods().get(i).getClose()).getTime().getHours();
-                    // Change dateFormat to compare
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("hh", Locale.getDefault());
-                    String dateCloseString = Integer.toString(closeHour);
-                    String dateOpenString = Integer.toString(openHour);
-                    String dateCurrentString = dateFormat.format(hour);
-                    try {
-                        Date dateClose = dateFormat.parse(dateCloseString);
-                        Date dateOpen = dateFormat.parse(dateOpenString);
-                        Date dateCurrent = dateFormat.parse(dateCurrentString);
-                        // Compare the current day with open day
-                        if (openDays.contains(weekDay) && dateOpen.before(dateCurrent)) {
-                            isItOpen = "Open until " + closeHour + "h";
-                        } else isItOpen = "Close until " + openHour + "h";
-
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                if (lunch.getPeriods().get(i).getOpen() != null && lunch.getPeriods().get(i).getClose() != null) {
+                    openPlaceHour = Objects.requireNonNull(lunch.getPeriods().get(i).getOpen()).getTime().getHours();
+                    closePlaceHour = Objects.requireNonNull(lunch.getPeriods().get(i).getClose()).getTime().getHours();
+                    // Compare and  get isItOpen
+                    if (daysOpen.contains(dayOfWeek) && currentHour >= openPlaceHour && currentHour <= closePlaceHour) {
+                        isItOpen = "Open until " + closePlaceHour + "h";
+                    } else if (daysOpen.contains(dayOfWeek)) {
+                        isItOpen = "Close today";
+                    } else if (daysOpen.contains(dayOfWeek) && currentHour < openPlaceHour && currentHour > closePlaceHour) {
+                        isItOpen = "Open until " + openPlaceHour + "h";
                     }
                 }
-                }
+            }
         }
         return isItOpen;
     }
 
-    private int convertMeters(float m){
+    private String getCurrentDay(Calendar calendar) {
+        String day = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+        day = day.toUpperCase(); // change currentDay to upper case
+        return day;
+    }
+
+    private int getCurrentHour(Calendar calendar) {
+        return calendar.get(Calendar.HOUR_OF_DAY);
+    }
+
+    private ArrayList getArrayOfDays(LunchModel lunch){
+        ArrayList<String> arrayListOfDays = new ArrayList<>();
+        String openPlaceDay;
+        for (int i = 0; i < lunch.getPeriods().size(); i++) {
+            openPlaceDay = Objects.requireNonNull(lunch.getPeriods().get(i).getOpen()).getDay().toString();
+            arrayListOfDays.add(openPlaceDay);
+        }
+        return arrayListOfDays;
+    }
+
+    private int convertMeters(float m) {
         int meters;
         meters = Math.round(m);
         return meters;

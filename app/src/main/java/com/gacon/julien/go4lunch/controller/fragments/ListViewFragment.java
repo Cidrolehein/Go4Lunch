@@ -137,7 +137,6 @@ public class ListViewFragment extends Fragment {
                     for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
                         Log.i(TAG, String.format("Place '%s' with Id",
                                 placeLikelihood.getPlace().getId()));
-                        placeLikelihood.getPlace().getName();
                         // Get place detail for current hour
                         placeId = placeLikelihood.getPlace().getId();
                         arrayListPlaceId.add(placeId);

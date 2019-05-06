@@ -54,5 +54,6 @@
     <string name="star_rating_4">star rating 4</string>
     <string name="place_image">Place Image</string>
     <string name="icon">icon</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

@@ -28,7 +28,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -167,7 +166,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     // --------------------
     // UI
     // --------------------
-
 
     /**
      * Create OnCompleteListener called after tasks ended

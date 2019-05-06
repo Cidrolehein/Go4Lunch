@@ -81,7 +81,8 @@ public class ListViewFragment extends Fragment {
 
     private void initPlaces() {
         // Initialize Places. TODO : secure api key
-        Places.initialize(Objects.requireNonNull(getActivity()), "AIzaSyD95VyLsXgPACvDl1lAhl85lI3U2v6vNHs");
+        String api_key = getString(R.string.google_maps_key);
+        Places.initialize(Objects.requireNonNull(getActivity()), api_key);
         // Create a new Places client instance.
         mPlacesClient = Places.createClient(getActivity());
         mPlacesDetails = Places.createClient(getActivity());

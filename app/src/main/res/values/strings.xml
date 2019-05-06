@@ -52,5 +52,7 @@
     <string name="star_rating_2">star rating 2</string>
     <string name="star_rating_3">star rating 3</string>
     <string name="star_rating_4">star rating 4</string>
+    <string name="place_image">Place Image</string>
+    <string name="icon">icon</string>
 
 </resources>

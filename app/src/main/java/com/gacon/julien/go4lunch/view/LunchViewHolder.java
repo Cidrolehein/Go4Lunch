@@ -21,8 +21,6 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
     TextView mTextViewAddress;
     @BindView(R.id.place_image)
     ImageView imageView;
-    @BindView(R.id.type)
-    TextView mTextViewType;
     @BindView(R.id.Date)
     TextView mTextViewIsItOpen;
     @BindView(R.id.distance)

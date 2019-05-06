@@ -9,5 +9,7 @@
     <color name="google_button_color">#eb5e4b</color>
     <color name="facebook_button_color">#3a559f</color>
     <color name="grey">#54565b</color>
+    <color name="grey_dark">#2a2b2c</color>
+    <color name="grey_light">#9ca6a7</color>
     <color name="black">#000</color>
 </resources>

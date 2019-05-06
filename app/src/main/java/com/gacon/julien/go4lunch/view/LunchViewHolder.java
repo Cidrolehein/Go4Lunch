@@ -1,5 +1,6 @@
 package com.gacon.julien.go4lunch.view;
 
+import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,18 +45,29 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
     void updateWithLunch(LunchModel newLunch) {
         DataFormat dataFormat = new DataFormat();
 
+        // set title
         this.mTextViewTitle.setText(newLunch.getTitle());
+
+        // set address
         this.mTextViewAddress.setText(newLunch.getAddress());
+
         // set Rating
         dataFormat.getRatingStar(newLunch, mStarRating1, mStarRating2, mStarRating3, mStarRating4);
+
         // set time
         if (newLunch.getPeriods() != null) {
-            this.mTextViewIsItOpen.setText(dataFormat.getDayOpen(newLunch));
+            String textHour = dataFormat.getDayOpen(newLunch);
+            this.mTextViewIsItOpen.setText(textHour);
+            // change the color if the hour is close to close
+            if(textHour.equals("Closing soon !")) {
+                this.mTextViewIsItOpen.setTextColor(Color.parseColor("#ba160c"));
+            }
         }
         // set PlaceImage
         if (newLunch.getPhotoMetadatasOfPlace() != null) {
             dataFormat.addImages(newLunch.getPlace(), newLunch.getPlacesClient(), imageView);
         }
+
         // set Distance
         this.mTextViewDistance.setText(dataFormat.formatMeters(newLunch));
     }

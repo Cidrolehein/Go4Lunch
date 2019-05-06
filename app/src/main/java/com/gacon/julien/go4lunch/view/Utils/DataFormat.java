@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.core.content.ContextCompat;
+
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
@@ -126,7 +128,9 @@ public class DataFormat {
                 } else if (!daysOpen.contains(dayOfWeek)) {
                     isItOpen = "Close today";
                 } else if (daysOpen.contains(dayOfWeek) && currentHour < openPlaceHour && currentHour > closePlaceHour) {
-                    isItOpen = "Open until " + openPlaceHour + "h";
+                    isItOpen = "Close until " + openPlaceHour + "h";
+                } else if (daysOpen.contains(dayOfWeek) && currentHour == closePlaceHour - 1){
+                    isItOpen = "Closing soon !";
                 }
             }
         }

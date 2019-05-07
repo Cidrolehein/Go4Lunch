@@ -30,7 +30,7 @@ public class DataFormat {
     public String formatMeters(LunchModel newLunch) {
         int metersInteger = convertMeters(newLunch.getDisanceInMeters());
         String metersToString = Integer.toString(metersInteger);
-        return metersToString + "M";
+        return metersToString + "m";
     }
 
     /**
@@ -127,11 +127,9 @@ public class DataFormat {
                     isItOpen = "Open until " + closePlaceHour + "h";
                 } else if (!daysOpen.contains(dayOfWeek)) {
                     isItOpen = "Close today";
-                } else if (daysOpen.contains(dayOfWeek) && currentHour < openPlaceHour && currentHour > closePlaceHour) {
-                    isItOpen = "Close until " + openPlaceHour + "h";
                 } else if (daysOpen.contains(dayOfWeek) && currentHour == closePlaceHour - 1){
                     isItOpen = "Closing soon !";
-                }
+                } else isItOpen = "Close until " + openPlaceHour + "h";
             }
         }
         return isItOpen;

@@ -6,7 +6,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.models.LunchModel;
-import com.gacon.julien.go4lunch.view.Utils.DataFormat;
+import com.gacon.julien.go4lunch.view.utils.DataFormat;
+import com.gacon.julien.go4lunch.view.utils.GetHours;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,6 +44,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
 
     void updateWithLunch(LunchModel newLunch) {
         DataFormat dataFormat = new DataFormat();
+        GetHours getHours = new GetHours();
 
         // set title
         this.mTextViewTitle.setText(newLunch.getTitle());
@@ -54,7 +57,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
 
         // set time
         if (newLunch.getPeriods() != null) {
-            String textHour = dataFormat.getDayOpen(newLunch);
+            String textHour = getHours.getDayOpen(newLunch);
             this.mTextViewIsItOpen.setText(textHour);
             // change the color if the hour is close to close
             if(textHour.equals("Closing soon !")) {

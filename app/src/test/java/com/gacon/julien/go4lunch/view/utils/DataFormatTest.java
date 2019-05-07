@@ -1,8 +1,6 @@
-package com.gacon.julien.go4lunch.view.Utils;
+package com.gacon.julien.go4lunch.view.utils;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class DataFormatTest {
 

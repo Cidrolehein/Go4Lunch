@@ -1,5 +1,6 @@
 package com.gacon.julien.go4lunch.view;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,9 +9,15 @@ import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.view.utils.DataFormat;
 import com.gacon.julien.go4lunch.view.utils.GetHours;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,9 +74,10 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
         // set PlaceImage
         if (newLunch.getPhotoMetadatasOfPlace() != null) {
             dataFormat.addImages(newLunch.getPlace(), newLunch.getPlacesClient(), imageView);
-        }
+        } else imageView.setImageResource(R.drawable.bg_connection);
 
         // set Distance
         this.mTextViewDistance.setText(dataFormat.formatMeters(newLunch));
     }
+
 }

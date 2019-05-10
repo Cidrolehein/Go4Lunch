@@ -27,6 +27,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 
@@ -59,9 +60,7 @@ public class MapViewFragment extends BaseFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map_view, container, false);
         ButterKnife.bind(this, view);
-
         getLongLat();
-
         // MapView
         mMapView = (MapView) view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -79,10 +78,6 @@ public class MapViewFragment extends BaseFragment {
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
 
-                // Current location
-                getDeviceLocation();
-                Log.e(TAG, "Show my device location :" + currentLocation);
-
                 if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     // For showing a move to my location button
                     googleMap.setMyLocationEnabled(true);
@@ -92,14 +87,6 @@ public class MapViewFragment extends BaseFragment {
                     // See https://developer.android.com/training/permissions/requesting
                     getLocationPermission();
                 }
-
-                // For dropping a marker at a point on the Map
-                LatLng sydney = new LatLng(-34, 151);
-                googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-
-                // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(17).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
 
@@ -130,33 +117,40 @@ public class MapViewFragment extends BaseFragment {
         mMapView.onLowMemory();
     }
 
+    private boolean typeOfInterestForMap(PlaceLikelihood placeLikelihood) {
+        boolean mTypeOfInterest;
+        mTypeOfInterest = Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("RESTAURANT")
+                || Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("FOOD")
+                || Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("BAKERY");
+        return mTypeOfInterest;
+    }
+
     private void getLongLat() {
         initPlaces();
         initializeCurrantPlace();
         findCurrentPlaceRequest();
-        if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()),
-                ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (this.checkLocationPermission()) {
+            // Get Current Location
+            getDeviceLocation();
             // Get LatLng
-            Task<FindCurrentPlaceResponse> placeResponse = mPlacesClient.findCurrentPlace(request);
+            taskFindCurrentPlaceResponse();
             placeResponse.addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     FindCurrentPlaceResponse response = task.getResult();
                     assert response != null;
                     for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
-                        if (placeLikelihood.getPlace().getLatLng() != null &&
-                                Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("RESTAURANT")
-                                || Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("FOOD")
-                                || Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("BAKERY")) {
+                        if (placeLikelihood.getPlace().getLatLng() != null && typeOfInterestForMap(placeLikelihood)) {
                             LatLng latLng = placeLikelihood.getPlace().getLatLng();
                             googleMap.addMarker(new MarkerOptions().position(latLng).title("Marker Title").snippet("Marker Description"));
+                            // For dropping a marker at a point on the Map
+                            LatLng currentPosition = new LatLng(currentLatitude, currentLongitude);
+                            // For zooming automatically to the location of the marker
+                            CameraPosition cameraPosition = new CameraPosition.Builder().target(currentPosition).zoom(19).build();
+                            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                         }
                     }
                 } else {
-                    Exception exception = task.getException();
-                    if (exception instanceof ApiException) {
-                        ApiException apiException = (ApiException) exception;
-                        Log.e(TAG, "Place not found: " + apiException.getStatusCode());
-                    }
+                    apiException(task);
                 }
             });
         } else {

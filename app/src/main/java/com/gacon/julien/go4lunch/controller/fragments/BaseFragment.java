@@ -50,6 +50,9 @@ public abstract class BaseFragment extends Fragment {
     protected PlacesClient mPlacesClient;
     protected PlacesClient mPlacesDetails;
     protected ArrayList<String> arrayListPlaceId;
+    protected Task<FindCurrentPlaceResponse> placeResponse;
+    protected double currentLatitude;
+    protected double currentLongitude;
     // Google Map
     protected GoogleMap googleMap;
     // Define a Place ID.
@@ -64,6 +67,8 @@ public abstract class BaseFragment extends Fragment {
             location.addOnCompleteListener(getActivity(), task -> {
                 if (task.isSuccessful()) {
                     currentLocation = (Location) task.getResult();
+                    currentLatitude = currentLocation.getLatitude();
+                    currentLongitude = currentLocation.getLongitude();
                     assert currentLocation != null;
                 }
             });
@@ -164,7 +169,35 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-    protected void getPlaceDetails(){
+    protected void taskFindCurrentPlaceResponse() {
+        placeResponse = null;
+        if (this.checkLocationPermission()) {
+            placeResponse = mPlacesClient.findCurrentPlace(request);
+        } else {
+            // A local method to request required permissions;
+            // See https://developer.android.com/training/permissions/requesting
+            getLocationPermission();
+        }
+
+    }
+
+    protected boolean typeOfInterestForDetails(Place place) {
+        boolean mTypeOfInterest;
+        mTypeOfInterest = Objects.requireNonNull(place.getTypes()).toString().contains("RESTAURANT")
+                || Objects.requireNonNull(place.getTypes()).toString().contains("FOOD")
+                || Objects.requireNonNull(place.getTypes()).toString().contains("BAKERY");
+        return mTypeOfInterest;
+    }
+
+    protected void apiException(Task task) {
+        Exception exception = task.getException();
+        if (exception instanceof ApiException) {
+            ApiException apiException = (ApiException) exception;
+            Log.e(TAG, "Place not found: " + apiException.getStatusCode());
+        }
+    }
+
+    protected void getPlaceDetails() {
         // Get place details from current places id
         for (int i = 0; i < arrayListPlaceId.size(); i++) {
             placeId = arrayListPlaceId.get(i);
@@ -193,9 +226,7 @@ public abstract class BaseFragment extends Fragment {
                         distanceInMeters = currentLocation.distanceTo(placeLocation);
                     }
                     // select a type of interest
-                    if (Objects.requireNonNull(place.getTypes()).toString().contains("RESTAURANT")
-                            || Objects.requireNonNull(place.getTypes()).toString().contains("FOOD")
-                            || Objects.requireNonNull(place.getTypes()).toString().contains("BAKERY")) {
+                    if (typeOfInterestForDetails(place)) {
                         ArrayList<LunchModel> model;
                         model = new ArrayList<>();
                         model.add(new LunchModel(place.getName(),
@@ -227,7 +258,7 @@ public abstract class BaseFragment extends Fragment {
         if (this.checkLocationPermission()) {
             getDeviceLocation();
             findCurrentPlaceRequest();
-            Task<FindCurrentPlaceResponse> placeResponse = mPlacesClient.findCurrentPlace(request);
+            taskFindCurrentPlaceResponse();
             placeResponse.addOnCompleteListener(task -> {
                 getCurrentPlaceId(task);
                 getPlaceDetails();

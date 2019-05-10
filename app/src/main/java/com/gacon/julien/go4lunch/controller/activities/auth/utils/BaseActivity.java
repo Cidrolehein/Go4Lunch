@@ -24,6 +24,8 @@ public class BaseActivity extends AppCompatActivity {
     // UTILS
     // --------------------
 
+    // FIREBASE CONNECTION
+
     /**
      * User on firebase
      *
@@ -59,4 +61,7 @@ public class BaseActivity extends AppCompatActivity {
                         .build(),
                 RC_SIGN_IN);
     }
+
+    // USER LOCATION
+
 }

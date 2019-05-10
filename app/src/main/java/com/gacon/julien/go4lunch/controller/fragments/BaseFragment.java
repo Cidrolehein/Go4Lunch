@@ -13,6 +13,7 @@ import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.view.LunchAdapter;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Response;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
@@ -139,95 +140,112 @@ public abstract class BaseFragment extends Fragment {
         placesNameList = new ArrayList<>();
     }
 
+    protected boolean checkLocationPermission() {
+        boolean checkPermission;
+        checkPermission = ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        return checkPermission;
+    }
+
+    protected void getCurrentPlaceId(Task<FindCurrentPlaceResponse> task) {
+        if (task.isSuccessful()) {
+            FindCurrentPlaceResponse response = task.getResult();
+            assert response != null;
+            for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
+                // Get place detail for current hour
+                placeId = placeLikelihood.getPlace().getId();
+                arrayListPlaceId.add(placeId);
+            }
+        } else {
+            Exception exception = task.getException();
+            if (exception instanceof ApiException) {
+                ApiException apiException = (ApiException) exception;
+                Log.e(TAG, "Place not found: " + apiException.getStatusCode());
+            }
+        }
+    }
+
+    protected void getPlaceDetails(){
+        // Get place details from current places id
+        for (int i = 0; i < arrayListPlaceId.size(); i++) {
+            placeId = arrayListPlaceId.get(i);
+            if (placeId != null) {
+                FetchPlaceRequest requestById = FetchPlaceRequest.builder(placeId, placeDetailFields).build();
+                // Construct a request object, passing the place ID and fields array.
+                mPlacesDetails.fetchPlace(requestById).addOnSuccessListener((responseId) -> {
+                    Place place = responseId.getPlace();
+                    Log.i(TAG, "Place found: " + place.getName());
+                    // Add period of hours
+                    List<Period> periodList = null;
+                    if (place.getOpeningHours() != null) {
+                        periodList = new ArrayList<>(place.getOpeningHours().getPeriods());
+                    }
+                    // Add rating
+                    double rating = 1;
+                    if (place.getRating() != null) {
+                        rating = place.getRating();
+                    }
+                    // Distance between place in meters
+                    float distanceInMeters = 0;
+                    if (place.getLatLng() != null && currentLocation != null) {
+                        Location placeLocation = new Location("");
+                        placeLocation.setLatitude(place.getLatLng().latitude);
+                        placeLocation.setLongitude(place.getLatLng().longitude);
+                        distanceInMeters = currentLocation.distanceTo(placeLocation);
+                    }
+                    // select a type of interest
+                    if (Objects.requireNonNull(place.getTypes()).toString().contains("RESTAURANT")
+                            || Objects.requireNonNull(place.getTypes()).toString().contains("FOOD")
+                            || Objects.requireNonNull(place.getTypes()).toString().contains("BAKERY")) {
+                        ArrayList<LunchModel> model;
+                        model = new ArrayList<>();
+                        model.add(new LunchModel(place.getName(),
+                                place.getAddress(),
+                                periodList,
+                                Objects.requireNonNull(place.getTypes()).get(0).toString(),
+                                rating,
+                                place.getPhotoMetadatas(),
+                                place.getWebsiteUri(),
+                                placeDetailFields,
+                                placeId,
+                                place,
+                                mPlacesClient,
+                                distanceInMeters));
+                        latLngArrayList = new ArrayList<>();
+                        updateUi(model);
+                    }
+                });
+            }
+        }
+    }
+
     /**
      * Call findCurrentPlace and handle the response (first check that the user has granted permission).
      * Call FetchPlaceRequest to get place details
      */
-    protected void getCurrentPlaces() {
-        initializeCurrantPlace();
-        initializePlaceDetails();
-        findCurrentPlaceRequest();
-
-        if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+    protected void getPlacesComplete() {
+        arrayListPlaceId = new ArrayList<>();
+        if (this.checkLocationPermission()) {
             getDeviceLocation();
-            // Ad place Id of current places in arraylist
-            arrayListPlaceId = new ArrayList<>();
+            findCurrentPlaceRequest();
             Task<FindCurrentPlaceResponse> placeResponse = mPlacesClient.findCurrentPlace(request);
             placeResponse.addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    FindCurrentPlaceResponse response = task.getResult();
-                    assert response != null;
-                    for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
-                        // Get place detail for current hour
-                        placeId = placeLikelihood.getPlace().getId();
-                        arrayListPlaceId.add(placeId);
-                    }
-                } else {
-                    Exception exception = task.getException();
-                    if (exception instanceof ApiException) {
-                        ApiException apiException = (ApiException) exception;
-                        Log.e(TAG, "Place not found: " + apiException.getStatusCode());
-                    }
-                }
-
-                // Get place details from current places id
-                for (int i = 0; i < arrayListPlaceId.size(); i++) {
-                    placeId = arrayListPlaceId.get(i);
-                    if (placeId != null) {
-                        FetchPlaceRequest requestById = FetchPlaceRequest.builder(placeId, placeDetailFields).build();
-                        // Construct a request object, passing the place ID and fields array.
-                        mPlacesDetails.fetchPlace(requestById).addOnSuccessListener((responseId) -> {
-                            Place place = responseId.getPlace();
-                            Log.i(TAG, "Place found: " + place.getName());
-                            // Add period of hours
-                            List<Period> periodList = null;
-                            if (place.getOpeningHours() != null) {
-                                periodList = new ArrayList<>(place.getOpeningHours().getPeriods());
-                            }
-                            // Add rating
-                            double rating = 1;
-                            if (place.getRating() != null) {
-                                rating = place.getRating();
-                            }
-                            // Distance between place in meters
-                            float distanceInMeters = 0;
-                            if (place.getLatLng() != null && currentLocation != null) {
-                                Location placeLocation = new Location("");
-                                placeLocation.setLatitude(place.getLatLng().latitude);
-                                placeLocation.setLongitude(place.getLatLng().longitude);
-                                distanceInMeters = currentLocation.distanceTo(placeLocation);
-                            }
-                            // select a type of interest
-                            if (Objects.requireNonNull(place.getTypes()).toString().contains("RESTAURANT")
-                                    || Objects.requireNonNull(place.getTypes()).toString().contains("FOOD")
-                                    || Objects.requireNonNull(place.getTypes()).toString().contains("BAKERY")) {
-                                ArrayList<LunchModel> model;
-                                model = new ArrayList<>();
-                                model.add(new LunchModel(place.getName(),
-                                        place.getAddress(),
-                                        periodList,
-                                        Objects.requireNonNull(place.getTypes()).get(0).toString(),
-                                        rating,
-                                        place.getPhotoMetadatas(),
-                                        place.getWebsiteUri(),
-                                        placeDetailFields,
-                                        placeId,
-                                        place,
-                                        mPlacesClient,
-                                        distanceInMeters));
-                                latLngArrayList = new ArrayList<>();
-                                updateUi(model);
-                            }
-                        });
-                    }
-                }
+                getCurrentPlaceId(task);
+                getPlaceDetails();
             });
-
         } else {
             // A local method to request required permissions;
             // See https://developer.android.com/training/permissions/requesting
             getLocationPermission();
         }
+    }
+
+
+    protected void getCurrentPlaces() {
+        initializeCurrantPlace();
+        initializePlaceDetails();
+        findCurrentPlaceRequest();
+        // Ad place Id of current places in arraylist
+        getPlacesComplete();
     }
 
     protected void updateUi(List<LunchModel> lunchPlaces) {

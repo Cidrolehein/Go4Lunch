@@ -15,7 +15,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
-import com.gacon.julien.go4lunch.controller.fragments.ListViewFragment;
+import com.gacon.julien.go4lunch.controller.fragments.ListView.ListViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.MapViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.WorkmatesFragment;
 import com.google.android.gms.tasks.OnSuccessListener;

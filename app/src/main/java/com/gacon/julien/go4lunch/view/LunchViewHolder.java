@@ -1,6 +1,5 @@
 package com.gacon.julien.go4lunch.view;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,20 +8,14 @@ import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.view.utils.DataFormat;
 import com.gacon.julien.go4lunch.view.utils.GetHours;
-import com.google.android.libraries.places.api.model.PhotoMetadata;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.FetchPhotoRequest;
-import com.google.android.libraries.places.api.net.PlacesClient;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Objects;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-class LunchViewHolder extends RecyclerView.ViewHolder {
+class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     @BindView(R.id.title)
     TextView mTextViewTitle;
@@ -43,10 +36,18 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.star_rating_4)
     ImageView mStarRating4;
 
+    private LunchAdapter.OnNoteListener mOnNoteListener;
 
-    LunchViewHolder(@NonNull View itemView) {
+    /**
+     * Adapter for RecyclerView with OnClickListener
+     * @param itemView view
+     * @param onNoteListener OnClickListener in item of RecyclerView
+     */
+    LunchViewHolder(@NonNull View itemView, LunchAdapter.OnNoteListener onNoteListener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+        this.mOnNoteListener = onNoteListener;
+        itemView.setOnClickListener(this);
     }
 
     void updateWithLunch(LunchModel newLunch) {
@@ -80,4 +81,13 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
         this.mTextViewDistance.setText(dataFormat.formatMeters(newLunch));
     }
 
+    /**
+     * Interface for OnClickListener
+     * @param v new view inside adapter position
+     */
+    @Override
+    public void onClick(View v) {
+        mOnNoteListener.onNoteClick(getAdapterPosition());
+
+    }
 }

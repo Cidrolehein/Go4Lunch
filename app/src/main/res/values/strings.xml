@@ -55,5 +55,14 @@
     <string name="place_image">Place Image</string>
     <string name="icon">icon</string>
     <string name="title_activity_maps">Map</string>
+    <string name="image_header">image header</string>
+    <string name="title">Title</string>
+    <string name="address_header">Address header</string>
+    <string name="call">CALL</string>
+    <string name="like">LIKE</string>
+    <string name="website">WEBSITE</string>
+    <string name="call_icon_orange">call icon orange</string>
+    <string name="website_icon_orange">website icon orange</string>
+    <string name="star_icon_orange">star icon orange</string>
 
 </resources>

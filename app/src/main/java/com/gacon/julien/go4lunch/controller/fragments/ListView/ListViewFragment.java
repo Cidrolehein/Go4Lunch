@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.gacon.julien.go4lunch.R;
@@ -36,6 +38,7 @@ public class ListViewFragment extends BaseFragment implements LunchAdapter.OnNot
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list_view, container, false);
         ButterKnife.bind(this, view);
+        setHasOptionsMenu(true);
         // Initialize Places
         this.initPlaces();
         this.getCurrentPlaces();
@@ -59,5 +62,12 @@ public class ListViewFragment extends BaseFragment implements LunchAdapter.OnNot
         Fragment myFragment = new DetailsListViewFragment();
         Objects.requireNonNull(this.getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_frame_layout,
                 myFragment).commit();
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem item=menu.findItem(R.menu.menu_activity);
+        if(item!=null)
+            item.setVisible(false);
     }
 }

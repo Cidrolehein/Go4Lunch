@@ -1,10 +1,14 @@
 package com.gacon.julien.go4lunch.controller.fragments;
 
 
-import android.Manifest;
-import android.content.pm.PackageManager;
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -15,30 +19,23 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gacon.julien.go4lunch.R;
-import com.gacon.julien.go4lunch.models.LunchModel;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,7 +43,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 public class MapViewFragment extends BaseFragment {
 
     // FOR DESIGN
-    MapView mMapView;
+    private MapView mMapView;
 
 
     public MapViewFragment() {
@@ -62,7 +59,7 @@ public class MapViewFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         getLongLat();
         // MapView
-        mMapView = (MapView) view.findViewById(R.id.mapView);
+        mMapView = view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume(); // needed to get the map to display immediately
 
@@ -74,11 +71,29 @@ public class MapViewFragment extends BaseFragment {
 
         mMapView.getMapAsync(new OnMapReadyCallback() {
 
+            /**
+             * Manipulates the map when it's available.
+             * The API invokes this callback when the map is ready for use.
+             */
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
 
-                if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                try {
+                    // Customise the styling of the base map using a JSON object defined
+                    // in a raw resource file.
+                    boolean success = googleMap.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    Objects.requireNonNull(getActivity()), R.raw.json_style_map));
+
+                    if (!success) {
+                        Log.e(TAG, "Style parsing failed.");
+                    }
+                } catch (Resources.NotFoundException e) {
+                    Log.e(TAG, "Can't find style. Error: ", e);
+                }
+
+                if (checkLocationPermission()) {
                     // For showing a move to my location button
                     googleMap.setMyLocationEnabled(true);
 
@@ -125,6 +140,20 @@ public class MapViewFragment extends BaseFragment {
         return mTypeOfInterest;
     }
 
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId) {
+        Drawable background = ContextCompat.getDrawable(context, R.drawable.ic_pin_drop_blue_24dp);
+        assert background != null;
+        background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId);
+        assert vectorDrawable != null;
+        vectorDrawable.setBounds(40, 20, vectorDrawable.getIntrinsicWidth() + 40, vectorDrawable.getIntrinsicHeight() + 20);
+        Bitmap bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        background.draw(canvas);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
     private void getLongLat() {
         initPlaces();
         initializeCurrantPlace();
@@ -141,7 +170,11 @@ public class MapViewFragment extends BaseFragment {
                     for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
                         if (placeLikelihood.getPlace().getLatLng() != null && typeOfInterestForMap(placeLikelihood)) {
                             LatLng latLng = placeLikelihood.getPlace().getLatLng();
-                            googleMap.addMarker(new MarkerOptions().position(latLng).title("Marker Title").snippet("Marker Description"));
+                            String markerTitle = placeLikelihood.getPlace().getName();
+                            googleMap.addMarker(new MarkerOptions()
+                                    .position(latLng)
+                                    .title(markerTitle)
+                                    .snippet("Marker Description"));
                             // For dropping a marker at a point on the Map
                             LatLng currentPosition = new LatLng(currentLatitude, currentLongitude);
                             // For zooming automatically to the location of the marker

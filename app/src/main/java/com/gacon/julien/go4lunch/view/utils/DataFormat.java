@@ -41,33 +41,33 @@ public class DataFormat {
 
     /**
      * Get Rating Stars
-     * @param lunch Lunch model
+     * @param rating Rating double of Place (0 - 5)
      * @param mStarRating1 ImageView One rating
      * @param mStarRating2 ImageView Two rating
      * @param mStarRating3 ImageView Three rating
      * @param mStarRating4 ImagesView Four rating
      */
-    public void getRatingStar(LunchModel lunch,
+    public void getRatingStar(double rating,
                               ImageView mStarRating1,
                               ImageView mStarRating2,
                               ImageView mStarRating3,
                               ImageView mStarRating4) {
-        if (lunch.getPlace_rating() == 1 && lunch.getPlace_rating() < 2) {
+        if (rating < 1) {
             mStarRating1.setVisibility(View.GONE);
             mStarRating2.setVisibility(View.GONE);
             mStarRating3.setVisibility(View.GONE);
             mStarRating4.setVisibility(View.GONE);
-        } else if (lunch.getPlace_rating() >= 2 && lunch.getPlace_rating() < 3) {
+        } else if (rating >= 1 && rating < 2) {
             mStarRating1.setVisibility(View.VISIBLE);
             mStarRating2.setVisibility(View.GONE);
             mStarRating3.setVisibility(View.GONE);
             mStarRating4.setVisibility(View.GONE);
-        } else if (lunch.getPlace_rating() >= 3 && lunch.getPlace_rating() < 4) {
+        } else if (rating >= 2 && rating < 3) {
             mStarRating1.setVisibility(View.VISIBLE);
             mStarRating2.setVisibility(View.VISIBLE);
             mStarRating3.setVisibility(View.GONE);
             mStarRating4.setVisibility(View.GONE);
-        } else if (lunch.getPlace_rating() >= 4 && lunch.getPlace_rating() < 5) {
+        } else if (rating >= 3 && rating < 4) {
             mStarRating1.setVisibility(View.VISIBLE);
             mStarRating2.setVisibility(View.VISIBLE);
             mStarRating3.setVisibility(View.VISIBLE);

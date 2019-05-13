@@ -12,10 +12,11 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LunchModel {
+public class LunchModel implements Serializable {
 
     @SerializedName("title")
     @Expose
@@ -121,5 +122,9 @@ public class LunchModel {
 
     public float getDisanceInMeters() {
         return mDisanceInMeters;
+    }
+
+    public Uri getWebsiteUriPlace() {
+        return websiteUriPlace;
     }
 }

@@ -12,9 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.fragments.BaseFragment;
+import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.view.LunchAdapter;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -27,6 +27,8 @@ public class ListViewFragment extends BaseFragment implements LunchAdapter.OnNot
 
     @BindView(R.id.recycler_view_list_view)
     RecyclerView mRecyclerView;
+
+    private Fragment DetailsListView;
 
     public ListViewFragment() {
         // Required empty public constructor
@@ -58,10 +60,15 @@ public class ListViewFragment extends BaseFragment implements LunchAdapter.OnNot
      */
     @Override
     public void onNoteClick(int position) {
-        //placesNameList.get(position); // If we have to pass data. TODO : create parcelable ArrayList<LunchModel> placesNameList
-        Fragment myFragment = new DetailsListViewFragment();
-        Objects.requireNonNull(this.getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_frame_layout,
-                myFragment).commit();
+        //placesNameList.get(position); // If we have to pass data.
+        DetailsListView = new DetailsListViewFragment();
+
+        addToBundleLunchList(position);
+
+        Objects.requireNonNull(this.getActivity()).getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.activity_main_frame_layout, DetailsListView)
+                .commit();
     }
 
     @Override
@@ -69,5 +76,23 @@ public class ListViewFragment extends BaseFragment implements LunchAdapter.OnNot
         MenuItem item=menu.findItem(R.menu.menu_activity);
         if(item!=null)
             item.setVisible(false);
+    }
+
+    private void addToBundleLunchList(int position){
+        Bundle bundle = new Bundle();
+        LunchModel lunch = new LunchModel(placesNameList.get(position).getTitle(),
+                placesNameList.get(position).getAddress(),
+                placesNameList.get(position).getPeriods(),
+                placesNameList.get(position).getPlace_type(),
+                placesNameList.get(position).getPlace_rating(),
+                placesNameList.get(position).getPhotoMetadatasOfPlace(),
+                placesNameList.get(position).getWebsiteUriPlace(),
+                placesNameList.get(position).getFieldList(),
+                placesNameList.get(position).getPlaceId(),
+                placesNameList.get(position).getPlace(),
+                placesNameList.get(position).getPlacesClient(),
+                placesNameList.get(position).getDisanceInMeters());
+        bundle.putSerializable("Lunch List", lunch);
+        DetailsListView.setArguments(bundle);
     }
 }

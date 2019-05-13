@@ -61,7 +61,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
         this.mTextViewAddress.setText(newLunch.getAddress());
 
         // set Rating
-        dataFormat.getRatingStar(newLunch, mStarRating1, mStarRating2, mStarRating3, mStarRating4);
+        dataFormat.getRatingStar(newLunch.getPlace_rating(), mStarRating1, mStarRating2, mStarRating3, mStarRating4);
 
         // set time
         if (newLunch.getPeriods() != null) {

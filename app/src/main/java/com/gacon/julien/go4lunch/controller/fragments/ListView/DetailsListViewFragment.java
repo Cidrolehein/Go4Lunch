@@ -13,11 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gacon.julien.go4lunch.R;
-import com.gacon.julien.go4lunch.controller.fragments.BaseFragment;
+import com.gacon.julien.go4lunch.controller.activities.ProfileActivity;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.view.utils.DataFormat;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,7 +23,7 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailsListViewFragment extends BaseFragment {
+public class DetailsListViewFragment extends Fragment {
 
     @BindView(R.id.header_title)
     TextView mTextViewTitle;
@@ -42,7 +40,6 @@ public class DetailsListViewFragment extends BaseFragment {
     @BindView(R.id.image_header)
     ImageView imageHeader;
 
-
     public DetailsListViewFragment() {
         // Required empty public constructor
     }
@@ -54,9 +51,9 @@ public class DetailsListViewFragment extends BaseFragment {
 
         View view = inflater.inflate(R.layout.fragment_details_list_view, container, false);
         ButterKnife.bind(this, view);
-        Bundle bundle = getArguments();
-        assert bundle != null;
-        LunchModel lunchModel = (LunchModel) bundle.getSerializable("Lunch List");
+        ProfileActivity profileActivity = (ProfileActivity) getActivity();
+        assert profileActivity != null;
+        LunchModel lunchModel = profileActivity.getLunch();
         assert lunchModel != null;
         String title = lunchModel.getTitle();
         String address = lunchModel.getAddress();

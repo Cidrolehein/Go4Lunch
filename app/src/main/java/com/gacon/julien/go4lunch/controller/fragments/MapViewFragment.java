@@ -1,16 +1,9 @@
 package com.gacon.julien.go4lunch.controller.fragments;
 
-
-import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -19,19 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gacon.julien.go4lunch.R;
+import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.libraries.places.api.model.PlaceLikelihood;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 
 import java.util.Objects;
 
@@ -40,10 +30,15 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapViewFragment extends BaseFragment {
+public class MapViewFragment extends Fragment {
 
     // FOR DESIGN
     private MapView mMapView;
+
+    private static final String TAG = "PLACES_API";
+    // Google Map
+    private GoogleMap googleMap;
+    private BaseActivity baseActivity;
 
 
     public MapViewFragment() {
@@ -57,7 +52,7 @@ public class MapViewFragment extends BaseFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map_view, container, false);
         ButterKnife.bind(this, view);
-        getLongLat();
+        baseActivity = (BaseActivity) getActivity();
         // MapView
         mMapView = view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -93,14 +88,17 @@ public class MapViewFragment extends BaseFragment {
                     Log.e(TAG, "Can't find style. Error: ", e);
                 }
 
-                if (checkLocationPermission()) {
+                if (baseActivity.checkLocationPermission()) {
                     // For showing a move to my location button
                     googleMap.setMyLocationEnabled(true);
+
+                    getLongLat();
+
 
                 } else {
                     // A local method to request required permissions;
                     // See https://developer.android.com/training/permissions/requesting
-                    getLocationPermission();
+                    baseActivity.getLocationPermission();
                 }
             }
         });
@@ -132,65 +130,27 @@ public class MapViewFragment extends BaseFragment {
         mMapView.onLowMemory();
     }
 
-    private boolean typeOfInterestForMap(PlaceLikelihood placeLikelihood) {
-        boolean mTypeOfInterest;
-        mTypeOfInterest = Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("RESTAURANT")
-                || Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("FOOD")
-                || Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("BAKERY");
-        return mTypeOfInterest;
-    }
-
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId) {
-        Drawable background = ContextCompat.getDrawable(context, R.drawable.ic_pin_drop_blue_24dp);
-        assert background != null;
-        background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId);
-        assert vectorDrawable != null;
-        vectorDrawable.setBounds(40, 20, vectorDrawable.getIntrinsicWidth() + 40, vectorDrawable.getIntrinsicHeight() + 20);
-        Bitmap bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        background.draw(canvas);
-        vectorDrawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
-    }
-
     private void getLongLat() {
-        initPlaces();
-        initializeCurrantPlace();
-        findCurrentPlaceRequest();
-        if (this.checkLocationPermission()) {
-            // Get Current Location
-            getDeviceLocation();
-            // Get LatLng
-            taskFindCurrentPlaceResponse();
-            placeResponse.addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    FindCurrentPlaceResponse response = task.getResult();
-                    assert response != null;
-                    for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
-                        if (placeLikelihood.getPlace().getLatLng() != null && typeOfInterestForMap(placeLikelihood)) {
-                            LatLng latLng = placeLikelihood.getPlace().getLatLng();
-                            String markerTitle = placeLikelihood.getPlace().getName();
-                            googleMap.addMarker(new MarkerOptions()
-                                    .position(latLng)
-                                    .title(markerTitle)
-                                    .snippet("Marker Description"));
-                            // For dropping a marker at a point on the Map
-                            LatLng currentPosition = new LatLng(currentLatitude, currentLongitude);
-                            // For zooming automatically to the location of the marker
-                            CameraPosition cameraPosition = new CameraPosition.Builder().target(currentPosition).zoom(19).build();
-                            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                        }
-                    }
-                } else {
-                    apiException(task);
-                }
-            });
-        } else {
-            // A local method to request required permissions;
-            // See https://developer.android.com/training/permissions/requesting
-            getLocationPermission();
+        assert baseActivity != null;
+        // Get Current Location
+        baseActivity.getDeviceLocation();
+        int modelSize = baseActivity.getModel().size();
+        for (int i = 0; i < modelSize; i++) {
+            LatLng latLng = baseActivity.getLatLngArrayList().get(i);
+            String markerTitle = baseActivity.getModel().get(i).getTitle();
+            if (latLng != null && markerTitle != null) {
+                googleMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title(markerTitle)
+                        .snippet("Marker Description"));
+            }
         }
+
+        // For dropping a marker at a point on the Map
+        LatLng currentPosition = new LatLng(baseActivity.getCurrentLatitude(), baseActivity.getCurrentLongitude());
+        // For zooming automatically to the location of the marker
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(currentPosition).zoom(19).build();
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
 }

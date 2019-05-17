@@ -64,5 +64,6 @@
     <string name="call_icon_orange">call icon orange</string>
     <string name="website_icon_orange">website icon orange</string>
     <string name="star_icon_orange">star icon orange</string>
+    <string name="image_header_list_details">Image header list details</string>
 
 </resources>

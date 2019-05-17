@@ -1,17 +1,21 @@
 package com.gacon.julien.go4lunch.controller.fragments.ListView;
 
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.gacon.julien.go4lunch.R;
-import com.gacon.julien.go4lunch.controller.fragments.BaseFragment;
+import com.gacon.julien.go4lunch.controller.activities.ProfileActivity;
+import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.view.LunchAdapter;
 
@@ -23,12 +27,12 @@ import butterknife.ButterKnife;
 /**
  * ListViewFragment implement OnNoteListener for the RecyclerView Clickable
  */
-public class ListViewFragment extends BaseFragment implements LunchAdapter.OnNoteListener {
+public class ListViewFragment extends Fragment implements LunchAdapter.OnNoteListener {
 
     @BindView(R.id.recycler_view_list_view)
     RecyclerView mRecyclerView;
-
-    private Fragment DetailsListView;
+    private BaseActivity baseActivity;
+    private ProfileActivity profileActivity;
 
     public ListViewFragment() {
         // Required empty public constructor
@@ -40,59 +44,58 @@ public class ListViewFragment extends BaseFragment implements LunchAdapter.OnNot
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list_view, container, false);
         ButterKnife.bind(this, view);
+        baseActivity = (BaseActivity) getActivity();
+        profileActivity = (ProfileActivity) getActivity();
         setHasOptionsMenu(true);
-        // Initialize Places
-        this.initPlaces();
-        this.getCurrentPlaces();
         this.createRecyclerView();
         return view;
     }
 
-    private void createRecyclerView(){
+    private void createRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new LunchAdapter(this.placesNameList, this);
-        mRecyclerView.setAdapter(mAdapter);
+
+        assert baseActivity != null;
+        LunchAdapter adapter = new LunchAdapter(baseActivity.getModel(), this);
+        adapter.notifyDataSetChanged();
+        mRecyclerView.setAdapter(adapter);
     }
 
     /**
      * Here we can navigate to a new fragment and pass some data on Bundle if we need
+     *
      * @param position Item position
      */
     @Override
     public void onNoteClick(int position) {
-        //placesNameList.get(position); // If we have to pass data.
-        DetailsListView = new DetailsListViewFragment();
-
-        addToBundleLunchList(position);
-
+        Fragment detailsListView = new DetailsListViewFragment();
+        setLunchList(position);
         Objects.requireNonNull(this.getActivity()).getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.activity_main_frame_layout, DetailsListView)
+                .replace(R.id.activity_main_frame_layout, detailsListView)
                 .commit();
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem item=menu.findItem(R.menu.menu_activity);
-        if(item!=null)
+        MenuItem item = menu.findItem(R.menu.menu_activity);
+        if (item != null)
             item.setVisible(false);
     }
 
-    private void addToBundleLunchList(int position){
-        Bundle bundle = new Bundle();
-        LunchModel lunch = new LunchModel(placesNameList.get(position).getTitle(),
-                placesNameList.get(position).getAddress(),
-                placesNameList.get(position).getPeriods(),
-                placesNameList.get(position).getPlace_type(),
-                placesNameList.get(position).getPlace_rating(),
-                placesNameList.get(position).getPhotoMetadatasOfPlace(),
-                placesNameList.get(position).getWebsiteUriPlace(),
-                placesNameList.get(position).getFieldList(),
-                placesNameList.get(position).getPlaceId(),
-                placesNameList.get(position).getPlace(),
-                placesNameList.get(position).getPlacesClient(),
-                placesNameList.get(position).getDisanceInMeters());
-        bundle.putSerializable("Lunch List", lunch);
-        DetailsListView.setArguments(bundle);
+    private void setLunchList(int position) {
+        LunchModel lunch = new LunchModel(baseActivity.getModel().get(position).getTitle(),
+                baseActivity.getModel().get(position).getAddress(),
+                baseActivity.getModel().get(position).getPeriods(),
+                baseActivity.getModel().get(position).getPlace_type(),
+                baseActivity.getModel().get(position).getPlace_rating(),
+                baseActivity.getModel().get(position).getPhotoMetadatasOfPlace(),
+                baseActivity.getModel().get(position).getWebsiteUriPlace(),
+                baseActivity.getModel().get(position).getFieldList(),
+                baseActivity.getModel().get(position).getPlaceId(),
+                baseActivity.getModel().get(position).getPlace(),
+                baseActivity.getModel().get(position).getPlacesClient(),
+                baseActivity.getModel().get(position).getDisanceInMeters());
+
+        profileActivity.setLunch(lunch);
     }
 }

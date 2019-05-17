@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -18,6 +17,7 @@ import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.controller.fragments.ListView.ListViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.MapViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.WorkmatesFragment;
+import com.gacon.julien.go4lunch.models.LunchModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -45,28 +45,41 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     @BindView(R.id.profile_main_bottom_navigation)
     BottomNavigationView bottomNavigationView;
 
+    private LunchModel lunch;
+
+    Fragment mMapViewFragment, mListViewFragment, mWormatesFragment;
+
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             item -> {
-                Fragment selectedFragment = null;
 
                 switch (item.getItemId()) {
                     case R.id.map_view:
-                        selectedFragment = new MapViewFragment();
+                        if (mMapViewFragment == null) {
+                            mMapViewFragment = new MapViewFragment();
+                        }
+                        getFragment(mMapViewFragment);
                         break;
                     case R.id.list_view:
-                        selectedFragment = new ListViewFragment();
+                        if (mListViewFragment == null) {
+                            mListViewFragment = new ListViewFragment();
+                        }
+                        getFragment(mListViewFragment);
                         break;
                     case R.id.workmates:
-                        selectedFragment = new WorkmatesFragment();
+                        if (mWormatesFragment == null) {
+                            mWormatesFragment = new WorkmatesFragment();
+                        }
+                        getFragment(mWormatesFragment);
                         break;
                 }
 
-                assert selectedFragment != null;
-                getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_frame_layout,
-                        selectedFragment).commit();
-
                 return true;
             };
+
+    private void getFragment(Fragment selectedFragment) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_frame_layout,
+                selectedFragment).commit();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +91,9 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         this.configureDrawerLayout();
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         this.configureNavigationView();
+        // Data for place API
+        this.initPlaces();
+        this.getCurrentPlaces();
 
     }
 
@@ -110,7 +126,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_activity_main_search) {
-            Toast.makeText(this, "No search", Toast.LENGTH_LONG).show();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -231,4 +246,11 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         }
     }
 
+    public LunchModel getLunch() {
+        return lunch;
+    }
+
+    public void setLunch(LunchModel lunch) {
+        this.lunch = lunch;
+    }
 }

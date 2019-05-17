@@ -10,6 +10,7 @@
         android:id="@+id/image_header"
         android:layout_width="match_parent"
         android:layout_height="150dp"
+        android:scaleType="centerCrop"
         android:contentDescription="@string/image_header" />
 
     <LinearLayout

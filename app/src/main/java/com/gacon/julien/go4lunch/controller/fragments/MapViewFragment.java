@@ -21,6 +21,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Objects;
@@ -30,7 +31,7 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapViewFragment extends Fragment {
+public class MapViewFragment extends BaseFragment {
 
     // FOR DESIGN
     private MapView mMapView;
@@ -44,7 +45,6 @@ public class MapViewFragment extends Fragment {
     public MapViewFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -92,7 +92,15 @@ public class MapViewFragment extends Fragment {
                     // For showing a move to my location button
                     googleMap.setMyLocationEnabled(true);
 
+                    // Create GoogleMap Markers Clickable
                     getLongLat();
+                    // Set a listener for info window events
+                    mMap.setOnInfoWindowClickListener(marker -> {
+                        Integer markerTag = (Integer) marker.getTag();
+                        if (markerTag != null)
+                        setLunchList(markerTag);
+                        createDetailFragment();
+                    });
 
 
                 } else {
@@ -135,14 +143,17 @@ public class MapViewFragment extends Fragment {
         // Get Current Location
         baseActivity.getDeviceLocation();
         int modelSize = baseActivity.getModel().size();
+        int markerTag = 0;
         for (int i = 0; i < modelSize; i++) {
             LatLng latLng = baseActivity.getLatLngArrayList().get(i);
             String markerTitle = baseActivity.getModel().get(i).getTitle();
             if (latLng != null && markerTitle != null) {
-                googleMap.addMarker(new MarkerOptions()
+                Marker marker = googleMap.addMarker(new MarkerOptions()
                         .position(latLng)
                         .title(markerTitle)
                         .snippet("Marker Description"));
+                marker.setTag(markerTag);
+                markerTag = markerTag + 1;
             }
         }
 

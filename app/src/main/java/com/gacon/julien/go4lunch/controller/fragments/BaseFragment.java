@@ -60,7 +60,8 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
                 baseActivity.getModel().get(position).getPlaceId(),
                 baseActivity.getModel().get(position).getPlace(),
                 baseActivity.getModel().get(position).getPlacesClient(),
-                baseActivity.getModel().get(position).getDisanceInMeters());
+                baseActivity.getModel().get(position).getDisanceInMeters(),
+                baseActivity.getModel().get(position).getPhoneNumber());
 
         assert profileActivity != null;
         profileActivity.setLunch(lunch);

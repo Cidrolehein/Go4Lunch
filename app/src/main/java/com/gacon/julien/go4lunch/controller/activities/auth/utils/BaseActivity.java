@@ -221,7 +221,8 @@ public class BaseActivity extends AppCompatActivity {
                 Place.Field.RATING,
                 Place.Field.PHOTO_METADATAS,
                 Place.Field.WEBSITE_URI,
-                Place.Field.LAT_LNG);
+                Place.Field.LAT_LNG,
+                Place.Field.PHONE_NUMBER);
         placesNameList = new ArrayList<>();
     }
 
@@ -304,7 +305,9 @@ public class BaseActivity extends AppCompatActivity {
                         placeLocation.setLongitude(place.getLatLng().longitude);
                         distanceInMeters = currentLocation.distanceTo(placeLocation);
                     }
-                    // select a type of interest
+                    // Phone number
+                    String phoneNumber = place.getPhoneNumber();
+                    // Create a new model
                     if (typeOfInterestForDetails(place)) {
                         model.add(new LunchModel(place.getName(),
                                 place.getAddress(),
@@ -317,7 +320,8 @@ public class BaseActivity extends AppCompatActivity {
                                 placeId,
                                 place,
                                 mPlacesClient,
-                                distanceInMeters));
+                                distanceInMeters,
+                                phoneNumber));
                         // For Google Maps
                         latLngArrayList.add(place.getLatLng());
                     }

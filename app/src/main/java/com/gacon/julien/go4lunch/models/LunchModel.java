@@ -24,9 +24,6 @@ public class LunchModel implements Serializable {
     @SerializedName("address")
     @Expose
     private String address;
-    @SerializedName("place_image")
-    @Expose
-    private String placeImage;
     @SerializedName("Opening_hours")
     @Expose
     private List<Period> mPeriods;
@@ -57,11 +54,14 @@ public class LunchModel implements Serializable {
     @SerializedName("Distance in Meters")
     @Expose
     private float mDisanceInMeters;
+    @SerializedName("Phone")
+    @Expose
+    private String mPhoneNumber;
 
 
     public LunchModel(String title, String address, List<Period> periods, String type, Double rating,
                       List<PhotoMetadata> photoMetadatas, Uri websiteUri, List<Place.Field> placesFields,
-                      String placeId, Place place, PlacesClient client, float distanceInMeters) {
+                      String placeId, Place place, PlacesClient client, float distanceInMeters, String phone) {
         this.title = title;
         this.address = address;
         this.mPeriods = periods;
@@ -74,6 +74,7 @@ public class LunchModel implements Serializable {
         this.mPlace = place;
         this.mPlacesClient = client;
         this.mDisanceInMeters = distanceInMeters;
+        this.mPhoneNumber = phone;
     }
 
     public String getTitle() {
@@ -82,10 +83,6 @@ public class LunchModel implements Serializable {
 
     public String getAddress() {
         return address;
-    }
-
-    public String getPlaceImage() {
-        return placeImage;
     }
 
     public String getPlace_type() {
@@ -126,5 +123,9 @@ public class LunchModel implements Serializable {
 
     public Uri getWebsiteUriPlace() {
         return websiteUriPlace;
+    }
+
+    public String getPhoneNumber() {
+        return mPhoneNumber;
     }
 }

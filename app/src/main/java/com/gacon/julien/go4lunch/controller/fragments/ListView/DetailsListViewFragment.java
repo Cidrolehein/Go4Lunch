@@ -1,10 +1,15 @@
 package com.gacon.julien.go4lunch.controller.fragments.ListView;
 
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -48,7 +53,7 @@ public class DetailsListViewFragment extends Fragment {
     @BindView(R.id.like_imageview)
     ImageView likeImageView;
     @BindView(R.id.call_imageview)
-    ImageView callImageView;
+    ImageButton callImageView;
 
     public DetailsListViewFragment() {
         // Required empty public constructor
@@ -71,7 +76,7 @@ public class DetailsListViewFragment extends Fragment {
     /**
      * get data for the layout
      */
-    private void getLayoutElements(){
+    private void getLayoutElements() {
         ProfileActivity profileActivity = (ProfileActivity) getActivity();
         assert profileActivity != null;
         LunchModel lunchModel = profileActivity.getLunch();
@@ -88,10 +93,16 @@ public class DetailsListViewFragment extends Fragment {
         if (lunchModel.getPhotoMetadatasOfPlace() != null) {
             dataFormat.addImages(lunchModel.getPlace(), lunchModel.getPlacesClient(), imageHeader);
         } else imageHeader.setImageResource(R.drawable.bg_connection);
-
+        // WebView
         webImageBtnView.setOnClickListener(v -> {
             Fragment mWiebViewFrag = new WebViewFragment();
             Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, mWiebViewFrag).commit();
+        });
+        // PhoneCall
+        callImageView.setOnClickListener(v -> {
+            Intent phoneIntent = new Intent(Intent.ACTION_DIAL,
+                    Uri.parse("tel:" + lunchModel.getPhoneNumber()));
+            startActivity(phoneIntent);
         });
     }
 

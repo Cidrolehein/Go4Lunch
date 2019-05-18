@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/main_layout"
     tools:context=".controller.fragments.ListView.DetailsListViewFragment">
 
     <ImageView
         android:id="@+id/image_header"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:contentDescription="@string/image_header"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/image_header" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,19 +24,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
 
             <TextView
                 android:id="@+id/header_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_marginStart="10dp"
                 android:text="@string/title"
                 android:textColor="@color/icon_background_color"
-                android:textSize="20sp" />
-            <!-- TODO : Change color of stars in rating bar like v21 -->
+                android:textSize="20sp"
+                android:layout_gravity="center"/>
+
             <RatingBar
                 android:id="@+id/rating_bar"
                 style="@style/AppTheme.RatingBar.RatingBarStyle"
@@ -44,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:numStars="3"
+                android:progressTint="@color/colorYellow"
                 android:rating="2"
                 android:scaleX="0.5"
                 android:scaleY="0.5" />
@@ -69,26 +70,26 @@
         <TableRow>
 
             <ImageButton
-                android:id="@+id/call_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:contentDescription="@string/call_icon_orange"
+                android:id="@+id/call_imageview"
                 android:src="@drawable/ic_call_orange_24dp" />
 
             <ImageView
-                android:id="@+id/like_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:contentDescription="@string/star_icon_orange"
+                android:id="@+id/like_imageview"
                 android:src="@drawable/ic_star_orange_24dp" />
 
             <ImageButton
-                android:id="@+id/web_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:id="@+id/web_imageview"
                 android:contentDescription="@string/website_icon_orange"
                 android:src="@drawable/ic_website_orange_24dp" />
 

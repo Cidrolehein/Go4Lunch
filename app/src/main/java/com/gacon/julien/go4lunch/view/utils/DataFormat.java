@@ -85,7 +85,6 @@ public class DataFormat {
      * @param place Get the Place Details
      * @param placesClient Get the current place
      * @param imageView ImageView for image
-     *                  TODO : change the image bug here or in adapter (some images can place anywhere)
      */
     public void addImages(Place place, PlacesClient placesClient, ImageView imageView) {
         PhotoMetadata photoMetadata = Objects.requireNonNull(place.getPhotoMetadatas()).get(0);

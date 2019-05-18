@@ -1,15 +1,10 @@
 package com.gacon.julien.go4lunch.controller.fragments.ListView;
 
-
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -18,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.ProfileActivity;
@@ -30,7 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A detail view of place
  */
 public class DetailsListViewFragment extends Fragment {
 
@@ -38,14 +34,6 @@ public class DetailsListViewFragment extends Fragment {
     TextView mTextViewTitle;
     @BindView(R.id.address_header)
     TextView mTextAddress;
-    @BindView(R.id.star_rating_1)
-    ImageView mStarRating1;
-    @BindView(R.id.star_rating_2)
-    ImageView mStarRating2;
-    @BindView(R.id.star_rating_3)
-    ImageView mStarRating3;
-    @BindView(R.id.star_rating_4)
-    ImageView mStarRating4;
     @BindView(R.id.image_header)
     ImageView imageHeader;
     @BindView(R.id.web_imageview)
@@ -58,7 +46,6 @@ public class DetailsListViewFragment extends Fragment {
     public DetailsListViewFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -81,29 +68,66 @@ public class DetailsListViewFragment extends Fragment {
         assert profileActivity != null;
         LunchModel lunchModel = profileActivity.getLunch();
         assert lunchModel != null;
-        // Title and address
-        String title = lunchModel.getTitle();
-        String address = lunchModel.getAddress();
-        mTextViewTitle.setText(title);
-        mTextAddress.setText(address);
-        DataFormat dataFormat = new DataFormat();
-        //  Rating
-        dataFormat.getRatingStar(lunchModel.getPlace_rating(), mStarRating1, mStarRating2, mStarRating3, mStarRating4);
-        //  image
-        if (lunchModel.getPhotoMetadatasOfPlace() != null) {
-            dataFormat.addImages(lunchModel.getPlace(), lunchModel.getPlacesClient(), imageHeader);
-        } else imageHeader.setImageResource(R.drawable.bg_connection);
+        // Set Title and Address in layout
+        mTextViewTitle.setText(getTitle(lunchModel));
+        mTextAddress.setText(getAddress(lunchModel));
+        // set image header
+        setImageHeader(lunchModel);
         // WebView
-        webImageBtnView.setOnClickListener(v -> {
-            Fragment mWiebViewFrag = new WebViewFragment();
-            Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, mWiebViewFrag).commit();
-        });
+        createWebView(lunchModel);
         // PhoneCall
-        callImageView.setOnClickListener(v -> {
-            Intent phoneIntent = new Intent(Intent.ACTION_DIAL,
-                    Uri.parse("tel:" + lunchModel.getPhoneNumber()));
-            startActivity(phoneIntent);
-        });
+        createPhoneCall(lunchModel);
+
+    }
+
+    private String getTitle(LunchModel lunch) {
+        return lunch.getTitle();
+    }
+
+    private String getAddress(LunchModel lunch) {
+        return lunch.getAddress();
+    }
+
+    /**
+     * Get image from model after image pass to DataFormat class
+     *
+     * @param lunch lunch model
+     */
+    private void setImageHeader(LunchModel lunch) {
+        DataFormat dataFormat = new DataFormat();
+        //  image
+        if (lunch.getPhotoMetadatasOfPlace() != null) {
+            dataFormat.addImages(lunch.getPlace(), lunch.getPlacesClient(), imageHeader);
+        } else imageHeader.setImageResource(R.drawable.bg_connection);
+    }
+
+    /**
+     * Create a WebView in WebViewFragment
+     *
+     * @param lunch model lunch
+     */
+    private void createWebView(LunchModel lunch) {
+        if (lunch.getWebsiteUriPlace() != null) {
+            webImageBtnView.setOnClickListener(v -> {
+                Fragment mWiebViewFrag = new WebViewFragment();
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, mWiebViewFrag).commit();
+            });
+        } else Toast.makeText(getContext(), "No website", Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * Get Phone Call in new intent Action Dial
+     *
+     * @param lunch model view
+     */
+    private void createPhoneCall(LunchModel lunch) {
+        if (lunch.getPhoneNumber() != null) {
+            callImageView.setOnClickListener(v -> {
+                Intent phoneIntent = new Intent(Intent.ACTION_DIAL,
+                        Uri.parse("tel:" + lunch.getPhoneNumber()));
+                startActivity(phoneIntent);
+            });
+        } else Toast.makeText(getContext(), "No phone number", Toast.LENGTH_LONG).show();
     }
 
 }

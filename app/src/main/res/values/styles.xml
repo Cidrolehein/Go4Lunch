@@ -33,7 +33,7 @@
     <style name="FirebaseConnection" parent="AppTheme">
         <item name="actionBarStyle">@style/ConnexionTheme</item>
         <item name="android:windowBackground">@drawable/go4lunch_connexion_background</item>
-        <item name= "android:windowFullscreen">true</item>
+        <item name="android:windowFullscreen">true</item>
         <item name="android:scaleType">centerCrop</item>
         <item name="buttonStyle">@style/AppTheme.Login.ButtonStyle</item>
         <item name="windowActionBar">false</item>
@@ -56,7 +56,12 @@
     <!-- Image Button detail List style -->
     <style name="AppTheme.DetailList.ImageButtonStyle" parent="Widget.AppCompat.ImageButton">
         <item name="colorButtonNormal">@color/text_button</item>
-        
+    </style>
+
+    <!-- Rating Bar style -->
+    <style name="AppTheme.RatingBar.RatingBarStyle" parent="@android:style/Widget.Holo.Light.RatingBar">
+        <item name="colorControlNormal">@color/text_button</item>
+        <item name="colorControlActivated">@color/colorPrimaryDark</item>
     </style>
 
 </resources>

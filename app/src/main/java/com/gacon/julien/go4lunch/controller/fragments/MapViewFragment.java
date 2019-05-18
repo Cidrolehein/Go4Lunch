@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -33,10 +34,9 @@ import butterknife.ButterKnife;
  */
 public class MapViewFragment extends BaseFragment {
 
+    private static final String TAG = "PLACES_API";
     // FOR DESIGN
     private MapView mMapView;
-
-    private static final String TAG = "PLACES_API";
     // Google Map
     private GoogleMap googleMap;
     private BaseActivity baseActivity;
@@ -98,7 +98,7 @@ public class MapViewFragment extends BaseFragment {
                     mMap.setOnInfoWindowClickListener(marker -> {
                         Integer markerTag = (Integer) marker.getTag();
                         if (markerTag != null)
-                        setLunchList(markerTag);
+                            setLunchList(markerTag);
                         createDetailFragment();
                     });
 
@@ -118,6 +118,11 @@ public class MapViewFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     @Override

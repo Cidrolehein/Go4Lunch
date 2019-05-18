@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -43,6 +44,9 @@ public class DetailsListViewFragment extends Fragment {
     @BindView(R.id.call_imageview)
     ImageButton callImageView;
 
+    private ProfileActivity mProfileActivity;
+    private DataFormat mDataFormat;
+
     public DetailsListViewFragment() {
         // Required empty public constructor
     }
@@ -53,11 +57,35 @@ public class DetailsListViewFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_details_list_view, container, false);
         ButterKnife.bind(this, view);
+        mProfileActivity = (ProfileActivity) getActivity();
+        mDataFormat = new DataFormat();
         // get data and put in the layout
         getLayoutElements();
 
         return view;
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Hide the toolbar
+        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity()))
+                .getSupportActionBar()).hide();
+        // change color of system bar
+        mProfileActivity.updateStatusBarColor(getActivity(),
+                mDataFormat.changeColorToHex(R.color.black_transparency, getContext()));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        // show the toolbar
+        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity()))
+                .getSupportActionBar()).show();
+        // change color of system bar
+        mProfileActivity.updateStatusBarColor(getActivity(),
+                mDataFormat.changeColorToHex(R.color.colorPrimaryDark, getContext()));
     }
 
     /**

@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/image_header"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="200dp"
         android:contentDescription="@string/image_header"
         android:scaleType="centerCrop" />
 
@@ -63,18 +63,21 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
         android:stretchColumns="1">
 
         <TableRow>
 
             <ImageButton
-                android:id="@+id/call_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:contentDescription="@string/call_icon_orange"
-                android:src="@drawable/ic_call_orange_24dp" />
+                android:id="@+id/call_imageview"
+                android:src="@drawable/ic_call_orange_24dp"
+                android:background="@android:color/transparent"/>
 
             <ImageView
                 android:id="@+id/like_imageview"
@@ -85,12 +88,13 @@
                 android:src="@drawable/ic_star_orange_24dp" />
 
             <ImageButton
-                android:id="@+id/web_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:id="@+id/web_imageview"
                 android:contentDescription="@string/website_icon_orange"
-                android:src="@drawable/ic_website_orange_24dp" />
+                android:src="@drawable/ic_website_orange_24dp"
+                android:background="@android:color/transparent"/>
 
         </TableRow>
 

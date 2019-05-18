@@ -1,8 +1,11 @@
 package com.gacon.julien.go4lunch.view.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
+
+import androidx.core.content.ContextCompat;
 
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
@@ -19,6 +22,7 @@ public class DataFormat {
 
     /**
      * Format meters
+     *
      * @param newLunch New Lunch model
      * @return Meters
      */
@@ -30,8 +34,9 @@ public class DataFormat {
 
     /**
      * Convert meters to int
+     *
      * @param m Float meters from lunch model
-     * @return  Meters to int
+     * @return Meters to int
      */
     private int convertMeters(float m) {
         int meters;
@@ -41,7 +46,8 @@ public class DataFormat {
 
     /**
      * Get Rating Stars
-     * @param rating Rating double of Place (0 - 5)
+     *
+     * @param rating       Rating double of Place (0 - 5)
      * @param mStarRating1 ImageView One rating
      * @param mStarRating2 ImageView Two rating
      * @param mStarRating3 ImageView Three rating
@@ -82,9 +88,10 @@ public class DataFormat {
 
     /**
      * PlaceImage
-     * @param place Get the Place Details
+     *
+     * @param place        Get the Place Details
      * @param placesClient Get the current place
-     * @param imageView ImageView for image
+     * @param imageView    ImageView for image
      */
     public void addImages(Place place, PlacesClient placesClient, ImageView imageView) {
         PhotoMetadata photoMetadata = Objects.requireNonNull(place.getPhotoMetadatas()).get(0);
@@ -97,6 +104,12 @@ public class DataFormat {
             Bitmap bitmap = fetchPhotoResponse.getBitmap();
             imageView.setImageBitmap(bitmap);
         });
+    }
+
+    public String changeColorToHex(int resource, Context context) {
+        return "#" + Integer.toHexString(ContextCompat
+                .getColor(Objects.requireNonNull(context),
+                        resource));
     }
 
 }

@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.view.utils.DataFormat;
@@ -40,7 +41,8 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
 
     /**
      * Adapter for RecyclerView with OnClickListener
-     * @param itemView view
+     *
+     * @param itemView       view
      * @param onNoteListener OnClickListener in item of RecyclerView
      */
     LunchViewHolder(@NonNull View itemView, LunchAdapter.OnNoteListener onNoteListener) {
@@ -68,8 +70,11 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
             String textHour = getHours.getDayOpen(newLunch);
             this.mTextViewIsItOpen.setText(textHour);
             // change the color if the hour is close to close
-            if(textHour.equals("Closing soon !")) {
-                this.mTextViewIsItOpen.setTextColor(Color.parseColor("#ba160c"));
+            if (textHour.equals("Closing soon !")) {
+                this.mTextViewIsItOpen.setTextColor
+                        (Color.parseColor(dataFormat
+                                .changeColorToHex(R.color.colorPrimaryDark,
+                                        mTextViewIsItOpen.getContext())));
             }
         }
         // set PlaceImage
@@ -83,6 +88,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
 
     /**
      * Interface for OnClickListener
+     *
      * @param v new view inside adapter position
      */
     @Override

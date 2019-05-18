@@ -5,12 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/main_layout"
+    style="@style/AppTheme"
     tools:context=".controller.fragments.ListView.DetailsListViewFragment">
 
     <ImageView
         android:id="@+id/image_header"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="200dp"
         android:scaleType="centerCrop"
         android:contentDescription="@string/image_header" />
 
@@ -64,7 +65,9 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
         android:stretchColumns="1">
 
         <TableRow>
@@ -75,7 +78,8 @@
                 android:layout_marginBottom="10dp"
                 android:contentDescription="@string/call_icon_orange"
                 android:id="@+id/call_imageview"
-                android:src="@drawable/ic_call_orange_24dp" />
+                android:src="@drawable/ic_call_orange_24dp"
+                android:background="@android:color/transparent"/>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -91,7 +95,8 @@
                 android:layout_marginBottom="10dp"
                 android:id="@+id/web_imageview"
                 android:contentDescription="@string/website_icon_orange"
-                android:src="@drawable/ic_website_orange_24dp" />
+                android:src="@drawable/ic_website_orange_24dp"
+                android:background="@android:color/transparent"/>
 
         </TableRow>
 

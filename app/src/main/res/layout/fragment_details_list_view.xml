@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/main_layout"
     tools:context=".controller.fragments.ListView.DetailsListViewFragment">
 
     <ImageView
@@ -95,6 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:contentDescription="@string/call_icon_orange"
+                android:id="@+id/call_imageview"
                 android:src="@drawable/ic_call_orange_24dp" />
 
             <ImageView
@@ -102,14 +104,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:contentDescription="@string/star_icon_orange"
+                android:id="@+id/like_imageview"
                 android:src="@drawable/ic_star_orange_24dp" />
 
-            <ImageView
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:id="@+id/web_imageview"
                 android:contentDescription="@string/website_icon_orange"
                 android:src="@drawable/ic_website_orange_24dp" />
+
         </TableRow>
 
         <TableRow>

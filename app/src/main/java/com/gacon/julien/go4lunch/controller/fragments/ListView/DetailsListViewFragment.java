@@ -1,6 +1,7 @@
 package com.gacon.julien.go4lunch.controller.fragments.ListView;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +18,8 @@ import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.ProfileActivity;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.view.utils.DataFormat;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +43,12 @@ public class DetailsListViewFragment extends Fragment {
     ImageView mStarRating4;
     @BindView(R.id.image_header)
     ImageView imageHeader;
+    @BindView(R.id.web_imageview)
+    ImageButton webImageBtnView;
+    @BindView(R.id.like_imageview)
+    ImageView likeImageView;
+    @BindView(R.id.call_imageview)
+    ImageView callImageView;
 
     public DetailsListViewFragment() {
         // Required empty public constructor
@@ -51,24 +61,38 @@ public class DetailsListViewFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_details_list_view, container, false);
         ButterKnife.bind(this, view);
+        // get data and put in the layout
+        getLayoutElements();
+
+        return view;
+
+    }
+
+    /**
+     * get data for the layout
+     */
+    private void getLayoutElements(){
         ProfileActivity profileActivity = (ProfileActivity) getActivity();
         assert profileActivity != null;
         LunchModel lunchModel = profileActivity.getLunch();
         assert lunchModel != null;
+        // Title and address
         String title = lunchModel.getTitle();
         String address = lunchModel.getAddress();
         mTextViewTitle.setText(title);
         mTextAddress.setText(address);
         DataFormat dataFormat = new DataFormat();
-        // get Rating
+        //  Rating
         dataFormat.getRatingStar(lunchModel.getPlace_rating(), mStarRating1, mStarRating2, mStarRating3, mStarRating4);
-        // get image
+        //  image
         if (lunchModel.getPhotoMetadatasOfPlace() != null) {
             dataFormat.addImages(lunchModel.getPlace(), lunchModel.getPlacesClient(), imageHeader);
         } else imageHeader.setImageResource(R.drawable.bg_connection);
 
-        return view;
-
+        webImageBtnView.setOnClickListener(v -> {
+            Fragment mWiebViewFrag = new WebViewFragment();
+            Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, mWiebViewFrag).commit();
+        });
     }
 
 }

@@ -29,8 +29,6 @@ import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +45,6 @@ public class BaseActivity extends AppCompatActivity {
 
     //FOR DATA
     // Firebase
-    private DatabaseReference mDatabase;
     // - Identifier for Sign-In Activity
     protected static final int RC_SIGN_IN = 123;
     // - Location

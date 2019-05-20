@@ -31,29 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <!-- Generic button -->
-        <Button
-            android:id="@+id/button_log_out"
-            style="@style/AppTheme.Generic.ButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:text="@string/log_out_button_txt" />
-
     </LinearLayout>
-
-    <!-- NavigationView -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/profile_main_nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/colorPrimaryLight"
-        app:itemTextColor="@android:color/white"
-        app:itemIconTint="@android:color/white"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/profile_nav_header"
-        app:menu="@menu/profile_main_menu_drawer" />
 
     <!-- Bottom navigation -->
     <LinearLayout
@@ -72,5 +50,17 @@
             app:menu="@menu/bottom_navigation_menu" />
     </LinearLayout>
 
+    <!-- NavigationView / !Must be at the end of the layout -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/profile_main_nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/colorPrimaryLight"
+        app:itemTextColor="@android:color/white"
+        app:itemIconTint="@android:color/white"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/profile_nav_header"
+        app:menu="@menu/profile_main_menu_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

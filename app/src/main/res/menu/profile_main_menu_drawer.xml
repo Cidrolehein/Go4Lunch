@@ -18,7 +18,6 @@
             android:id="@+id/profile_logout"
             android:icon="@drawable/ic_power_settings_new_white_24dp"
             android:title="@string/logout" />
-
     </group>
 
 </menu>

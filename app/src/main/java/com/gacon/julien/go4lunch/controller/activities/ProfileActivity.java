@@ -36,7 +36,6 @@ import androidx.fragment.app.Fragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class ProfileActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -49,50 +48,9 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     NavigationView navigationView;
     @BindView(R.id.profile_main_bottom_navigation)
     BottomNavigationView bottomNavigationView;
+    // Data
     Fragment mMapViewFragment, mListViewFragment, mWormatesFragment;
     private LunchModel lunch;
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
-            item -> {
-
-                switch (item.getItemId()) {
-                    case R.id.map_view:
-                        if (mMapViewFragment == null) {
-                            mMapViewFragment = new MapViewFragment();
-                        }
-                        getFragment(mMapViewFragment);
-                        break;
-                    case R.id.list_view:
-                        if (mListViewFragment == null) {
-                            mListViewFragment = new ListViewFragment();
-                        }
-                        getFragment(mListViewFragment);
-                        break;
-                    case R.id.workmates:
-                        if (mWormatesFragment == null) {
-                            mWormatesFragment = new WorkmatesFragment();
-                        }
-                        getFragment(mWormatesFragment);
-                        break;
-                }
-
-                return true;
-            };
-
-    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
-        Window win = activity.getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        if (on) {
-            winParams.flags |= bits;
-        } else {
-            winParams.flags &= ~bits;
-        }
-        win.setAttributes(winParams);
-    }
-
-    private void getFragment(Fragment selectedFragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_frame_layout,
-                selectedFragment).commit();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,21 +59,13 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         ButterKnife.bind(this);
         // Configuring Toolbar, DrawerLayout and BottomView
         this.configureToolbar();
-        this.configureDrawerLayout();
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         this.configureNavigationView();
+        this.configureDrawerLayout();
         // Data for place API
         this.initPlaces();
         this.getCurrentPlaces();
 
-    }
-
-    /**
-     * Log Out Button
-     */
-    @OnClick(R.id.button_log_out)
-    public void onClickSignOutButton() {
-        this.signOutUserFromFirebase();
     }
 
     /**
@@ -160,18 +110,24 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     // REST REQUESTS
     // --------------------
 
+    // NAVIGATION DRAWER
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        // - Handle Navigation Item Click
-        int id = item.getItemId();
-
-        switch (id) {
+        switch (item.getItemId()) {
             case R.id.profile_lunch:
+                if (mMapViewFragment == null) {
+                    mMapViewFragment = new MapViewFragment();
+                }
+                getFragment(mMapViewFragment);
                 break;
             case R.id.profile_sittings:
+
                 break;
             case R.id.profile_logout:
+                this.signOutUserFromFirebase();
+
                 break;
             default:
                 break;
@@ -200,6 +156,57 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     // ---------------------
 
     /**
+     * For the Bottom Navigation Menu
+     */
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            item -> {
+
+                switch (item.getItemId()) {
+                    case R.id.map_view:
+                        if (mMapViewFragment == null) {
+                            mMapViewFragment = new MapViewFragment();
+                        }
+                        getFragment(mMapViewFragment);
+                        break;
+                    case R.id.list_view:
+                        if (mListViewFragment == null) {
+                            mListViewFragment = new ListViewFragment();
+                        }
+                        getFragment(mListViewFragment);
+                        break;
+                    case R.id.workmates:
+                        if (mWormatesFragment == null) {
+                            mWormatesFragment = new WorkmatesFragment();
+                        }
+                        getFragment(mWormatesFragment);
+                        break;
+                }
+
+                return true;
+            };
+
+    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
+        Window win = activity.getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
+    }
+
+    /**
+     * Get Fragment
+     *
+     * @param selectedFragment Fragment selected
+     */
+    private void getFragment(Fragment selectedFragment) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_frame_layout,
+                selectedFragment).commit();
+    }
+
+    /**
      * Create OnCompleteListener called after tasks ended
      *
      * @return is REST Resquests completed ?
@@ -223,7 +230,8 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
      * Configure Drawer Layout
      */
     private void configureDrawerLayout() {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
     }
@@ -234,6 +242,7 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     private void configureNavigationView() {
 
         navigationView.setNavigationItemSelectedListener(this);
+
         if (this.getCurrentUser() != null) {
             // Customize image profile
             View headView = navigationView.getHeaderView(0);

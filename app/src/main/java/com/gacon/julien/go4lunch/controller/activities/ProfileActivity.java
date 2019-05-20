@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
+import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.controller.fragments.ListView.ListViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.MapViewFragment;
@@ -110,8 +111,25 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     // REST REQUESTS
     // --------------------
 
+    /**
+     * Create OnCompleteListener called after tasks ended
+     *
+     * @return is REST Resquests completed ?
+     */
+    private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted() {
+        return aVoid -> {
+            finish();
+            startActivity(new Intent(this, MainActivity.class));
+        };
+    }
+
     // NAVIGATION DRAWER
 
+    /**
+     * Navigation on the Navigation Drawer Menu
+     * @param item Selected item
+     * @return true
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -185,17 +203,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
                 return true;
             };
 
-    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
-        Window win = activity.getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        if (on) {
-            winParams.flags |= bits;
-        } else {
-            winParams.flags &= ~bits;
-        }
-        win.setAttributes(winParams);
-    }
-
     /**
      * Get Fragment
      *
@@ -204,18 +211,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     private void getFragment(Fragment selectedFragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_frame_layout,
                 selectedFragment).commit();
-    }
-
-    /**
-     * Create OnCompleteListener called after tasks ended
-     *
-     * @return is REST Resquests completed ?
-     */
-    private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted() {
-        return aVoid -> {
-            finish();
-            startActivity(new Intent(this, MainActivity.class));
-        };
     }
 
     /**
@@ -268,7 +263,30 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         }
     }
 
+    // STATUS BAR COLOR
 
+    /**
+     * for change status bar color
+     * @param activity this activity
+     * @param bits id
+     * @param on can switch on
+     */
+    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
+        Window win = activity.getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
+    }
+
+    /**
+     * Change status bar color depending of lvl application
+     * @param activity this activity
+     * @param color get color (in hexadecimal format)
+     */
     public void updateStatusBarColor(Activity activity, String color) {// Color must be in hexadecimal fromat
 
         if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
@@ -283,6 +301,8 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
             getWindow().setStatusBarColor(Color.parseColor(color));
         }
     }
+
+    // GETTERS
 
     public LunchModel getLunch() {
         return lunch;

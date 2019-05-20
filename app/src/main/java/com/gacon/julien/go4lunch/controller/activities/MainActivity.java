@@ -5,6 +5,7 @@ import android.content.Intent;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.gacon.julien.go4lunch.R;
+import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.os.Bundle;
@@ -36,6 +37,23 @@ public class MainActivity extends BaseActivity {
             this.startLoginSignInActivity();
         }
 
+    }
+
+    // --------------------
+    // REST REQUESTS
+    // --------------------
+
+    // - Http request that create user in firestore
+    private void createUserInFirestore(){
+
+        if (this.getCurrentUser() != null){
+
+            String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
+            String username = this.getCurrentUser().getDisplayName();
+            String uid = this.getCurrentUser().getUid();
+
+            UserHelper.createUser(uid, username, urlPicture).addOnFailureListener(this.onFailureListener());
+        }
     }
 
     /**
@@ -97,6 +115,8 @@ public class MainActivity extends BaseActivity {
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) { // SUCCESS
+                // CREATE USER IN FIRESTORE
+                this.createUserInFirestore();
                 showSnackBar(this.coordinatorLayout, getString(R.string.connection_succeed));
                 this.startProfileActivity(); // repeat for synchronization
             } else { // ERRORS

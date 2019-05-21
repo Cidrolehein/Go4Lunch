@@ -65,5 +65,7 @@
     <string name="website_icon_orange">website icon orange</string>
     <string name="star_icon_orange">star icon orange</string>
     <string name="image_header_list_details">Image header list details</string>
+    <string name="user_image">user_image</string>
+    <string name="user_name">User name</string>
 
 </resources>

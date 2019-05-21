@@ -1,4 +1,4 @@
-package com.gacon.julien.go4lunch.view;
+package com.gacon.julien.go4lunch.view.lunchAdapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -12,7 +12,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.data.model.User;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.google.android.gms.common.api.ApiException;
@@ -45,23 +44,23 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
  */
 public class BaseActivity extends AppCompatActivity {
 
+    // - Place API
+    public static final String TAG = "PLACES_API";
     //FOR DATA
     // Firebase
     // - Identifier for Sign-In Activity
     protected static final int RC_SIGN_IN = 123;
+    protected static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 123;
+    public ArrayList<LunchModel> placesNameList;
     // - Location
     protected Location currentLocation;
     protected double currentLatitude;
     protected double currentLongitude;
-    protected static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 123;
-    // - Place API
-    public static final String TAG = "PLACES_API";
     protected PlacesClient mPlacesClient;
     protected PlacesClient mPlacesDetails;
     protected List<Place.Field> placeFields;
     protected List<Place.Field> placeDetailFields;
     protected FindCurrentPlaceRequest request;
-    public ArrayList<LunchModel> placesNameList;
     protected String placeId = "INSERT_PLACE_ID_HERE";
     protected ArrayList<String> arrayListPlaceId;
     protected Task<FindCurrentPlaceResponse> placeResponse;
@@ -171,6 +170,7 @@ public class BaseActivity extends AppCompatActivity {
 
     /**
      * Check the location permission
+     *
      * @return true if the location is access
      */
     public boolean checkLocationPermission() {
@@ -232,6 +232,7 @@ public class BaseActivity extends AppCompatActivity {
 
     /**
      * Get the current place id and put in a arraylist
+     *
      * @param task Find current place response
      */
     protected void getCurrentPlaceId(Task<FindCurrentPlaceResponse> task) {
@@ -265,6 +266,7 @@ public class BaseActivity extends AppCompatActivity {
 
     /**
      * Interests of type of places
+     *
      * @param place Places
      * @return Type of interest
      */
@@ -370,6 +372,7 @@ public class BaseActivity extends AppCompatActivity {
 
     /**
      * Api exception
+     *
      * @param task Current task
      */
     public void apiException(Task task) {
@@ -384,13 +387,10 @@ public class BaseActivity extends AppCompatActivity {
     // ERROR HANDLER
     // --------------------
 
-    protected OnFailureListener onFailureListener(){
-        return new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
-            }
-        };
+    protected OnFailureListener onFailureListener() {
+        return e -> Toast.makeText(getApplicationContext(),
+                getString(R.string.error_unknown_error),
+                Toast.LENGTH_LONG).show();
     }
 
     // GETTERS

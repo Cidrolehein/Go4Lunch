@@ -1,15 +1,17 @@
 package com.gacon.julien.go4lunch.controller.fragments;
 
+import android.app.Activity;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.ProfileActivity;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.controller.fragments.ListView.DetailsListViewFragment;
 import com.gacon.julien.go4lunch.models.LunchModel;
-import com.gacon.julien.go4lunch.view.LunchAdapter;
+import com.gacon.julien.go4lunch.view.lunchAdapter.LunchAdapter;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 

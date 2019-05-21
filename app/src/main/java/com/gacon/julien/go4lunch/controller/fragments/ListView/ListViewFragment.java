@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.controller.fragments.BaseFragment;
-import com.gacon.julien.go4lunch.view.LunchAdapter;
+import com.gacon.julien.go4lunch.view.lunchAdapter.LunchAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

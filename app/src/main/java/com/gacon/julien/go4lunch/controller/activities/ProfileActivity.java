@@ -18,17 +18,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
-import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.controller.fragments.ListView.ListViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.MapViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.WorkmatesFragment;
 import com.gacon.julien.go4lunch.models.LunchModel;
-import com.gacon.julien.go4lunch.models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -36,8 +33,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,8 +51,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     // Data
     Fragment mMapViewFragment, mListViewFragment, mWormatesFragment;
     private LunchModel lunch;
-    // Users
-    private ArrayList<User> mUserArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +65,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         // Data for place API
         this.initPlaces();
         this.getCurrentPlaces();
-        // List of users
-        getUsersNames();
 
     }
 
@@ -175,19 +166,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted());
-    }
-
-    private void getUsersNames(){
-        mUserArrayList = new ArrayList<>();
-        // - Get all users names
-        UserHelper.getUsersCollection().get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-                        User user = documentSnapshot.toObject(User.class);
-                        mUserArrayList.add(user);
-                    }
-                });
-
     }
 
     // ---------------------
@@ -327,10 +305,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
 
     public LunchModel getLunch() {
         return lunch;
-    }
-
-    public ArrayList<User> getUserArrayList() {
-        return mUserArrayList;
     }
 
     public void setLunch(LunchModel lunch) {

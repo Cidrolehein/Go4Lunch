@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
 import com.gacon.julien.go4lunch.models.User;
@@ -53,7 +54,7 @@ public class WorkmatesFragment extends Fragment {
     private void createRecyclerView() {
         mUserArrayList = new ArrayList<>();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new UserAdapter(mUserArrayList);
+        adapter = new UserAdapter(mUserArrayList, Glide.with(this));
         mRecyclerView.setAdapter(adapter);
     }
 

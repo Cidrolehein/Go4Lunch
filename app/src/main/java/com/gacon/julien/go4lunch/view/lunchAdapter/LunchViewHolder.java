@@ -77,12 +77,12 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
                                         mTextViewIsItOpen.getContext())));
             }
         }
-        // set PlaceImage
+        // set PlaceImage to ImageView
         if (newLunch.getPhotoMetadatasOfPlace() != null) {
             dataFormat.addImages(newLunch.getPlace(), newLunch.getPlacesClient(), imageView);
         } else imageView.setImageResource(R.drawable.bg_connection);
 
-        // set Distance
+        // set Distance to TextView
         this.mTextViewDistance.setText(dataFormat.formatMeters(newLunch));
     }
 

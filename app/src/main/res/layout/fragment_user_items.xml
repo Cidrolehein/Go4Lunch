@@ -2,7 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:divider="?android:dividerVertical"
+    android:showDividers="middle">
 
         <ImageView
             android:id="@+id/user_image"
@@ -14,9 +17,9 @@
             android:scaleType="centerCrop" />
 
         <TextView
+            android:id="@+id/user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/user_name"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
             android:text="@string/user_name"

@@ -9,6 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true // ERROR TOO MANY FIELDS SEE DEPENDENCIES
     }
     buildTypes {
         release {
@@ -36,6 +37,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     // FIREBASE
     implementation 'com.google.firebase:firebase-core:16.0.9'
+    // ADD MULTIDEX F0R TOO MANY FIELD REFERENCES
+    implementation 'com.android.support:multidex:1.0.3'
     // Add to don't crash firebase
     implementation 'com.google.firebase:firebase-auth:17.0.0'
     implementation 'com.google.firebase:firebase-firestore:19.0.0'

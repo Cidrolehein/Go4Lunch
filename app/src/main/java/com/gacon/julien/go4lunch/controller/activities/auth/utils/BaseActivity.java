@@ -18,6 +18,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -119,13 +120,14 @@ public class BaseActivity extends AppCompatActivity {
         FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         try {
             Task<Location> location = fusedLocationProviderClient.getLastLocation();
-            location.addOnCompleteListener(this, task -> {
+            location.addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
+                    // Got last known location. In some rare situations this can be null.
+                    // (ex. when Google Map is not allow)
                     currentLocation = task.getResult();
                     assert currentLocation != null;
                     currentLatitude = currentLocation.getLatitude();
                     currentLongitude = currentLocation.getLongitude();
-                    assert currentLocation != null;
                 }
             });
         } catch (SecurityException e) {

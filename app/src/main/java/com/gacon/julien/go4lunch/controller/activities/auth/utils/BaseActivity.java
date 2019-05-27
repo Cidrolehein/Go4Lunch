@@ -80,7 +80,7 @@ public class BaseActivity extends AppCompatActivity {
      * @return user connected
      */
     @Nullable
-    protected FirebaseUser getCurrentUser() {
+    public FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
@@ -315,6 +315,7 @@ public class BaseActivity extends AppCompatActivity {
                     }
                     // Phone number
                     String phoneNumber = place.getPhoneNumber();
+                    String detailPlaceId = place.getId();
                     // Create a new model
                     if (typeOfInterestForDetails(place)) {
                         model.add(new LunchModel(place.getName(),
@@ -325,7 +326,7 @@ public class BaseActivity extends AppCompatActivity {
                                 place.getPhotoMetadatas(),
                                 place.getWebsiteUri(),
                                 placeDetailFields,
-                                placeId,
+                                detailPlaceId,
                                 place,
                                 mPlacesClient,
                                 distanceInMeters,
@@ -389,7 +390,7 @@ public class BaseActivity extends AppCompatActivity {
     // ERROR HANDLER
     // --------------------
 
-    protected OnFailureListener onFailureListener() {
+    public OnFailureListener onFailureListener() {
         return e -> Toast.makeText(getApplicationContext(),
                 getString(R.string.error_unknown_error),
                 Toast.LENGTH_LONG).show();

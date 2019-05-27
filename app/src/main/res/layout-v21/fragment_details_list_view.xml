@@ -146,6 +146,7 @@
             android:gravity="bottom|end">
 
             <Button
+                android:id="@+id/select_place_btn"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/roundebutton"

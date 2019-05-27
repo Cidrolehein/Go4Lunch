@@ -67,5 +67,6 @@
     <string name="image_header_list_details">Image header list details</string>
     <string name="user_image">user_image</string>
     <string name="user_name">User name</string>
+    <string name="place_name">place name</string>
 
 </resources>

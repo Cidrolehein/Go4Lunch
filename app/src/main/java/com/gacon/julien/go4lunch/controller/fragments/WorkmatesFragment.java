@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
+import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.models.User;
 import com.gacon.julien.go4lunch.view.userAdapter.UserAdapter;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -34,6 +35,7 @@ public class WorkmatesFragment extends Fragment {
     // Users
     private ArrayList<User> mUserArrayList;
     private UserAdapter adapter;
+    private BaseActivity mBaseActivity;
 
     public WorkmatesFragment() {
         // Required empty public constructor

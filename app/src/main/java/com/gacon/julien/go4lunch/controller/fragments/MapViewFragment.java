@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -13,18 +12,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gacon.julien.go4lunch.R;
+import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
+import com.gacon.julien.go4lunch.models.User;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 import butterknife.ButterKnife;
@@ -40,6 +45,7 @@ public class MapViewFragment extends BaseFragment {
     // Google Map
     private GoogleMap googleMap;
     private BaseActivity baseActivity;
+    private ArrayList<String> mUserArrayList;
 
 
     public MapViewFragment() {
@@ -115,6 +121,12 @@ public class MapViewFragment extends BaseFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        getAllPlacesSelected();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         mMapView.onResume();
@@ -159,6 +171,15 @@ public class MapViewFragment extends BaseFragment {
                         .snippet("Marker Description"));
                 marker.setTag(markerTag);
                 markerTag = markerTag + 1;
+                HashMap markerHashMap = new HashMap();
+                String placeId = baseActivity.getModel().get(i).getPlaceId();
+                markerHashMap.put(placeId,marker);
+                // mettre dans all places selected
+                //markerHashMap.get()
+                boolean isPlaceSelected = mUserArrayList.contains(placeId);
+                if (isPlaceSelected) {
+                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                }
             }
         }
 
@@ -167,6 +188,20 @@ public class MapViewFragment extends BaseFragment {
         // For zooming automatically to the location of the marker
         CameraPosition cameraPosition = new CameraPosition.Builder().target(currentPosition).zoom(19).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    private void getAllPlacesSelected() {
+        mUserArrayList = new ArrayList<>();
+        // - Get all places selected
+        UserHelper.getUsersCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
+
+            mUserArrayList.clear();
+            assert queryDocumentSnapshots != null;
+            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                User user = documentSnapshot.toObject(User.class);
+                mUserArrayList.add(user.getPlaceSelectedId());
+            }
+        });
     }
 
 }

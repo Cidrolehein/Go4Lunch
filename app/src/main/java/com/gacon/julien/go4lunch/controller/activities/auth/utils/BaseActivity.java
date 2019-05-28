@@ -125,9 +125,10 @@ public class BaseActivity extends AppCompatActivity {
                     // Got last known location. In some rare situations this can be null.
                     // (ex. when Google Map is not allow)
                     currentLocation = task.getResult();
-                    assert currentLocation != null;
-                    currentLatitude = currentLocation.getLatitude();
-                    currentLongitude = currentLocation.getLongitude();
+                    if(currentLocation != null){
+                        currentLatitude = currentLocation.getLatitude();
+                        currentLongitude = currentLocation.getLongitude();
+                    }
                 }
             });
         } catch (SecurityException e) {

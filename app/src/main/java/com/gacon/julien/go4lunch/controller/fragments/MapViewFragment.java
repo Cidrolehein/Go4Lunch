@@ -31,7 +31,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
-
 import butterknife.ButterKnife;
 
 /**
@@ -45,7 +44,8 @@ public class MapViewFragment extends BaseFragment {
     // Google Map
     private GoogleMap googleMap;
     private BaseActivity baseActivity;
-    private ArrayList<String> mUserArrayList;
+    private HashMap<String, Marker> markerHashMap;
+    private ArrayList<String> markersPlacesIdsList;
 
 
     public MapViewFragment() {
@@ -59,71 +59,13 @@ public class MapViewFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_map_view, container, false);
         ButterKnife.bind(this, view);
         baseActivity = (BaseActivity) getActivity();
-        // MapView
-        mMapView = view.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
-        mMapView.onResume(); // needed to get the map to display immediately
-
-        try {
-            MapsInitializer.initialize(Objects.requireNonNull(getActivity()).getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        mMapView.getMapAsync(new OnMapReadyCallback() {
-
-            /**
-             * Manipulates the map when it's available.
-             * The API invokes this callback when the map is ready for use.
-             */
-            @Override
-            public void onMapReady(GoogleMap mMap) {
-                googleMap = mMap;
-
-                try {
-                    // Customise the styling of the base map using a JSON object defined
-                    // in a raw resource file.
-                    boolean success = googleMap.setMapStyle(
-                            MapStyleOptions.loadRawResourceStyle(
-                                    Objects.requireNonNull(getActivity()), R.raw.json_style_map));
-
-                    if (!success) {
-                        Log.e(TAG, "Style parsing failed.");
-                    }
-                } catch (Resources.NotFoundException e) {
-                    Log.e(TAG, "Can't find style. Error: ", e);
-                }
-
-                if (baseActivity.checkLocationPermission()) {
-                    // For showing a move to my location button
-                    googleMap.setMyLocationEnabled(true);
-
-                    // Create GoogleMap Markers Clickable
-                    getLongLat();
-                    // Set a listener for info window events
-                    mMap.setOnInfoWindowClickListener(marker -> {
-                        Integer markerTag = (Integer) marker.getTag();
-                        if (markerTag != null)
-                            setLunchList(markerTag);
-                        createDetailFragment();
-                    });
-
-
-                } else {
-                    // A local method to request required permissions;
-                    // See https://developer.android.com/training/permissions/requesting
-                    baseActivity.getLocationPermission();
-                }
-            }
-        });
-
+        createMapView(view, savedInstanceState);
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        getAllPlacesSelected();
     }
 
     @Override
@@ -155,53 +97,137 @@ public class MapViewFragment extends BaseFragment {
         mMapView.onLowMemory();
     }
 
-    private void getLongLat() {
-        assert baseActivity != null;
-        // Get Current Location
-        baseActivity.getDeviceLocation();
-        int modelSize = baseActivity.getModel().size();
-        int markerTag = 0;
-        for (int i = 0; i < modelSize; i++) {
-            LatLng latLng = baseActivity.getLatLngArrayList().get(i);
-            String markerTitle = baseActivity.getModel().get(i).getTitle();
-            if (latLng != null && markerTitle != null) {
-                Marker marker = googleMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title(markerTitle)
-                        .snippet("Marker Description"));
-                marker.setTag(markerTag);
-                markerTag = markerTag + 1;
-                HashMap markerHashMap = new HashMap();
-                String placeId = baseActivity.getModel().get(i).getPlaceId();
-                markerHashMap.put(placeId,marker);
-                // mettre dans all places selected
-                //markerHashMap.get()
-                boolean isPlaceSelected = mUserArrayList.contains(placeId);
-                if (isPlaceSelected) {
-                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                }
-            }
+    /**
+     * Create Google Map
+     * @param view MapView
+     * @param savedInstanceState getData from bundle
+     */
+    private void createMapView(View view, Bundle savedInstanceState) {
+        // MapView
+        mMapView = view.findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.onResume(); // needed to get the map to display immediately
+        try {
+            MapsInitializer.initialize(Objects.requireNonNull(getActivity()).getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        mMapView.getMapAsync(new OnMapReadyCallback() {
 
-        // For dropping a marker at a point on the Map
-        LatLng currentPosition = new LatLng(baseActivity.getCurrentLatitude(), baseActivity.getCurrentLongitude());
-        // For zooming automatically to the location of the marker
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(currentPosition).zoom(19).build();
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-    }
+            /**
+             * Manipulates the map when it's available.
+             * The API invokes this callback when the map is ready for use.
+             */
+            @Override
+            public void onMapReady(GoogleMap mMap) {
+                // initialize GoogleMap
+                googleMap = mMap;
 
-    private void getAllPlacesSelected() {
-        mUserArrayList = new ArrayList<>();
-        // - Get all places selected
-        UserHelper.getUsersCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
+                try {
+                    // Customise the styling of the base map using a JSON object defined
+                    // in a raw resource file.
+                    boolean success = googleMap.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    Objects.requireNonNull(getActivity()), R.raw.json_style_map));
 
-            mUserArrayList.clear();
-            assert queryDocumentSnapshots != null;
-            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                User user = documentSnapshot.toObject(User.class);
-                mUserArrayList.add(user.getPlaceSelectedId());
+                    if (!success) {
+                        Log.e(TAG, "Style parsing failed.");
+                    }
+                } catch (Resources.NotFoundException e) {
+                    Log.e(TAG, "Can't find style. Error: ", e);
+                }
+
+                if (baseActivity.checkLocationPermission()) {
+                    // For showing a move to my location button
+                    googleMap.setMyLocationEnabled(true);
+                    // Create GoogleMap Markers Clickable
+                    getMarkers();
+                    getAllPlacesSelected();
+                    // Set a listener for info window events
+                    mMap.setOnInfoWindowClickListener(marker -> {
+                        Integer markerTag = (Integer) marker.getTag();
+                        if (markerTag != null)
+                            setLunchList(markerTag);
+                        createDetailFragment();
+                    });
+                } else {
+                    // A local method to request required permissions;
+                    // See https://developer.android.com/training/permissions/requesting
+                    baseActivity.getLocationPermission();
+                }
             }
         });
     }
 
+    /**
+     * Put all markers on the map
+     */
+    private void getMarkers() {
+        assert baseActivity != null;
+        markersPlacesIdsList = new ArrayList<>();
+        markerHashMap = new HashMap<>();
+        // Get Current Location
+        baseActivity.getDeviceLocation();
+        int modelSize = baseActivity.getModel().size();
+        for (int i = 0; i < modelSize; i++) {
+            createAllMarkersWithOptions(i);
+            String markerId = baseActivity.getModel().get(i).getPlaceId();
+            // create a list of markers ids
+            markersPlacesIdsList.add(markerId);
+
+        }
+        // For dropping a marker at a point on the Map
+        LatLng currentPosition = new LatLng(baseActivity.getCurrentLatitude(), baseActivity.getCurrentLongitude());
+        // For zooming automatically to the location of the marker
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(currentPosition).zoom(17).build();
+        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    /**
+     * Create marker with options
+     *
+     * @param position return the select place
+     */
+    private void createAllMarkersWithOptions(int position) {
+        LatLng latLng = baseActivity.getLatLngArrayList().get(position);
+        String markerTitle = baseActivity.getModel().get(position).getTitle();
+        if (latLng != null && markerTitle != null) {
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title(markerTitle)
+                    .snippet("Marker Description"));
+            // make hashmap to put all markers
+            String placeId = baseActivity.getModel().get(position).getPlaceId();
+            markerHashMap.put(placeId, marker);
+        }
+    }
+
+    /**
+     * Get all places selected from firebase and create news green markers
+     */
+    private void getAllPlacesSelected() {
+        UserHelper.getUsersCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
+            assert queryDocumentSnapshots != null;
+            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                User user = documentSnapshot.toObject(User.class);
+                createNewGreenSelectedMarker(user);
+            }
+        });
+    }
+
+    /**
+     * create a new marker for places user selected
+     *
+     * @param user User from firebase
+     */
+    private void createNewGreenSelectedMarker(User user) {
+        // get markers from UserPlaceId if user has selected a favorite place
+        String userFavoritePlaceId = user.getPlaceSelectedId();
+        // user place id can't be null and if the marker positioned
+        if (userFavoritePlaceId != null && markersPlacesIdsList.contains(userFavoritePlaceId)) {
+            Marker marker = markerHashMap.get(userFavoritePlaceId); // get marker
+            assert marker != null;
+            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)); // change color of marker
+        }
+    }
 }

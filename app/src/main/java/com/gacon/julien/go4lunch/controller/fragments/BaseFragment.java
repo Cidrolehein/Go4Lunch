@@ -89,12 +89,12 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
     }
 
     /**
-     * create data for recyclerview
+     * create data for recycler view
      *
-     * @param adapter   recyclerview adapter
+     * @param adapter   recycler view adapter
      * @param arrayList array of data
      */
-    void getUsersNames(RecyclerView.Adapter adapter, ArrayList<User> arrayList) {
+    protected void getUsersNames(RecyclerView.Adapter adapter, ArrayList<User> arrayList) {
         // - Get all users names
         UserHelper.getUsersCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
             arrayList.clear();

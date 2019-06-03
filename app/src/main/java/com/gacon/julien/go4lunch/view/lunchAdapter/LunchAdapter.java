@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.models.LunchModel;
+import com.gacon.julien.go4lunch.models.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -17,12 +19,16 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchViewHolder> {
 
     // For data
     private List<LunchModel> mLunchModelList;
+    private ArrayList<User> mUserArrayList;
     private OnNoteListener mOnNoteListener;
+    private Context mContext;
 
     // Constructor
-    public LunchAdapter(List<LunchModel> lunchList, OnNoteListener onNoteListener) {
+    public LunchAdapter(List<LunchModel> lunchList, OnNoteListener onNoteListener, ArrayList<User> usersList, Context context) {
         this.mLunchModelList = lunchList;
         this.mOnNoteListener = onNoteListener;
+        this.mUserArrayList = usersList;
+        this.mContext = context;
     }
 
     @NonNull
@@ -37,7 +43,7 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull LunchViewHolder holder, int position) {
-        holder.updateWithLunch(this.mLunchModelList.get(position));
+        holder.updateWithLunch(this.mLunchModelList.get(position), this.mUserArrayList, this.mContext);
     }
 
     @Override

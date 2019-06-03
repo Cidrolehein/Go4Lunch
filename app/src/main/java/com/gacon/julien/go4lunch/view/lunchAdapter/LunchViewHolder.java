@@ -1,5 +1,6 @@
 package com.gacon.julien.go4lunch.view.lunchAdapter;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
@@ -7,11 +8,14 @@ import android.widget.TextView;
 
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.models.LunchModel;
+import com.gacon.julien.go4lunch.models.User;
 import com.gacon.julien.go4lunch.view.utils.DataFormat;
 import com.gacon.julien.go4lunch.view.utils.GetHours;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,6 +32,8 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
     TextView mTextViewIsItOpen;
     @BindView(R.id.distance)
     TextView mTextViewDistance;
+    @BindView(R.id.people_number)
+    TextView mTextViewPeopleNumber;
     @BindView(R.id.star_rating_1)
     ImageView mStarRating1;
     @BindView(R.id.star_rating_2)
@@ -52,7 +58,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
         itemView.setOnClickListener(this);
     }
 
-    void updateWithLunch(LunchModel newLunch) {
+    void updateWithLunch(LunchModel newLunch, ArrayList<User> user, Context context) {
         DataFormat dataFormat = new DataFormat();
         GetHours getHours = new GetHours();
 
@@ -84,6 +90,33 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
 
         // set Distance to TextView
         this.mTextViewDistance.setText(dataFormat.formatMeters(newLunch));
+
+        // count the number of user who selected the place
+        int count = countUsersPlaceSelected(user, newLunch);
+
+        String countToString = context.getString(R.string.count_users, count);
+        this.mTextViewPeopleNumber.setText(countToString);
+    }
+
+    /**
+     * Count how many users selected the current place
+     * @param users arraylist of users
+     * @param newLunch data for place id
+     * @return number of users
+     */
+    private int countUsersPlaceSelected(ArrayList<User> users, LunchModel newLunch){
+        int count = 0;
+        if(users != null){
+            for (int i  = 0; i < users.size(); i++){
+                if(users.get(i).getPlaceSelectedId() != null){
+                    String userId = users.get(i).getPlaceSelectedId();
+                    if (userId.equals(newLunch.getPlaceId())){
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
     }
 
     /**

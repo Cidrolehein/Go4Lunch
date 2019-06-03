@@ -15,7 +15,10 @@ import android.view.ViewGroup;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.controller.fragments.BaseFragment;
+import com.gacon.julien.go4lunch.models.User;
 import com.gacon.julien.go4lunch.view.lunchAdapter.LunchAdapter;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,9 +31,13 @@ public class ListViewFragment extends BaseFragment {
     @BindView(R.id.recycler_view_list_view)
     RecyclerView mRecyclerView;
     private BaseActivity baseActivity;
+    private LunchAdapter adapter;
+    private ArrayList<User> usersList;
 
+    /**
+     * Required empty public constructor
+     */
     public ListViewFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -40,20 +47,28 @@ public class ListViewFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_list_view, container, false);
         ButterKnife.bind(this, view);
         baseActivity = (BaseActivity) getActivity();
+        usersList = new ArrayList<>();
         setHasOptionsMenu(true);
         this.createRecyclerView();
+        this.getUsersNames(adapter, usersList);
         return view;
     }
 
+    /**
+     * Create RecyclerView
+     */
     private void createRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         assert baseActivity != null;
-        LunchAdapter adapter = new LunchAdapter(baseActivity.getModel(), this);
+        adapter = new LunchAdapter(baseActivity.getModel(), this, usersList, getContext());
         adapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(adapter);
     }
 
+    /**
+     * Search Menu
+     * @param menu Menu
+     */
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.menu.menu_activity);

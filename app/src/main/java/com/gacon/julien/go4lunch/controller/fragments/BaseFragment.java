@@ -1,22 +1,28 @@
 package com.gacon.julien.go4lunch.controller.fragments;
 
-import android.app.Activity;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.ProfileActivity;
+import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.controller.fragments.ListView.DetailsListViewFragment;
 import com.gacon.julien.go4lunch.models.LunchModel;
+import com.gacon.julien.go4lunch.models.User;
 import com.gacon.julien.go4lunch.view.lunchAdapter.LunchAdapter;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * Abstract class to manage fragments
+ */
 public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListener,
         GoogleMap.OnInfoWindowClickListener {
 
@@ -31,6 +37,11 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
         createDetailFragment();
     }
 
+    /**
+     * Info for map
+     *
+     * @param marker marker from the map
+     */
     @Override
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(getContext(), "Info window clicked",
@@ -38,7 +49,10 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
 
     }
 
-    void createDetailFragment(){
+    /**
+     * Go to detail fragment when we click on description map marker
+     */
+    void createDetailFragment() {
         Fragment detailsListView = new DetailsListViewFragment();
         Objects.requireNonNull(this.getActivity()).getSupportFragmentManager()
                 .beginTransaction()
@@ -46,6 +60,11 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
                 .commit();
     }
 
+    /**
+     * Set list of place depend on marker we clicked
+     *
+     * @param position Position of the list
+     */
     void setLunchList(int position) {
         BaseActivity baseActivity = (BaseActivity) getActivity();
         ProfileActivity profileActivity = (ProfileActivity) getActivity();
@@ -67,6 +86,25 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
 
         assert profileActivity != null;
         profileActivity.setLunch(lunch);
+    }
+
+    /**
+     * create data for recyclerview
+     *
+     * @param adapter   recyclerview adapter
+     * @param arrayList array of data
+     */
+    void getUsersNames(RecyclerView.Adapter adapter, ArrayList<User> arrayList) {
+        // - Get all users names
+        UserHelper.getUsersCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
+            arrayList.clear();
+            assert queryDocumentSnapshots != null;
+            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                User user = documentSnapshot.toObject(User.class);
+                arrayList.add(user);
+            }
+            adapter.notifyDataSetChanged();
+        });
     }
 
 }

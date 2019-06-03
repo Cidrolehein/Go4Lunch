@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +19,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.ProfileActivity;
-import com.gacon.julien.go4lunch.controller.activities.api.PlacesHelper;
 import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.models.LunchModel;
+import com.gacon.julien.go4lunch.models.User;
+import com.gacon.julien.go4lunch.view.userJoiningAdapter.UserJoiningAdapter;
 import com.gacon.julien.go4lunch.view.utils.DataFormat;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -50,14 +56,20 @@ public class DetailsListViewFragment extends Fragment {
     ImageButton callImageView;
     @BindView(R.id.select_place_btn)
     Button btnSelectPlace;
+    @BindView(R.id.recycler_view_users_joining)
+    RecyclerView mRecyclerView;
 
     private ProfileActivity mProfileActivity;
     private BaseActivity mBaseActivity;
     private DataFormat mDataFormat;
     private LunchModel mLunchModel;
+    private ArrayList<User> mUsersJoiningArrayList;
+    private UserJoiningAdapter adapter;
 
+    /**
+     * Required empty public constructor
+     */
     public DetailsListViewFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -71,17 +83,26 @@ public class DetailsListViewFragment extends Fragment {
         mDataFormat = new DataFormat();
         // get data and put in the layout
         getLayoutElements();
+        // create recycler view of joining users
+        this.createRecyclerView();
+        this.getUsersJoiningNames();
 
         return view;
 
     }
 
+    /**
+     * Select place button
+     */
     @OnClick(R.id.select_place_btn)
-    void placeBtnSelected () {
+    void placeBtnSelected() {
         updatePlaceSelectedId();
         updatePlaceName();
     }
 
+    /**
+     * Hide toolbar
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -93,6 +114,10 @@ public class DetailsListViewFragment extends Fragment {
                 mDataFormat.changeColorToHex(R.color.black_transparency, getContext()));
     }
 
+    /**
+     * Change the color of status bar
+     * TODO : add transparency
+     */
     @Override
     public void onStop() {
         super.onStop();
@@ -124,17 +149,8 @@ public class DetailsListViewFragment extends Fragment {
 
     }
 
-    private String getTitle() {
-        return mLunchModel.getTitle();
-    }
-
-    private String getAddress() {
-        return mLunchModel.getAddress();
-    }
-
     /**
      * Get image from model after image pass to DataFormat class
-     *
      */
     private void setImageHeader() {
         DataFormat dataFormat = new DataFormat();
@@ -146,7 +162,6 @@ public class DetailsListViewFragment extends Fragment {
 
     /**
      * Create a WebView in WebViewFragment
-     *
      */
     private void createWebView() {
         if (mLunchModel.getWebsiteUriPlace() != null) {
@@ -159,7 +174,6 @@ public class DetailsListViewFragment extends Fragment {
 
     /**
      * Get Phone Call in new intent Action Dial
-     *
      */
     private void createPhoneCall() {
         if (mLunchModel.getPhoneNumber() != null) {
@@ -171,19 +185,9 @@ public class DetailsListViewFragment extends Fragment {
         } else Toast.makeText(getContext(), "No phone number", Toast.LENGTH_LONG).show();
     }
 
-    // - Http request that create user in firestore
-    private void createPlaceInFirestore(){
-
-        if (this.mLunchModel != null){
-
-
-            String placename = this.mLunchModel.getTitle();
-            String uid = this.mLunchModel.getPlaceId();
-
-            PlacesHelper.createPlace(uid, placename).addOnFailureListener(this.mBaseActivity.onFailureListener());
-        }
-    }
-
+    /**
+     * Get place name for title
+     */
     private void updatePlaceName() {
         if (mBaseActivity.getCurrentUser() != null) {
             String placeName = mLunchModel.getTitle();
@@ -195,6 +199,9 @@ public class DetailsListViewFragment extends Fragment {
         }
     }
 
+    /**
+     * Get the current id
+     */
     private void updatePlaceSelectedId() {
         if (mBaseActivity.getCurrentUser() != null) {
             String placeSelectedId = mLunchModel.getPlaceId();
@@ -204,6 +211,52 @@ public class DetailsListViewFragment extends Fragment {
                         .addOnFailureListener(mBaseActivity.onFailureListener());
             }
         }
+    }
+
+    /**
+     * Create RecyclerView
+     */
+    private void createRecyclerView() {
+        mUsersJoiningArrayList = new ArrayList<>();
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new UserJoiningAdapter(mUsersJoiningArrayList, Glide.with(this), getContext());
+        adapter.notifyDataSetChanged();
+        mRecyclerView.setAdapter(adapter);
+    }
+
+    /**
+     * Get joining users names for RecyclerView
+     */
+    private void getUsersJoiningNames(){
+        // - Get all users names
+        UserHelper.getUsersCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
+            mUsersJoiningArrayList.clear();
+            assert queryDocumentSnapshots != null;
+            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                User user = documentSnapshot.toObject(User.class);
+                // select joining users
+                if(mLunchModel.getPlaceId().equals(user.getPlaceSelectedId())){
+                    mUsersJoiningArrayList.add(user);
+                }
+            }
+            adapter.notifyDataSetChanged();
+        });
+    }
+
+    /**
+     * Get title
+     * @return title place
+     */
+    private String getTitle() {
+        return mLunchModel.getTitle();
+    }
+
+    /**
+     * Get address
+     * @return get address of place
+     */
+    private String getAddress() {
+        return mLunchModel.getAddress();
     }
 
 }

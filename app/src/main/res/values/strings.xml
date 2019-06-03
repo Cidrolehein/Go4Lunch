@@ -33,28 +33,44 @@
     <!-- Used in NavigationDrawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!-- Joining list text -->
+    <string name="joining_list_txt">%1$s is joining !</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- Blank fragment text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Background image -->
     <string name="background_image">background image</string>
+    <!-- Place title -->
     <string name="place_title">Title</string>
+    <!-- Separator -->
     <string name="separator">-</string>
+    <!-- Place address example -->
     <string name="address">12 rue du faubourg Poissonnière</string>
+    <!-- Type of place example -->
     <string name="type">French</string>
+    <!-- Open date example -->
     <string name="open_date">Open until 7pm</string>
+    <!-- Distance example -->
     <string name="distance">120m</string>
+    <!-- Number of people who select place -->
     <string name="people_number">(3)</string>
+    <!-- User information -->
     <string name="info_no_username_found">No username found</string>
     <string name="info_no_email_found">No email found</string>
     <string name="first_name_and_second_name">First name and Second Name</string>
     <string name="e_mail">E-Mail</string>
+    <!-- Rating -->
     <string name="star_rating_1">star rating 1</string>
     <string name="star_rating_2">star rating 2</string>
     <string name="star_rating_3">star rating 3</string>
     <string name="star_rating_4">star rating 4</string>
+    <!-- Place picture -->
     <string name="place_image">Place Image</string>
+    <!-- User icon -->
     <string name="icon">icon</string>
+    <!-- Title map -->
     <string name="title_activity_maps">Map</string>
+    <!-- Image header -->
     <string name="image_header">image header</string>
     <string name="title">Title</string>
     <string name="address_header">Address header</string>
@@ -65,6 +81,7 @@
     <string name="website_icon_orange">website icon orange</string>
     <string name="star_icon_orange">star icon orange</string>
     <string name="image_header_list_details">Image header list details</string>
+    <!-- User image -->
     <string name="user_image">user_image</string>
     <string name="user_name">User name</string>
     <string name="place_name">place name</string>

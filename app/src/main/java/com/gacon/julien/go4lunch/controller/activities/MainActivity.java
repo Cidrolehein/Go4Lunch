@@ -44,14 +44,16 @@ public class MainActivity extends BaseActivity {
     // --------------------
 
     // - Http request that create user in firestore
-    private void createUserInFirestore(){
+    private void createUserInFirestore() {
 
-        if (this.getCurrentUser() != null){
+        if (this.getCurrentUser() != null) {
 
-            String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
+            String urlPicture = (this.getCurrentUser().getPhotoUrl() != null)
+                    ? this.getCurrentUser().getPhotoUrl().toString() : null;
             String username = this.getCurrentUser().getDisplayName();
             String uid = this.getCurrentUser().getUid();
-            UserHelper.createUser(uid, username, urlPicture, null, null).addOnFailureListener(this.onFailureListener());
+            UserHelper.createUser(uid, username, urlPicture, null, null)
+                    .addOnFailureListener(this.onFailureListener());
         }
     }
 

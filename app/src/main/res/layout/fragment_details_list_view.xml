@@ -92,11 +92,12 @@
                         android:contentDescription="@string/call_icon_orange"
                         android:src="@drawable/ic_call_orange_24dp" />
 
-                    <ImageView
-                        android:id="@+id/like_imageview"
+                    <ImageButton
+                        android:id="@+id/like_imagebutton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
+                        android:background="@android:color/transparent"
                         android:contentDescription="@string/star_icon_orange"
                         android:src="@drawable/ic_star_orange_24dp" />
 

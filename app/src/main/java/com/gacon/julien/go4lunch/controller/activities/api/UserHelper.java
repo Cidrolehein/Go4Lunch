@@ -1,5 +1,6 @@
 package com.gacon.julien.go4lunch.controller.activities.api;
 
+import com.gacon.julien.go4lunch.models.PlaceRating;
 import com.gacon.julien.go4lunch.models.User;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -10,11 +11,18 @@ import com.google.firebase.firestore.Query;
 public class UserHelper {
 
     private static final String COLLECTION_NAME = "users";
+    private static final String SUB_COLLECTION_NAME = "PlaceRating";
 
     // --- COLLECTION REFERENCE ---
 
     public static CollectionReference getUsersCollection(){
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
+    }
+
+    // --- SUB-COLLECTION ---
+
+    private static CollectionReference getPlaceRatingCollection(String uid){
+        return FirebaseFirestore.getInstance().collection(COLLECTION_NAME).document(uid).collection(SUB_COLLECTION_NAME);
     }
 
     // --- CREATE ---
@@ -29,10 +37,29 @@ public class UserHelper {
                 .set(userToCreate); // Setting object for Document
     }
 
+    // create subcollection placeRating for rate each place by user
+    public static Task<Void> createPlaceRating(String placeId, String rating, String uid){
+        PlaceRating placeRatingToCreate = new PlaceRating(rating);
+        return UserHelper.getPlaceRatingCollection(uid)
+                .document(placeId)
+                .set(placeRatingToCreate);
+    }
+
     // --- GET ---
 
     public static Task<DocumentSnapshot> getUser(String uid){
         return UserHelper.getUsersCollection().document(uid).get();
+    }
+
+    public static Task<DocumentSnapshot> getRating(String placeId, String uid){
+        return UserHelper.getPlaceRatingCollection(uid).document(placeId).get();
+    }
+
+    public static Query getAllRating(String uid){
+        return UserHelper.getPlaceRatingCollection(uid)
+                .document()
+                .collection(SUB_COLLECTION_NAME)
+                .limit(3);
     }
 
     // --- UPDATE ---

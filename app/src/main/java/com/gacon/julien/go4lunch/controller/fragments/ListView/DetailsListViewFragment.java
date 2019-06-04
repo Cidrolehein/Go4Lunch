@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,21 +51,23 @@ public class DetailsListViewFragment extends Fragment {
     ImageView imageHeader;
     @BindView(R.id.web_imageview)
     ImageButton webImageBtnView;
-    @BindView(R.id.like_imageview)
-    ImageView likeImageView;
+    @BindView(R.id.like_imagebutton)
+    ImageButton likeImageView;
     @BindView(R.id.call_imageview)
     ImageButton callImageView;
     @BindView(R.id.select_place_btn)
     Button btnSelectPlace;
     @BindView(R.id.recycler_view_users_joining)
     RecyclerView mRecyclerView;
+    @BindView(R.id.rating_bar)
+    RatingBar mRatingBar;
 
-    private ProfileActivity mProfileActivity;
     private BaseActivity mBaseActivity;
     private DataFormat mDataFormat;
     private LunchModel mLunchModel;
     private ArrayList<User> mUsersJoiningArrayList;
     private UserJoiningAdapter adapter;
+    private ProfileActivity profileActivity;
 
     /**
      * Required empty public constructor
@@ -78,8 +81,10 @@ public class DetailsListViewFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_details_list_view, container, false);
         ButterKnife.bind(this, view);
-        mProfileActivity = (ProfileActivity) getActivity();
         mBaseActivity = (BaseActivity) getActivity();
+        profileActivity = (ProfileActivity) getActivity();
+        assert profileActivity != null;
+        mLunchModel = profileActivity.getLunch();
         mDataFormat = new DataFormat();
         // get data and put in the layout
         getLayoutElements();
@@ -100,6 +105,12 @@ public class DetailsListViewFragment extends Fragment {
         updatePlaceName();
     }
 
+    @OnClick(R.id.like_imagebutton)
+    void likeBtnSelected() {
+        // Rating bar and like
+        addPlaceLike();
+    }
+
     /**
      * Hide toolbar
      */
@@ -110,7 +121,7 @@ public class DetailsListViewFragment extends Fragment {
         Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity()))
                 .getSupportActionBar()).hide();
         // change color of system bar
-        mProfileActivity.updateStatusBarColor(getActivity(),
+        profileActivity.updateStatusBarColor(getActivity(),
                 mDataFormat.changeColorToHex(R.color.black_transparency, getContext()));
     }
 
@@ -125,7 +136,7 @@ public class DetailsListViewFragment extends Fragment {
         Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity()))
                 .getSupportActionBar()).show();
         // change color of system bar
-        mProfileActivity.updateStatusBarColor(getActivity(),
+        profileActivity.updateStatusBarColor(getActivity(),
                 mDataFormat.changeColorToHex(R.color.colorPrimaryDark, getContext()));
     }
 
@@ -133,9 +144,6 @@ public class DetailsListViewFragment extends Fragment {
      * get data for layout
      */
     private void getLayoutElements() {
-        ProfileActivity profileActivity = (ProfileActivity) getActivity();
-        assert profileActivity != null;
-        mLunchModel = profileActivity.getLunch();
         assert mLunchModel != null;
         // Set Title and Address in layout
         mTextViewTitle.setText(getTitle());
@@ -147,6 +155,25 @@ public class DetailsListViewFragment extends Fragment {
         // PhoneCall
         createPhoneCall();
 
+    }
+
+    private void addPlaceLike(){
+        likeImageView.setOnClickListener(v -> {
+            // Getting the rating and displaying it on the toast
+            String rating = String.valueOf(mRatingBar.getRating());
+            Toast.makeText(getContext(), rating, Toast.LENGTH_LONG).show();
+            createPlaceRatingInFirestore();
+        });
+    }
+
+    private void createPlaceRatingInFirestore(){
+        if (mRatingBar != null) {
+            String rating = String.valueOf(mRatingBar.getRating());
+            String placeId = mLunchModel.getPlaceId();
+            UserHelper.createPlaceRating(placeId, rating,
+                    Objects.requireNonNull(mBaseActivity.getCurrentUser()).getUid())
+                    .addOnFailureListener(mBaseActivity.onFailureListener());
+        }
     }
 
     /**

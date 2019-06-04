@@ -21,11 +21,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
     // For data
     private ArrayList<User> mUserList;
     private RequestManager mGlide;
+    private Context mContext;
 
     // Constructor
-    public UserAdapter(ArrayList<User> userList, RequestManager glide) {
+    public UserAdapter(ArrayList<User> userList, RequestManager glide, Context context) {
         this.mUserList = userList;
         this.mGlide = glide;
+        this.mContext = context;
     }
 
     @NonNull
@@ -40,7 +42,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        holder.updateWithUser(this.mUserList.get(position), this.mGlide);
+        holder.updateWithUser(this.mUserList.get(position), this.mGlide, this.mContext);
     }
 
     @Override

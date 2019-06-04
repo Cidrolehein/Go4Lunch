@@ -1,5 +1,6 @@
 package com.gacon.julien.go4lunch.view.userAdapter;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,8 +22,6 @@ class UserViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.user_name)
     TextView mUsername;
-    @BindView(R.id.place_name)
-    TextView mPlaceName;
     @BindView(R.id.user_image)
     ImageView mUserPicture;
 
@@ -36,23 +35,22 @@ class UserViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    void updateWithUser(User user, RequestManager glide) {
+    void updateWithUser(User user, RequestManager glide, Context context) {
 
         DataFormat dataFormat = new DataFormat();
 
         if (user.getPlaceName() != null) {
-        // Update username
-        if (user.getUsername() != null) {
-            // set username
-            this.mUsername.setText(user.getUsername());
-        }
-        // Update place selected
-            // set placename
-            this.mPlaceName.setText(" is eating at "+user.getPlaceName());
+            // Update username
+            if (user.getUsername() != null) {
+                // set username
+                String message = context.getString(R.string.user_place_selected, user.getUsername(),
+                        user.getPlaceName());
+                this.mUsername.setText(message);
+            }
         } else {
-            this.mPlaceName.setText(" hasn't decided yet");
+            String message = context.getString(R.string.user_not_place_selected, user.getUsername());
+            this.mUsername.setText(message);
             // change color text
-            changeTextColorToGrey(this.mPlaceName, dataFormat);
             changeTextColorToGrey(this.mUsername, dataFormat);
         }
 
@@ -64,11 +62,16 @@ class UserViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    private void changeTextColorToGrey(TextView textView, DataFormat dataFormat){
+    /**
+     * Change the color of the non selected place
+     * @param textView textView where we put text
+     * @param dataFormat change format to hexadecimal
+     */
+    private void changeTextColorToGrey(TextView textView, DataFormat dataFormat) {
         textView.setTextColor
                 (Color.parseColor(dataFormat
                         .changeColorToHex(R.color.grey,
-                                mPlaceName.getContext())));
+                                mUsername.getContext())));
     }
 
 }

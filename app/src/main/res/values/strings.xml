@@ -37,6 +37,10 @@
     <string name="joining_list_txt">%1$s is joining !</string>
     <!-- Joining list text -->
     <string name="count_users">(%1$d)</string>
+    <!-- Place selected by user -->
+    <string name="user_place_selected">%1$s is eating at %2$s</string>
+    <!-- User don't select place -->
+    <string name="user_not_place_selected">%1$s hasn\'t decided yet</string>
 
     <!-- Blank fragment text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

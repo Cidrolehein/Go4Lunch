@@ -54,7 +54,7 @@ public class WorkmatesFragment extends BaseFragment {
     private void createRecyclerView() {
         mUserArrayList = new ArrayList<>();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new UserAdapter(mUserArrayList, Glide.with(this));
+        adapter = new UserAdapter(mUserArrayList, Glide.with(this), getContext());
         mRecyclerView.setAdapter(adapter);
     }
 

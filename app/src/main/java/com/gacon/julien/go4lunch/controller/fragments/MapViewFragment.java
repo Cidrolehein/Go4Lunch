@@ -46,6 +46,7 @@ public class MapViewFragment extends BaseFragment {
     private BaseActivity baseActivity;
     private HashMap<String, Marker> markerHashMap;
     private ArrayList<String> markersPlacesIdsList;
+    private int markerTag;
 
 
     public MapViewFragment() {
@@ -169,6 +170,7 @@ public class MapViewFragment extends BaseFragment {
         // Get Current Location
         baseActivity.getDeviceLocation();
         int modelSize = baseActivity.getModel().size();
+        markerTag = 0;
         for (int i = 0; i < modelSize; i++) {
             createAllMarkersWithOptions(i);
             String markerId = baseActivity.getModel().get(i).getPlaceId();
@@ -196,6 +198,9 @@ public class MapViewFragment extends BaseFragment {
                     .position(latLng)
                     .title(markerTitle)
                     .snippet("Marker Description"));
+            // set marker to identify the position on the detail list
+            marker.setTag(markerTag);
+            markerTag = markerTag + 1;
             // make hashmap to put all markers
             String placeId = baseActivity.getModel().get(position).getPlaceId();
             markerHashMap.put(placeId, marker);

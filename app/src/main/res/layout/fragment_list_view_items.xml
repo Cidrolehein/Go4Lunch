@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -104,15 +104,6 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/star_rating_4"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:contentDescription="@string/star_rating_1"
-                        android:gravity="end"
-                        android:layout_gravity="bottom"
-                        android:src="@drawable/ic_star_yellow_24dp" />
-
-                    <ImageView
                         android:id="@+id/star_rating_3"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
@@ -152,5 +143,5 @@
                 android:src="@drawable/go4lunch_connexion_background" />
 
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>

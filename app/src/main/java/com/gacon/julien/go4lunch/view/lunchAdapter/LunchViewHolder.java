@@ -2,18 +2,18 @@ package com.gacon.julien.go4lunch.view.lunchAdapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gacon.julien.go4lunch.R;
-import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
+import com.gacon.julien.go4lunch.controller.activities.api.PlaceRatingHelper;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.models.PlaceRating;
 import com.gacon.julien.go4lunch.models.User;
 import com.gacon.julien.go4lunch.view.utils.DataFormat;
 import com.gacon.julien.go4lunch.view.utils.GetHours;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,8 +43,6 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
     ImageView mStarRating2;
     @BindView(R.id.star_rating_3)
     ImageView mStarRating3;
-    @BindView(R.id.star_rating_4)
-    ImageView mStarRating4;
 
     private LunchAdapter.OnNoteListener mOnNoteListener;
 
@@ -72,7 +70,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
         this.mTextViewAddress.setText(newLunch.getAddress());
 
         // set Rating
-        dataFormat.getRatingStar(newLunch.getPlace_rating(), mStarRating1, mStarRating2, mStarRating3, mStarRating4);
+        setRates(newLunch, context, dataFormat);
 
         // set time
         if (newLunch.getPeriods() != null) {
@@ -102,19 +100,37 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
 
     }
 
+    private void setRates(LunchModel newLunch, Context context, DataFormat dataFormat) {
+        // get rate from firestore
+        // get the current place id
+        String placeId = newLunch.getPlaceId();
+        // if exist, get the rate from firestore
+        PlaceRatingHelper.getRating(placeId).addOnSuccessListener(documentSnapshot -> {
+            PlaceRating currentRate = documentSnapshot.toObject(PlaceRating.class);
+            String oldRateOfString = "0";
+            if (currentRate != null && currentRate.getPlaceRating() != null) {
+                oldRateOfString = TextUtils.isEmpty(currentRate.getPlaceRating()) ?
+                        context.getString(R.string.rate_is_not_found) : currentRate.getPlaceRating();
+            }
+            // pass string to float
+            dataFormat.getRatingStar(dataFormat.passStringToFloat(oldRateOfString), mStarRating1, mStarRating2, mStarRating3);
+        });
+    }
+
     /**
      * Count how many users selected the current place
-     * @param users arraylist of users
+     *
+     * @param users    arraylist of users
      * @param newLunch data for place id
      * @return number of users
      */
-    private int countUsersPlaceSelected(ArrayList<User> users, LunchModel newLunch){
+    private int countUsersPlaceSelected(ArrayList<User> users, LunchModel newLunch) {
         int count = 0;
-        if(users != null){
-            for (int i  = 0; i < users.size(); i++){
-                if(users.get(i).getPlaceSelectedId() != null){
+        if (users != null) {
+            for (int i = 0; i < users.size(); i++) {
+                if (users.get(i).getPlaceSelectedId() != null) {
                     String userId = users.get(i).getPlaceSelectedId();
-                    if (userId.equals(newLunch.getPlaceId())){
+                    if (userId.equals(newLunch.getPlaceId())) {
                         count++;
                     }
                 }

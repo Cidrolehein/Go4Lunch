@@ -6,6 +6,7 @@ public class PlaceRating {
     private String placeId;
 
     public PlaceRating() {
+        // Need empty constructor
     }
 
 

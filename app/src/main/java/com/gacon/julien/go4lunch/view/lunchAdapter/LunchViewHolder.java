@@ -7,10 +7,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gacon.julien.go4lunch.R;
+import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
 import com.gacon.julien.go4lunch.models.LunchModel;
+import com.gacon.julien.go4lunch.models.PlaceRating;
 import com.gacon.julien.go4lunch.models.User;
 import com.gacon.julien.go4lunch.view.utils.DataFormat;
 import com.gacon.julien.go4lunch.view.utils.GetHours;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -96,6 +99,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
 
         String countToString = context.getString(R.string.count_users, count);
         this.mTextViewPeopleNumber.setText(countToString);
+
     }
 
     /**
@@ -129,4 +133,5 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
         mOnNoteListener.onNoteClick(getAdapterPosition());
 
     }
+
 }

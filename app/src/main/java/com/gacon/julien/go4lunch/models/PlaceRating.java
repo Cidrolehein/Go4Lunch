@@ -3,9 +3,15 @@ package com.gacon.julien.go4lunch.models;
 public class PlaceRating {
 
     private String placeRating;
+    private String placeId;
 
-    public PlaceRating(String placeRating) {
+    public PlaceRating() {
+    }
+
+
+    public PlaceRating(String placeRating, String placeId) {
         this.placeRating = placeRating;
+        this.placeId = placeId;
     }
 
     public String getPlaceRating() {

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,14 +24,20 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.ProfileActivity;
+import com.gacon.julien.go4lunch.controller.activities.api.PlaceRatingHelper;
 import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.models.LunchModel;
+import com.gacon.julien.go4lunch.models.PlaceRating;
 import com.gacon.julien.go4lunch.models.User;
 import com.gacon.julien.go4lunch.view.userJoiningAdapter.UserJoiningAdapter;
 import com.gacon.julien.go4lunch.view.utils.DataFormat;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -157,7 +164,7 @@ public class DetailsListViewFragment extends Fragment {
 
     }
 
-    private void addPlaceLike(){
+    private void addPlaceLike() {
         likeImageView.setOnClickListener(v -> {
             // Getting the rating and displaying it on the toast
             String rating = String.valueOf(mRatingBar.getRating());
@@ -166,13 +173,53 @@ public class DetailsListViewFragment extends Fragment {
         });
     }
 
-    private void createPlaceRatingInFirestore(){
+    private void createPlaceRatingInFirestore() {
         if (mRatingBar != null) {
+            // get the value from rating bar
             String rating = String.valueOf(mRatingBar.getRating());
+            // get the current place id
             String placeId = mLunchModel.getPlaceId();
-            UserHelper.createPlaceRating(placeId, rating,
-                    Objects.requireNonNull(mBaseActivity.getCurrentUser()).getUid())
-                    .addOnFailureListener(mBaseActivity.onFailureListener());
+            // if exist, get the rating from firestore
+            PlaceRatingHelper.getRating(placeId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    PlaceRating currentRate = documentSnapshot.toObject(PlaceRating.class);
+                    String oldRateOfString = "0";
+                    if (currentRate != null && currentRate.getPlaceRating() != null) {
+                        oldRateOfString = TextUtils.isEmpty(currentRate.getPlaceRating()) ?
+                                getString(R.string.rate_is_not_found) : currentRate.getPlaceRating();
+                    }
+                    // change string of old rate to float
+                    float oldRate = 0;
+                    if (oldRateOfString != null) {
+                        try {
+                            oldRate = Float.valueOf(oldRateOfString);
+                        } catch (NumberFormatException ex) {
+                            DecimalFormat df = new DecimalFormat();
+                            Number n = null;
+                            try {
+                                n = df.parse(oldRateOfString);
+                            } catch (NumberFormatException ex2) {
+                                if (n != null)
+                                    oldRate = n.floatValue();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    // get the new rate
+                    float newRate = mRatingBar.getRating();
+                    // make average of old and new rating
+                    float averageOfRates = (oldRate + newRate) / 2;
+                    // Round up
+                    int roundOfAverage = Math.round(averageOfRates);
+                    // transform average of rate to string
+                    String ratesAverageOfString = Float.toString(roundOfAverage);
+                    // put the new average on firebase
+                    PlaceRatingHelper.createPlaceRating(ratesAverageOfString, placeId)
+                            .addOnFailureListener(mBaseActivity.onFailureListener());
+                }
+            });
         }
     }
 
@@ -254,15 +301,15 @@ public class DetailsListViewFragment extends Fragment {
     /**
      * Get joining users names for RecyclerView
      */
-    private void getUsersJoiningNames(){
+    private void getUsersJoiningNames() {
         // - Get all users names
         UserHelper.getUsersCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
             mUsersJoiningArrayList.clear();
             assert queryDocumentSnapshots != null;
-            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                 User user = documentSnapshot.toObject(User.class);
                 // select joining users
-                if(mLunchModel.getPlaceId().equals(user.getPlaceSelectedId())){
+                if (mLunchModel.getPlaceId().equals(user.getPlaceSelectedId())) {
                     mUsersJoiningArrayList.add(user);
                 }
             }
@@ -272,6 +319,7 @@ public class DetailsListViewFragment extends Fragment {
 
     /**
      * Get title
+     *
      * @return title place
      */
     private String getTitle() {
@@ -280,6 +328,7 @@ public class DetailsListViewFragment extends Fragment {
 
     /**
      * Get address
+     *
      * @return get address of place
      */
     private String getAddress() {

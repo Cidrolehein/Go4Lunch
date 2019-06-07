@@ -91,5 +91,6 @@
     <string name="user_image">user_image</string>
     <string name="user_name">User name</string>
     <string name="place_name">place name</string>
+    <string name="rate_is_not_found">Rate is not found</string>
 
 </resources>

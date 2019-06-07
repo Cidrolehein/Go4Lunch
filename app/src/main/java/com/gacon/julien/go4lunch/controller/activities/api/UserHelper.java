@@ -21,8 +21,8 @@ public class UserHelper {
 
     // --- SUB-COLLECTION ---
 
-    private static CollectionReference getPlaceRatingCollection(String uid){
-        return FirebaseFirestore.getInstance().collection(COLLECTION_NAME).document(uid).collection(SUB_COLLECTION_NAME);
+    public static CollectionReference getPlaceRatingCollection(String uid, String placeId){
+        return FirebaseFirestore.getInstance().collection(COLLECTION_NAME).document(uid).collection(placeId);
     }
 
     // --- CREATE ---
@@ -37,14 +37,6 @@ public class UserHelper {
                 .set(userToCreate); // Setting object for Document
     }
 
-    // create subcollection placeRating for rate each place by user
-    public static Task<Void> createPlaceRating(String placeId, String rating, String uid){
-        PlaceRating placeRatingToCreate = new PlaceRating(rating);
-        return UserHelper.getPlaceRatingCollection(uid)
-                .document(placeId)
-                .set(placeRatingToCreate);
-    }
-
     // --- GET ---
 
     public static Task<DocumentSnapshot> getUser(String uid){
@@ -52,11 +44,11 @@ public class UserHelper {
     }
 
     public static Task<DocumentSnapshot> getRating(String placeId, String uid){
-        return UserHelper.getPlaceRatingCollection(uid).document(placeId).get();
+        return UserHelper.getPlaceRatingCollection(placeId, uid).document(placeId).get();
     }
 
-    public static Query getAllRating(String uid){
-        return UserHelper.getPlaceRatingCollection(uid)
+    public static Query getAllRating(String uid, String placeId){
+        return UserHelper.getPlaceRatingCollection(uid, placeId)
                 .document()
                 .collection(SUB_COLLECTION_NAME)
                 .limit(3);

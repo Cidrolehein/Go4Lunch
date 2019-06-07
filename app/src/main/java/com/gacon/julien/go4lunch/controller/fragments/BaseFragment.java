@@ -107,8 +107,4 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
         });
     }
 
-    protected void getPlacesRatings(User user){
-        UserHelper.getAllRating(user.getUid());
-    }
-
 }

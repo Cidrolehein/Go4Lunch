@@ -104,7 +104,8 @@ public class BaseActivity extends AppCompatActivity {
                         .setAvailableProviders(
                                 Arrays.asList(
                                         new AuthUI.IdpConfig.GoogleBuilder().build(),
-                                        new AuthUI.IdpConfig.FacebookBuilder().build()))
+                                        new AuthUI.IdpConfig.FacebookBuilder().build(),
+                                        new AuthUI.IdpConfig.TwitterBuilder().build()))
                         .setIsSmartLockEnabled(false, true)
                         .build(),
                 RC_SIGN_IN);
@@ -386,6 +387,11 @@ public class BaseActivity extends AppCompatActivity {
             Log.e(TAG, "Place not found: " + apiException.getStatusCode());
         }
     }
+
+
+    // --------------------
+    // AUTOCOMPLETE
+    // --------------------
 
     /**
      * Create AutoComplete

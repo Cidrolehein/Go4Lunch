@@ -2,6 +2,9 @@
     <!-- Activities titles -->
     <string name="app_name">Go4Lunch</string>
     <string name="toolbar_title_login_activity">I\'m Hungry !</string>
+    <!-- Twitter Auth -->
+    <string name="twitter_consumer_key" translatable="false">YhCzi2IwtAmFQpWTHmrmfecQt</string>
+    <string name="twitter_consumer_secret" translatable="false">7WKHA9YTmUJSSnq8DZmeB9eMA3lcnVfy6kHmoKRMPhsZNwU7Wc</string>
     <!-- SubTitleConnection -->
     <string name="sub_title_connection">Find a nice restaurant and invite your co-workers for lunch !</string>
     <!-- Text button -->

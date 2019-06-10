@@ -10,11 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.gacon.julien.go4lunch.R;
+import com.gacon.julien.go4lunch.controller.activities.ProfileActivity;
 import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.models.User;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -26,11 +29,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+
 import butterknife.ButterKnife;
 
 /**
@@ -60,7 +66,10 @@ public class MapViewFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_map_view, container, false);
         ButterKnife.bind(this, view);
         baseActivity = (BaseActivity) getActivity();
-        createMapView(view, savedInstanceState);
+        createMapView(view, savedInstanceState); // add Google Map
+        addAutoComplete(); // add auto complete for search
+
+
         return view;
     }
 
@@ -100,7 +109,8 @@ public class MapViewFragment extends BaseFragment {
 
     /**
      * Create Google Map
-     * @param view MapView
+     *
+     * @param view               MapView
      * @param savedInstanceState getData from bundle
      */
     private void createMapView(View view, Bundle savedInstanceState) {
@@ -145,18 +155,27 @@ public class MapViewFragment extends BaseFragment {
                     getMarkers();
                     getAllPlacesSelected();
                     // Set a listener for info window events
-                    mMap.setOnInfoWindowClickListener(marker -> {
-                        Integer markerTag = (Integer) marker.getTag();
-                        if (markerTag != null)
-                            setLunchList(markerTag);
-                        createDetailFragment();
-                    });
+                    initializeLunchListAndCreatDetailFragment(mMap);
                 } else {
                     // A local method to request required permissions;
                     // See https://developer.android.com/training/permissions/requesting
                     baseActivity.getLocationPermission();
                 }
             }
+        });
+    }
+
+    /**
+     * add data on lunch model and build details fragment
+     *
+     * @param mMap GoogleMap
+     */
+    private void initializeLunchListAndCreatDetailFragment(GoogleMap mMap) {
+        mMap.setOnInfoWindowClickListener(marker -> {
+            Integer markerTag = (Integer) marker.getTag();
+            if (markerTag != null)
+                setLunchList(markerTag);
+            createDetailFragment();
         });
     }
 
@@ -176,12 +195,21 @@ public class MapViewFragment extends BaseFragment {
             String markerId = baseActivity.getModel().get(i).getPlaceId();
             // create a list of markers ids
             markersPlacesIdsList.add(markerId);
-
         }
         // For dropping a marker at a point on the Map
         LatLng currentPosition = new LatLng(baseActivity.getCurrentLatitude(), baseActivity.getCurrentLongitude());
         // For zooming automatically to the location of the marker
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(currentPosition).zoom(17).build();
+        getCameraPosition(currentPosition);
+    }
+
+    /**
+     * Change the camera position on the map
+     *
+     * @param position new position LatLng
+     */
+    private void getCameraPosition(LatLng position) {
+        // For zooming automatically to the location of the marker
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(position).zoom(17).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
@@ -194,10 +222,8 @@ public class MapViewFragment extends BaseFragment {
         LatLng latLng = baseActivity.getLatLngArrayList().get(position);
         String markerTitle = baseActivity.getModel().get(position).getTitle();
         if (latLng != null && markerTitle != null) {
-            Marker marker = googleMap.addMarker(new MarkerOptions()
-                    .position(latLng)
-                    .title(markerTitle)
-                    .snippet("Marker Description"));
+            // Add marker on map
+            Marker marker = googleMapMarker(latLng, markerTitle);
             // set marker to identify the position on the detail list
             marker.setTag(markerTag);
             markerTag = markerTag + 1;
@@ -205,6 +231,61 @@ public class MapViewFragment extends BaseFragment {
             String placeId = baseActivity.getModel().get(position).getPlaceId();
             markerHashMap.put(placeId, marker);
         }
+    }
+
+    /**
+     * Create a new marker on the map
+     *
+     * @param latLng      marker position
+     * @param markerTitle marker title
+     * @return return new marker
+     */
+    private Marker googleMapMarker(LatLng latLng, String markerTitle) {
+        return googleMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title(markerTitle)
+                .snippet("Marker Description"));
+    }
+
+    /**
+     * Add AutoComplete on the map, change the camera position and add some data to lunch model to create
+     * a new details fragment
+     */
+    private void addAutoComplete() {
+        baseActivity.getAutoComplete(R.id.autocomplete_fragment).setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                ProfileActivity profileActivity = (ProfileActivity) getActivity();
+                LatLng newMarkerLatlng = place.getLatLng(); // longitude and latitude of the place
+                String newMarkerTitle = place.getName(); // name place
+                float distanceinmetter = 0;
+                String type = "";
+                markerTag = markerTag + 1; // increment marker tag
+                Marker newMarker = googleMapMarker(newMarkerLatlng, newMarkerTitle); // create a new marker place
+                newMarker.setTag(markerTag); // with a new tag
+                newMarker.showInfoWindow(); // show info windows enable
+                markerHashMap.put(place.getId(), newMarker); // add marker on the hashmap
+                getAllPlacesSelected(); // add the place selected
+                getCameraPosition(newMarkerLatlng); // move the camera
+                // marker clickable
+                googleMap.setOnInfoWindowClickListener(marker -> {
+                    Integer markerTag = (Integer) marker.getTag();
+                    if (markerTag != null)
+                    // push data to details view fragment
+                    {
+                        assert profileActivity != null;
+                        profileActivity.setLunch
+                                (autoCompleteNewLunchModel(place, baseActivity, type, distanceinmetter));
+                    }
+                    createDetailFragment();
+                });
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+                Toast.makeText(baseActivity, "No marker found", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**

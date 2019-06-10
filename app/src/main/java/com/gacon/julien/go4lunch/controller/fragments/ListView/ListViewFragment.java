@@ -11,12 +11,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.gacon.julien.go4lunch.R;
+import com.gacon.julien.go4lunch.controller.activities.ProfileActivity;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.controller.fragments.BaseFragment;
 import com.gacon.julien.go4lunch.models.User;
 import com.gacon.julien.go4lunch.view.lunchAdapter.LunchAdapter;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import java.util.ArrayList;
 
@@ -63,10 +68,12 @@ public class ListViewFragment extends BaseFragment {
         adapter = new LunchAdapter(baseActivity.getModel(), this, usersList, getContext());
         adapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(adapter);
+        autocomplete();
     }
 
     /**
      * Search Menu
+     *
      * @param menu Menu
      */
     @Override
@@ -74,6 +81,28 @@ public class ListViewFragment extends BaseFragment {
         MenuItem item = menu.findItem(R.menu.menu_activity);
         if (item != null)
             item.setVisible(false);
+    }
+
+    /**
+     * Add autocomplete search on fragment with details
+     */
+    private void autocomplete() {
+        String type = "";
+        float distanceInMetter = 0;
+        ProfileActivity profileActivity = (ProfileActivity) getActivity();
+        baseActivity.getAutoComplete(R.id.autocomplete_fragment).setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                assert profileActivity != null;
+                profileActivity.setLunch(autoCompleteNewLunchModel(place, baseActivity, type, distanceInMetter));
+                createDetailFragment();
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+                Toast.makeText(baseActivity, "No place detail found", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

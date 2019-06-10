@@ -5,7 +5,6 @@ import android.location.Location;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -18,7 +17,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -29,6 +27,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -61,6 +60,7 @@ public class BaseActivity extends AppCompatActivity {
     protected PlacesClient mPlacesDetails;
     protected List<Place.Field> placeFields;
     protected List<Place.Field> placeDetailFields;
+    protected List<Place.Field> placeAutoCompleteFields;
     protected FindCurrentPlaceRequest request;
     protected String placeId = "INSERT_PLACE_ID_HERE";
     protected ArrayList<String> arrayListPlaceId;
@@ -125,7 +125,7 @@ public class BaseActivity extends AppCompatActivity {
                     // Got last known location. In some rare situations this can be null.
                     // (ex. when Google Map is not allow)
                     currentLocation = task.getResult();
-                    if(currentLocation != null){
+                    if (currentLocation != null) {
                         currentLatitude = currentLocation.getLatitude();
                         currentLongitude = currentLocation.getLongitude();
                     }
@@ -387,6 +387,25 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Create AutoComplete
+     *
+     * @param fragmentId id of the fragment (not necessary)
+     * @return AutocompleteSupportFragment
+     */
+    public AutocompleteSupportFragment getAutoComplete(int fragmentId) {
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(fragmentId);
+
+        // Specify the types of place data to return.
+        assert autocompleteFragment != null;
+        autocompleteFragment.setPlaceFields(placeDetailFields);
+        autocompleteFragment.setCountry("fr");
+
+        return autocompleteFragment;
+    }
+
     // --------------------
     // ERROR HANDLER
     // --------------------
@@ -403,6 +422,10 @@ public class BaseActivity extends AppCompatActivity {
         return latLngArrayList;
     }
 
+    public List<Place.Field> getPlaceAutoCompleteFields() {
+        return placeAutoCompleteFields;
+    }
+
     public ArrayList<LunchModel> getModel() {
         return model;
     }
@@ -414,4 +437,9 @@ public class BaseActivity extends AppCompatActivity {
     public double getCurrentLongitude() {
         return currentLongitude;
     }
+
+    public PlacesClient getPlacesDetails() {
+        return mPlacesDetails;
+    }
+
 }

@@ -18,7 +18,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
-import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
 import com.gacon.julien.go4lunch.controller.fragments.ListView.ListViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.MapViewFragment;
@@ -52,127 +51,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     // Data
     Fragment mMapViewFragment, mListViewFragment, mWormatesFragment;
     private LunchModel lunch;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-        ButterKnife.bind(this);
-        // Configuring Toolbar, DrawerLayout and BottomView
-        this.configureToolbar();
-        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
-        this.configureNavigationView();
-        this.configureDrawerLayout();
-        // Data for place API
-        this.initPlaces();
-        this.getCurrentPlaces();
-
-    }
-
-    /**
-     * Inflate the menu and add it to the Toolbar
-     *
-     * @param menu activity menu
-     * @return the menu
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_activity, menu);
-        return true;
-    }
-
-    /**
-     * Handle actions on menu items
-     *
-     * @param item search
-     * @return item selected
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_activity_main_search) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Handle back click to close menu
-     */
-    @Override
-    public void onBackPressed() {
-        if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            this.drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    // --------------------
-    // REST REQUESTS
-    // --------------------
-
-    /**
-     * Create OnCompleteListener called after tasks ended
-     *
-     * @return is REST Resquests completed ?
-     */
-    private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted() {
-        return aVoid -> {
-            finish();
-            startActivity(new Intent(this, MainActivity.class));
-        };
-    }
-
-    // NAVIGATION DRAWER
-
-    /**
-     * Navigation on the Navigation Drawer Menu
-     * @param item Selected item
-     * @return true
-     */
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.profile_lunch:
-                if (mMapViewFragment == null) {
-                    mMapViewFragment = new MapViewFragment();
-                }
-                getFragment(mMapViewFragment);
-                break;
-            case R.id.profile_sittings:
-
-                break;
-            case R.id.profile_logout:
-                this.signOutUserFromFirebase();
-
-                break;
-            default:
-                break;
-        }
-
-        this.drawerLayout.closeDrawer(GravityCompat.START);
-
-        return true;
-    }
-
-    // --------------------
-    // UI
-    // --------------------
-
-    /**
-     * Create http requests (SignOut)
-     */
-    private void signOutUserFromFirebase() {
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted());
-    }
-
-    // ---------------------
-    // CONFIGURATION
-    // ---------------------
-
     /**
      * For the Bottom Navigation Menu
      */
@@ -204,6 +82,147 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
             };
 
     /**
+     * for change status bar color
+     *
+     * @param activity this activity
+     * @param bits     id
+     * @param on       can switch on
+     */
+    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
+        Window win = activity.getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile);
+        ButterKnife.bind(this);
+        // Configuring Toolbar, DrawerLayout and BottomView
+        this.configureToolbar();
+        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
+        this.configureNavigationView();
+        this.configureDrawerLayout();
+        // Data for place API
+        this.initPlaces();
+        this.getCurrentPlaces();
+
+    }
+
+    /**
+     * Inflate the menu and add it to the Toolbar
+     *
+     * @param menu activity menu
+     * @return the menu
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_activity, menu);
+        return true;
+    }
+
+    // --------------------
+    // REST REQUESTS
+    // --------------------
+
+    /**
+     * Handle actions on menu items
+     *
+     * @param item search
+     * @return item selected
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_activity_main_search) {
+            // AutoComplete
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // NAVIGATION DRAWER
+
+    /**
+     * Handle back click to close menu
+     */
+    @Override
+    public void onBackPressed() {
+        if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    // --------------------
+    // UI
+    // --------------------
+
+    /**
+     * Create OnCompleteListener called after tasks ended
+     *
+     * @return is REST Resquests completed ?
+     */
+    private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted() {
+        return aVoid -> {
+            finish();
+            startActivity(new Intent(this, MainActivity.class));
+        };
+    }
+
+    // ---------------------
+    // CONFIGURATION
+    // ---------------------
+
+    /**
+     * Navigation on the Navigation Drawer Menu
+     *
+     * @param item Selected item
+     * @return true
+     */
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.profile_lunch:
+                if (mMapViewFragment == null) {
+                    mMapViewFragment = new MapViewFragment();
+                }
+                getFragment(mMapViewFragment);
+                break;
+            case R.id.profile_sittings:
+
+                break;
+            case R.id.profile_logout:
+                this.signOutUserFromFirebase();
+
+                break;
+            default:
+                break;
+        }
+
+        this.drawerLayout.closeDrawer(GravityCompat.START);
+
+        return true;
+    }
+
+    /**
+     * Create http requests (SignOut)
+     */
+    private void signOutUserFromFirebase() {
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted());
+    }
+
+    /**
      * Get Fragment
      *
      * @param selectedFragment Fragment selected
@@ -230,6 +249,8 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
     }
+
+    // STATUS BAR COLOR
 
     /**
      * Configure NavigationView
@@ -263,29 +284,11 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         }
     }
 
-    // STATUS BAR COLOR
-
-    /**
-     * for change status bar color
-     * @param activity this activity
-     * @param bits id
-     * @param on can switch on
-     */
-    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
-        Window win = activity.getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        if (on) {
-            winParams.flags |= bits;
-        } else {
-            winParams.flags &= ~bits;
-        }
-        win.setAttributes(winParams);
-    }
-
     /**
      * Change status bar color depending of lvl application
+     *
      * @param activity this activity
-     * @param color get color (in hexadecimal format)
+     * @param color    get color (in hexadecimal format)
      */
     public void updateStatusBarColor(Activity activity, String color) {// Color must be in hexadecimal fromat
 

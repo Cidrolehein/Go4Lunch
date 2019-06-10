@@ -15,6 +15,7 @@ import com.gacon.julien.go4lunch.models.User;
 import com.gacon.julien.go4lunch.view.lunchAdapter.LunchAdapter;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.libraries.places.api.model.Place;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
     /**
      * Go to detail fragment when we click on description map marker
      */
-    void createDetailFragment() {
+    protected void createDetailFragment() {
         Fragment detailsListView = new DetailsListViewFragment();
         Objects.requireNonNull(this.getActivity()).getSupportFragmentManager()
                 .beginTransaction()
@@ -105,6 +106,23 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
             }
             adapter.notifyDataSetChanged();
         });
+    }
+
+    /**
+     * New lunch model for autocomplete details
+     *
+     * @param place            lunch place
+     * @param baseActivity     Activity where we find some data
+     * @param type             Type of the place (not necessary)
+     * @param distanceinmetter distance between the place and the new place (not necessary in that case)
+     * @return new lunch model
+     */
+    protected LunchModel autoCompleteNewLunchModel(Place place, BaseActivity baseActivity, String type, float distanceinmetter) {
+        return new LunchModel(place.getName(), place.getAddress(),
+                Objects.requireNonNull(place.getOpeningHours()).getPeriods(),
+                type, place.getRating(), place.getPhotoMetadatas(), place.getWebsiteUri(),
+                baseActivity.getPlaceAutoCompleteFields(), place.getId(), place,
+                baseActivity.getPlacesDetails(), distanceinmetter, place.getPhoneNumber());
     }
 
 }

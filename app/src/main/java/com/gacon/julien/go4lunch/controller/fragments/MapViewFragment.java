@@ -175,7 +175,7 @@ public class MapViewFragment extends BaseFragment {
             Integer markerTag = (Integer) marker.getTag();
             if (markerTag != null)
                 setLunchList(markerTag);
-            createDetailFragment();
+            baseActivity.createDetailFragment();
         });
     }
 
@@ -275,9 +275,9 @@ public class MapViewFragment extends BaseFragment {
                     {
                         assert profileActivity != null;
                         profileActivity.setLunch
-                                (autoCompleteNewLunchModel(place, baseActivity, type, distanceinmetter));
+                                (baseActivity.autoCompleteNewLunchModel(place, type, distanceinmetter));
                     }
-                    createDetailFragment();
+                    baseActivity.createDetailFragment();
                 });
             }
 

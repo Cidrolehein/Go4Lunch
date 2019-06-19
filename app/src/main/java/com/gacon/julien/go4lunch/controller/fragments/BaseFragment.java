@@ -34,8 +34,10 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
      */
     @Override
     public void onNoteClick(int position) {
+        BaseActivity baseActivity = (BaseActivity) getActivity();
         setLunchList(position);
-        createDetailFragment();
+        assert baseActivity != null;
+        baseActivity.createDetailFragment();
     }
 
     /**
@@ -48,17 +50,6 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
         Toast.makeText(getContext(), "Info window clicked",
                 Toast.LENGTH_SHORT).show();
 
-    }
-
-    /**
-     * Go to detail fragment when we click on description map marker
-     */
-    protected void createDetailFragment() {
-        Fragment detailsListView = new DetailsListViewFragment();
-        Objects.requireNonNull(this.getActivity()).getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.activity_main_frame_layout, detailsListView)
-                .commit();
     }
 
     /**
@@ -106,23 +97,6 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
             }
             adapter.notifyDataSetChanged();
         });
-    }
-
-    /**
-     * New lunch model for autocomplete details
-     *
-     * @param place            lunch place
-     * @param baseActivity     Activity where we find some data
-     * @param type             Type of the place (not necessary)
-     * @param distanceinmetter distance between the place and the new place (not necessary in that case)
-     * @return new lunch model
-     */
-    protected LunchModel autoCompleteNewLunchModel(Place place, BaseActivity baseActivity, String type, float distanceinmetter) {
-        return new LunchModel(place.getName(), place.getAddress(),
-                Objects.requireNonNull(place.getOpeningHours()).getPeriods(),
-                type, place.getRating(), place.getPhotoMetadatas(), place.getWebsiteUri(),
-                baseActivity.getPlaceAutoCompleteFields(), place.getId(), place,
-                baseActivity.getPlacesDetails(), distanceinmetter, place.getPhoneNumber());
     }
 
 }

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,17 +14,26 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
+import com.gacon.julien.go4lunch.controller.fragments.ListView.DetailsListViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.ListView.ListViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.MapViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.WorkmatesFragment;
 import com.gacon.julien.go4lunch.models.LunchModel;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -34,11 +44,14 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ProfileActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static final int REQUEST_SELECT_PLACE = 123;
     // - FOR DESIGN
     @BindView(R.id.activity_main_toolbar)
     Toolbar toolbar;
@@ -139,12 +152,42 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_activity_main_search:
+                Toast.makeText(this, "Activité profile", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.menu_fragment_listview:
+                Toast.makeText(this, "Fragment List View", Toast.LENGTH_LONG).show();
+                // Autocomplete
+                autocomplete();
+                return true;
+        }
         if (item.getItemId() == R.id.menu_activity_main_search) {
             // AutoComplete
 
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Add autocomplete search on fragment with details
+     */
+    private void autocomplete() {
+        String type = "";
+        float distanceInMetter = 0;
+        this.getAutoComplete(R.id.autocomplete_fragment).setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                setLunch(autoCompleteNewLunchModel(place, type, distanceInMetter));
+                createDetailFragment();
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+                Log.e("Place error", "Place error");
+            }
+        });
     }
 
     // NAVIGATION DRAWER

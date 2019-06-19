@@ -1,13 +1,16 @@
 package com.gacon.julien.go4lunch.controller.fragments.ListView;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +24,18 @@ import com.gacon.julien.go4lunch.models.User;
 import com.gacon.julien.go4lunch.view.lunchAdapter.LunchAdapter;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+import static com.gacon.julien.go4lunch.controller.activities.ProfileActivity.REQUEST_SELECT_PLACE;
 
 /**
  * ListViewFragment implement OnNoteListener for the RecyclerView Clickable
@@ -53,10 +62,17 @@ public class ListViewFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         baseActivity = (BaseActivity) getActivity();
         usersList = new ArrayList<>();
-        setHasOptionsMenu(true);
         this.createRecyclerView();
         this.getUsersNames(adapter, usersList);
+        setHasOptionsMenu(true);
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_fagment_listview, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /**
@@ -83,6 +99,23 @@ public class ListViewFragment extends BaseFragment {
             item.setVisible(false);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_SELECT_PLACE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                Log.i("Place", "Place: " + place.getName() + ", " + place.getId());
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i("Place", status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                Log.i("Place", "Place cancelled");
+            }
+        }
+    }
+
     /**
      * Add autocomplete search on fragment with details
      */
@@ -94,8 +127,8 @@ public class ListViewFragment extends BaseFragment {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 assert profileActivity != null;
-                profileActivity.setLunch(autoCompleteNewLunchModel(place, baseActivity, type, distanceInMetter));
-                createDetailFragment();
+                profileActivity.setLunch(baseActivity.autoCompleteNewLunchModel(place, type, distanceInMetter));
+                baseActivity.createDetailFragment();
             }
 
             @Override

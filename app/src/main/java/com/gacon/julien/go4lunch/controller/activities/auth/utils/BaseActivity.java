@@ -9,9 +9,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
+import com.gacon.julien.go4lunch.controller.fragments.ListView.DetailsListViewFragment;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -388,6 +390,21 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    // --------------------
+    // FRAGMENTS
+    // --------------------
+
+    /**
+     * Go to detail fragment when we click on description map marker
+     */
+    public void createDetailFragment() {
+        Fragment detailsListView = new DetailsListViewFragment();
+        this.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.activity_main_frame_layout, detailsListView)
+                .commit();
+    }
+
 
     // --------------------
     // AUTOCOMPLETE
@@ -410,6 +427,22 @@ public class BaseActivity extends AppCompatActivity {
         autocompleteFragment.setCountry("fr");
 
         return autocompleteFragment;
+    }
+
+    /**
+     * New lunch model for autocomplete details
+     *
+     * @param place            lunch place
+     * @param type             Type of the place (not necessary)
+     * @param distanceinmetter distance between the place and the new place (not necessary in that case)
+     * @return new lunch model
+     */
+    public LunchModel autoCompleteNewLunchModel(Place place, String type, float distanceinmetter) {
+        return new LunchModel(place.getName(), place.getAddress(),
+                Objects.requireNonNull(place.getOpeningHours()).getPeriods(),
+                type, place.getRating(), place.getPhotoMetadatas(), place.getWebsiteUri(),
+                getPlaceAutoCompleteFields(), place.getId(), place,
+                getPlacesDetails(), distanceinmetter, place.getPhoneNumber());
     }
 
     // --------------------

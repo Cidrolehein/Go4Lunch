@@ -15,7 +15,10 @@ import com.gacon.julien.go4lunch.models.User;
 import com.gacon.julien.go4lunch.view.lunchAdapter.LunchAdapter;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -65,7 +68,7 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
         BaseActivity baseActivity = (BaseActivity) getActivity();
         ProfileActivity profileActivity = (ProfileActivity) getActivity();
 
-        assert baseActivity != null;
+        assert baseActivity != null && baseActivity.getModel().get(position).getPeriods() != null;
         LunchModel lunch = new LunchModel(baseActivity.getModel().get(position).getTitle(),
                 baseActivity.getModel().get(position).getAddress(),
                 baseActivity.getModel().get(position).getPeriods(),
@@ -108,11 +111,44 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
      */
     protected void autocompleteIntent() {
         BaseActivity baseActivity = (BaseActivity) getActivity();
+        RectangularBounds newRectangleBound = rectangularBoundOfCurrentLocation();
         assert baseActivity != null;
         Intent intent = new Autocomplete.IntentBuilder
-                (AutocompleteActivityMode.OVERLAY, baseActivity.placeDetailFields)
+                (AutocompleteActivityMode.OVERLAY,
+                        baseActivity.placeDetailFields)
+                .setLocationRestriction(newRectangleBound) // Location Restriction ~ 1000m
+                .setTypeFilter(TypeFilter.ESTABLISHMENT) // Type Filter = businesses
                 .build(Objects.requireNonNull(getContext()));
         startActivityForResult(intent, REQUEST_SELECT_PLACE);
+    }
+
+    /**
+     * New area for place Search = 1000m around
+     * @return RectangularBounds for LocationRestriction
+     */
+    protected RectangularBounds rectangularBoundOfCurrentLocation(){
+        BaseActivity baseActivity = (BaseActivity) getActivity();
+        // Get new Latitude :
+        double earth = 6378.137;  //radius of the earth in kilometer
+        double pi = Math.PI;
+        double m = (1 / ((2 * pi / 360) * earth)) / 1000;  //1 meter in degree
+
+        assert baseActivity != null;
+        double new_latitude_a = baseActivity.getCurrentLatitude() + (1000 * m);
+        double new_latitude_b = baseActivity.getCurrentLatitude() + (-1000 * m);
+
+        // Get new Longitude :
+
+        double cos = Math.cos(baseActivity.getCurrentLatitude() * (pi / 180));
+
+        double new_longitude_a = baseActivity.getCurrentLongitude()+ (1000 * m) / cos;
+        double new_longitude_b = baseActivity.getCurrentLongitude() + (-1000 * m) / cos;
+
+        // Create new RectangleBound
+
+        return RectangularBounds.newInstance(
+                new LatLng(new_latitude_b, new_longitude_b),
+                new LatLng(new_latitude_a, new_longitude_a));
     }
 
     /**

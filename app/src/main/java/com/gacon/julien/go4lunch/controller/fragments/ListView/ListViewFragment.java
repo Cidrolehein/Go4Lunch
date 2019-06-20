@@ -136,9 +136,10 @@ public class ListViewFragment extends BaseFragment {
                 String type = ""; // no need in this case
                 float distanceInMetter = 0; // no need in this case
                 ProfileActivity profileActivity = (ProfileActivity) getActivity();
-                assert profileActivity != null;
-                profileActivity.setLunch(baseActivity.autoCompleteNewLunchModel(place, type, distanceInMetter));
-                baseActivity.createDetailFragment();
+                if(profileActivity != null && place.getOpeningHours() != null) {
+                    profileActivity.setLunch(baseActivity.autoCompleteNewLunchModel(place, type, distanceInMetter));
+                    baseActivity.createDetailFragment();
+                }
             } else if (resultCode == RESULT_CANCELED) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 this.onErrorPlaceSelect(status);

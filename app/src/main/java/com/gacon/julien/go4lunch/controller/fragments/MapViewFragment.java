@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -325,17 +326,18 @@ public class MapViewFragment extends BaseFragment {
                 getAllPlacesSelected(); // add the place selected
                 getCameraPosition(newMarkerLatlng); // move the camera
                 // marker clickable
-                googleMap.setOnInfoWindowClickListener(marker -> {
-                    Integer markerTag = (Integer) marker.getTag();
-                    if (markerTag != null)
-                    // push data to details view fragment
-                    {
-                        assert profileActivity != null;
-                        profileActivity.setLunch
-                                (baseActivity.autoCompleteNewLunchModel(place, type, distanceinmetter));
-                    }
-                    baseActivity.createDetailFragment();
-                });
+                if (profileActivity != null && place.getOpeningHours() != null) {
+                    googleMap.setOnInfoWindowClickListener(marker -> {
+                        Integer markerTag = (Integer) marker.getTag();
+                        if (markerTag != null)
+                        // push data to details view fragment
+                        {
+                            profileActivity.setLunch
+                                    (baseActivity.autoCompleteNewLunchModel(place, type, distanceinmetter));
+                        }
+                        baseActivity.createDetailFragment();
+                    });
+                }
             } else if (resultCode == RESULT_CANCELED) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 this.onErrorPlaceSelect(status);
@@ -370,5 +372,28 @@ public class MapViewFragment extends BaseFragment {
             assert marker != null;
             marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)); // change color of marker
         }
+    }
+
+    protected RectangularBounds rectangularBoundOfCurrentLocation() {
+        // Get new Latitude :
+        double earth = 6378.137;  //radius of the earth in kilometer
+        double pi = Math.PI;
+        double m = (1 / ((2 * pi / 360) * earth)) / 1000;  //1 meter in degree
+
+        double new_latitude_a = baseActivity.getCurrentLatitude() + (1000 * m);
+        double new_latitude_b = baseActivity.getCurrentLatitude() + (-1000 * m);
+
+        // Get new Longitude :
+
+        double cos = Math.cos(baseActivity.getCurrentLatitude() * (pi / 180));
+
+        double new_longitude_a = baseActivity.getCurrentLongitude() + (1000 * m) / cos;
+        double new_longitude_b = baseActivity.getCurrentLongitude() + (-1000 * m) / cos;
+
+        // Create new RectangleBound
+
+        return RectangularBounds.newInstance(
+                new LatLng(new_latitude_b, new_longitude_b),
+                new LatLng(new_latitude_a, new_longitude_a));
     }
 }

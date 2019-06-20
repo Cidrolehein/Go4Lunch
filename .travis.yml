@@ -15,6 +15,8 @@ env:
   - ANDROID_ABI=armeabi-v7a
   - ADB_INSTALL_TIMEOUT=8 # minutes (2 minutes by default)
 
+dist : trusty
+
 android:
   components:
   # The BuildTools version used by your project

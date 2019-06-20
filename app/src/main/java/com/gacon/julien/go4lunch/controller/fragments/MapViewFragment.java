@@ -374,26 +374,4 @@ public class MapViewFragment extends BaseFragment {
         }
     }
 
-    protected RectangularBounds rectangularBoundOfCurrentLocation() {
-        // Get new Latitude :
-        double earth = 6378.137;  //radius of the earth in kilometer
-        double pi = Math.PI;
-        double m = (1 / ((2 * pi / 360) * earth)) / 1000;  //1 meter in degree
-
-        double new_latitude_a = baseActivity.getCurrentLatitude() + (1000 * m);
-        double new_latitude_b = baseActivity.getCurrentLatitude() + (-1000 * m);
-
-        // Get new Longitude :
-
-        double cos = Math.cos(baseActivity.getCurrentLatitude() * (pi / 180));
-
-        double new_longitude_a = baseActivity.getCurrentLongitude() + (1000 * m) / cos;
-        double new_longitude_b = baseActivity.getCurrentLongitude() + (-1000 * m) / cos;
-
-        // Create new RectangleBound
-
-        return RectangularBounds.newInstance(
-                new LatLng(new_latitude_b, new_longitude_b),
-                new LatLng(new_latitude_a, new_longitude_a));
-    }
 }

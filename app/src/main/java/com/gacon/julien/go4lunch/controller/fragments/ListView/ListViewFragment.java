@@ -25,8 +25,6 @@ import com.gacon.julien.go4lunch.view.lunchAdapter.LunchAdapter;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import java.util.ArrayList;
 
@@ -68,6 +66,12 @@ public class ListViewFragment extends BaseFragment {
         return view;
     }
 
+    /**
+     * Create a new menu for search tools
+     *
+     * @param menu     Toolbar
+     * @param inflater Menu search on Toolbar
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
@@ -84,7 +88,6 @@ public class ListViewFragment extends BaseFragment {
         adapter = new LunchAdapter(baseActivity.getModel(), this, usersList, getContext());
         adapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(adapter);
-        autocomplete();
     }
 
     /**
@@ -99,43 +102,48 @@ public class ListViewFragment extends BaseFragment {
             item.setVisible(false);
     }
 
+    /**
+     * Handle actions on menu items
+     *
+     * @param item search
+     * @return item selected
+     */
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_SELECT_PLACE) {
-            if (resultCode == RESULT_OK) {
-                Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i("Place", "Place: " + place.getName() + ", " + place.getId());
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                // TODO: Handle the error.
-                Status status = Autocomplete.getStatusFromIntent(data);
-                Log.i("Place", status.getStatusMessage());
-            } else if (resultCode == RESULT_CANCELED) {
-                Log.i("Place", "Place cancelled");
-            }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_fragment_listview) {
+            Toast.makeText(getContext(), "Fragment List View", Toast.LENGTH_LONG).show();
+            this.autocompleteIntent();
+
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
-     * Add autocomplete search on fragment with details
+     * When user select place on autocomplete place search
+     *
+     * @param requestCode need request code
+     * @param resultCode  need result code
+     * @param data        intent
      */
-    private void autocomplete() {
-        String type = "";
-        float distanceInMetter = 0;
-        ProfileActivity profileActivity = (ProfileActivity) getActivity();
-        baseActivity.getAutoComplete(R.id.autocomplete_fragment).setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_SELECT_PLACE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                Log.i("TAG", "onActivityResult: Activity successful " + place);
+                String type = ""; // no need in this case
+                float distanceInMetter = 0; // no need in this case
+                ProfileActivity profileActivity = (ProfileActivity) getActivity();
                 assert profileActivity != null;
                 profileActivity.setLunch(baseActivity.autoCompleteNewLunchModel(place, type, distanceInMetter));
                 baseActivity.createDetailFragment();
+            } else if (resultCode == RESULT_CANCELED) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                this.onErrorPlaceSelect(status);
             }
-
-            @Override
-            public void onError(@NonNull Status status) {
-                Toast.makeText(baseActivity, "No place detail found", Toast.LENGTH_SHORT).show();
-            }
-        });
+        }
     }
 
 }

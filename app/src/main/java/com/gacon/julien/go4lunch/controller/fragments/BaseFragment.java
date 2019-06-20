@@ -1,25 +1,29 @@
 package com.gacon.julien.go4lunch.controller.fragments;
 
+import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.ProfileActivity;
 import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
-import com.gacon.julien.go4lunch.controller.fragments.ListView.DetailsListViewFragment;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.models.User;
 import com.gacon.julien.go4lunch.view.lunchAdapter.LunchAdapter;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
+import static com.gacon.julien.go4lunch.controller.activities.ProfileActivity.REQUEST_SELECT_PLACE;
 
 /**
  * Abstract class to manage fragments
@@ -97,6 +101,29 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
             }
             adapter.notifyDataSetChanged();
         });
+    }
+
+    /**
+     * Get the AutoComplete Intent Place
+     */
+    protected void autocompleteIntent() {
+        BaseActivity baseActivity = (BaseActivity) getActivity();
+        assert baseActivity != null;
+        Intent intent = new Autocomplete.IntentBuilder
+                (AutocompleteActivityMode.OVERLAY, baseActivity.placeDetailFields)
+                .build(Objects.requireNonNull(getContext()));
+        startActivityForResult(intent, REQUEST_SELECT_PLACE);
+    }
+
+    /**
+     * Error on AutoComplete
+     *
+     * @param status Error status
+     */
+    protected void onErrorPlaceSelect(Status status) {
+        Log.e("Log error", "onError: Status = " + status.toString());
+        Toast.makeText(getContext(), "Place selection failed: " + status.getStatusMessage(),
+                Toast.LENGTH_SHORT).show();
     }
 
 }

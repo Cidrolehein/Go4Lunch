@@ -1,5 +1,6 @@
 package com.gacon.julien.go4lunch.controller.fragments;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 
@@ -8,6 +9,9 @@ import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -30,7 +34,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -38,6 +42,10 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import butterknife.ButterKnife;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+import static com.gacon.julien.go4lunch.controller.activities.ProfileActivity.REQUEST_SELECT_PLACE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,8 +74,8 @@ public class MapViewFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_map_view, container, false);
         ButterKnife.bind(this, view);
         baseActivity = (BaseActivity) getActivity();
+        setHasOptionsMenu(true); // need to change the toolbar
         createMapView(view, savedInstanceState); // add Google Map
-        addAutoComplete(); // add auto complete for search
 
 
         return view;
@@ -105,6 +113,31 @@ public class MapViewFragment extends BaseFragment {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+    /**
+     * Search Menu
+     *
+     * @param menu Menu
+     */
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.menu.menu_activity);
+        if (item != null)
+            item.setVisible(false);
+    }
+
+    /**
+     * Create a new menu for search tools
+     *
+     * @param menu     Toolbar
+     * @param inflater Menu search on Toolbar
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_fagment_map, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /**
@@ -248,13 +281,37 @@ public class MapViewFragment extends BaseFragment {
     }
 
     /**
-     * Add AutoComplete on the map, change the camera position and add some data to lunch model to create
-     * a new details fragment
+     * Handle actions on menu items
+     *
+     * @param item search
+     * @return item selected
      */
-    private void addAutoComplete() {
-        baseActivity.getAutoComplete(R.id.autocomplete_fragment).setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_fragment_map) {
+            Toast.makeText(getContext(), "Fragment map", Toast.LENGTH_LONG).show();
+            this.autocompleteIntent();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * When user select place on autocomplete place search
+     *
+     * @param requestCode need request code
+     * @param resultCode  need result code
+     * @param data        intent
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_SELECT_PLACE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                Log.i("TAG", "onActivityResult: Activity successful " + place);
+
                 ProfileActivity profileActivity = (ProfileActivity) getActivity();
                 LatLng newMarkerLatlng = place.getLatLng(); // longitude and latitude of the place
                 String newMarkerTitle = place.getName(); // name place
@@ -279,13 +336,11 @@ public class MapViewFragment extends BaseFragment {
                     }
                     baseActivity.createDetailFragment();
                 });
+            } else if (resultCode == RESULT_CANCELED) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                this.onErrorPlaceSelect(status);
             }
-
-            @Override
-            public void onError(@NonNull Status status) {
-                Toast.makeText(baseActivity, "No marker found", Toast.LENGTH_SHORT).show();
-            }
-        });
+        }
     }
 
     /**

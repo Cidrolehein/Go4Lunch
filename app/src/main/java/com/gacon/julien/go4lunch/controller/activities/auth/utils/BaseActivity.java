@@ -29,7 +29,6 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -54,6 +53,7 @@ public class BaseActivity extends AppCompatActivity {
     protected static final int RC_SIGN_IN = 123;
     protected static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 123;
     public ArrayList<LunchModel> placesNameList;
+    public List<Place.Field> placeDetailFields;
     // - Location
     protected Location currentLocation;
     protected double currentLatitude;
@@ -61,7 +61,6 @@ public class BaseActivity extends AppCompatActivity {
     protected PlacesClient mPlacesClient;
     protected PlacesClient mPlacesDetails;
     protected List<Place.Field> placeFields;
-    protected List<Place.Field> placeDetailFields;
     protected List<Place.Field> placeAutoCompleteFields;
     protected FindCurrentPlaceRequest request;
     protected String placeId = "INSERT_PLACE_ID_HERE";
@@ -361,6 +360,7 @@ public class BaseActivity extends AppCompatActivity {
             // A local method to request required permissions;
             // See https://developer.android.com/training/permissions/requesting
             getLocationPermission();
+            getDeviceLocation(); // get the location again when user allow location permission
         }
     }
 
@@ -409,25 +409,6 @@ public class BaseActivity extends AppCompatActivity {
     // --------------------
     // AUTOCOMPLETE
     // --------------------
-
-    /**
-     * Create AutoComplete
-     *
-     * @param fragmentId id of the fragment (not necessary)
-     * @return AutocompleteSupportFragment
-     */
-    public AutocompleteSupportFragment getAutoComplete(int fragmentId) {
-        // Initialize the AutocompleteSupportFragment.
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getSupportFragmentManager().findFragmentById(fragmentId);
-
-        // Specify the types of place data to return.
-        assert autocompleteFragment != null;
-        autocompleteFragment.setPlaceFields(placeDetailFields);
-        autocompleteFragment.setCountry("fr");
-
-        return autocompleteFragment;
-    }
 
     /**
      * New lunch model for autocomplete details

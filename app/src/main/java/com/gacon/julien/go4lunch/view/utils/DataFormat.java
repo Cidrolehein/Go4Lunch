@@ -86,8 +86,6 @@ public class DataFormat {
         PhotoMetadata photoMetadata = Objects.requireNonNull(place.getPhotoMetadatas()).get(0);
         // Create a FetchPhotoRequest.
         FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                .setMaxWidth(500) // Optional.
-                .setMaxHeight(500) // Optional.
                 .build();
         placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
             Bitmap bitmap = fetchPhotoResponse.getBitmap();

@@ -36,7 +36,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,7 +53,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     @BindView(R.id.profile_main_bottom_navigation)
     BottomNavigationView bottomNavigationView;
     // Data
-    Fragment mMapViewFragment, mListViewFragment, mWormatesFragment;
     private LunchModel lunch;
     /**
      * For the Bottom Navigation Menu
@@ -218,16 +216,6 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted());
-    }
-
-    /**
-     * Get Fragment
-     *
-     * @param selectedFragment Fragment selected
-     */
-    private void getFragment(Fragment selectedFragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_frame_layout,
-                selectedFragment).commit();
     }
 
     /**

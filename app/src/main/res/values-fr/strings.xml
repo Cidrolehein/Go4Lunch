@@ -9,7 +9,7 @@
     <string name="call">Appeler</string>
     <string name="call_icon_orange">Icon orange d\'appel</string>
     <string name="connection_succeed">Connexion réussie</string>
-    <string name="count_users">Compte d\'utilisateurs</string>
+    <string name="count_users">(%1$d)</string>
     <string name="distance">Distance</string>
     <string name="e_mail">e-mail</string>
     <string name="error_authentication_canceled">Erreur authentification annulée</string>
@@ -24,7 +24,7 @@
     <string name="image_header_list_details">List détails image d\'entête</string>
     <string name="info_no_email_found">Pas d\'adresse mail</string>
     <string name="info_no_username_found">Nom d\'utilisateur inconnu</string>
-    <string name="joining_list_txt">Liste texte d\'utilisateurs</string>
+    <string name="joining_list_txt">%1$s on selectionné</string>
     <string name="like">Like</string>
     <string name="list_view">List de vues</string>
     <string name="log_out_button_txt">Bouton de deconnexion texte</string>
@@ -54,8 +54,8 @@
     <string name="type">Genre</string>
     <string name="user_image">Photo d\'utilisateur</string>
     <string name="user_name">Nom d\'utilisateur</string>
-    <string name="user_not_place_selected">L\'utilisateur n\'a pas selectionné de lieu</string>
-    <string name="user_place_selected">L\'utilisateur a selectionné un lieu</string>
+    <string name="user_not_place_selected">%1$s n\'a pas selectionné de lieu</string>
+    <string name="user_place_selected">%1$s mange à %2$</string>
     <string name="website">Site Internet</string>
     <string name="website_icon_orange">Icone de site orange</string>
     <string name="your_lunch">Votre restaurant</string>

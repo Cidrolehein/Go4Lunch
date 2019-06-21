@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.fragments.ListView.DetailsListViewFragment;
+import com.gacon.julien.go4lunch.controller.fragments.MapViewFragment;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -68,6 +69,7 @@ public class BaseActivity extends AppCompatActivity {
     protected Task<FindCurrentPlaceResponse> placeResponse;
     protected ArrayList<LatLng> latLngArrayList;
     protected ArrayList<LunchModel> model;
+    protected Fragment mMapViewFragment, mListViewFragment, mWormatesFragment;
 
 // --------------------
     // UTILS
@@ -336,10 +338,29 @@ public class BaseActivity extends AppCompatActivity {
                                 phoneNumber));
                         // For Google Maps
                         latLngArrayList.add(place.getLatLng());
+                        getMapViewFragment();
+
                     }
                 });
             }
         }
+    }
+
+    protected void getMapViewFragment(){
+        if (mMapViewFragment == null) {
+            mMapViewFragment = new MapViewFragment();
+        }
+        getFragment(mMapViewFragment);
+    }
+
+    /**
+     * Get Fragment
+     *
+     * @param selectedFragment Fragment selected
+     */
+    protected void getFragment(Fragment selectedFragment) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_frame_layout,
+                selectedFragment).commit();
     }
 
     /**
@@ -355,6 +376,7 @@ public class BaseActivity extends AppCompatActivity {
             placeResponse.addOnCompleteListener(task -> {
                 getCurrentPlaceId(task);
                 getPlaceDetails();
+
             });
         } else {
             // A local method to request required permissions;

@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -70,6 +71,7 @@ public class BaseActivity extends AppCompatActivity {
     protected ArrayList<LatLng> latLngArrayList;
     protected ArrayList<LunchModel> model;
     protected Fragment mMapViewFragment, mListViewFragment, mWormatesFragment;
+    private AtomicInteger j;
 
 // --------------------
     // UTILS
@@ -246,10 +248,12 @@ public class BaseActivity extends AppCompatActivity {
         if (task.isSuccessful()) {
             FindCurrentPlaceResponse response = task.getResult();
             assert response != null;
-            for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
-                // Get place detail for current hour
-                placeId = placeLikelihood.getPlace().getId();
-                arrayListPlaceId.add(placeId);
+                for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
+                    if (typeOfInterestForDetails(placeLikelihood)){
+                        // Get place detail for current hour
+                        placeId = placeLikelihood.getPlace().getId();
+                        arrayListPlaceId.add(placeId);
+                    }
             }
         } else {
             this.apiException(task);
@@ -274,14 +278,14 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * Interests of type of places
      *
-     * @param place Places
+     * @param placeLikelihood Places
      * @return Type of interest
      */
-    protected boolean typeOfInterestForDetails(Place place) {
+    protected boolean typeOfInterestForDetails(PlaceLikelihood placeLikelihood) {
         boolean mTypeOfInterest;
-        mTypeOfInterest = Objects.requireNonNull(place.getTypes()).toString().contains("RESTAURANT")
-                || Objects.requireNonNull(place.getTypes()).toString().contains("FOOD")
-                || Objects.requireNonNull(place.getTypes()).toString().contains("BAKERY");
+        mTypeOfInterest = Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("RESTAURANT")
+                || Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("FOOD")
+                || Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("BAKERY");
         return mTypeOfInterest;
     }
 
@@ -289,10 +293,12 @@ public class BaseActivity extends AppCompatActivity {
      * Get the place details
      */
     protected void getPlaceDetails() {
+        j = new AtomicInteger();
         model = new ArrayList<>();
         latLngArrayList = new ArrayList<>();
         // Get place details from current places id
         for (int i = 0; i < arrayListPlaceId.size(); i++) {
+            j.getAndIncrement();
             placeId = arrayListPlaceId.get(i);
             if (placeId != null) {
                 FetchPlaceRequest requestById = FetchPlaceRequest.builder(placeId, placeDetailFields).build();
@@ -322,7 +328,6 @@ public class BaseActivity extends AppCompatActivity {
                     String phoneNumber = place.getPhoneNumber();
                     String detailPlaceId = place.getId();
                     // Create a new model
-                    if (typeOfInterestForDetails(place)) {
                         model.add(new LunchModel(place.getName(),
                                 place.getAddress(),
                                 periodList,
@@ -338,9 +343,10 @@ public class BaseActivity extends AppCompatActivity {
                                 phoneNumber));
                         // For Google Maps
                         latLngArrayList.add(place.getLatLng());
-                        getMapViewFragment();
-
-                    }
+                        // Open map fragment when all data completed
+                        if (arrayListPlaceId.size() == model.size()){
+                            getMapViewFragment();
+                        }
                 });
             }
         }

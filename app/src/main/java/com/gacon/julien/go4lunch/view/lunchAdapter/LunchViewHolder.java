@@ -1,6 +1,7 @@
 package com.gacon.julien.go4lunch.view.lunchAdapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,11 +15,16 @@ import com.gacon.julien.go4lunch.models.PlaceRating;
 import com.gacon.julien.go4lunch.models.User;
 import com.gacon.julien.go4lunch.view.utils.DataFormat;
 import com.gacon.julien.go4lunch.view.utils.GetHours;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,7 +92,15 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
         }
         // set PlaceImage to ImageView
         if (newLunch.getPhotoMetadatasOfPlace() != null) {
-            dataFormat.addImages(newLunch.getPlace(), newLunch.getPlacesClient(), imageView);
+
+            PhotoMetadata photoMetadata = Objects.requireNonNull(newLunch.getPhotoMetadatasOfPlace()).get(0);
+            // Create a FetchPhotoRequest.
+            FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                    .build();
+            newLunch.getPlacesClient().fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                imageView.setImageBitmap(bitmap);
+            });
         } else imageView.setImageResource(R.drawable.bg_connection);
 
         // set Distance to TextView

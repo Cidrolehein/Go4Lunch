@@ -40,6 +40,7 @@ before_script:
 
 script:
 - android-wait-for-emulator
+- ./gradlew clean
 - ./gradlew connectedCheck
 
 licenses:

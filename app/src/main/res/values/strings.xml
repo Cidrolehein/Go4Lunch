@@ -2,6 +2,8 @@
     <!-- Activities titles -->
     <string name="app_name">Go4Lunch</string>
     <string name="toolbar_title_login_activity">I\'m Hungry !</string>
+    <!-- Google Map Auth -->
+    <string name="google_maps_key" translatable="false">@string/google_api_key_gradle</string>
     <!-- Twitter Auth -->
     <string name="twitter_consumer_key" translatable="false">@string/twitter_consumer_api_key_gradle</string>
     <string name="twitter_consumer_secret" translatable="false">@string/twitter_api_key_gradle</string>
@@ -41,7 +43,7 @@
     <!-- Joining list text -->
     <string name="count_users">(%1$d)</string>
     <!-- Place selected by user -->
-    <string name="user_place_selected">%1$s is eating at %2$s</string>
+    <string name="user_place_selected" translatable="false">%1$s is eating at %2$s</string>
     <!-- User don't select place -->
     <string name="user_not_place_selected">%1$s hasn\'t decided yet</string>
 

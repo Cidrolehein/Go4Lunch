@@ -55,7 +55,7 @@
     <string name="user_image">Photo d\'utilisateur</string>
     <string name="user_name">Nom d\'utilisateur</string>
     <string name="user_not_place_selected">%1$s n\'a pas selectionné de lieu</string>
-    <string name="user_place_selected">%1$s mange à %2$</string>
+    <string name="user_place_selected">%1$s mange à %2$s</string>
     <string name="website">Site Internet</string>
     <string name="website_icon_orange">Icone de site orange</string>
     <string name="your_lunch">Votre restaurant</string>

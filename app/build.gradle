@@ -12,9 +12,23 @@ android {
         multiDexEnabled true // ERROR TOO MANY FIELDS SEE DEPENDENCIES
     }
     buildTypes {
+        debug {
+            buildConfigField 'String', "GoogleApiKey", GoogleMapApiKey
+            resValue 'string', "google_api_key_gradle", GoogleMapApiKey
+            buildConfigField 'String', "TwitterConsumerApiKey", TwitterConsumerKey
+            resValue 'string', "twitter_consumer_api_key_gradle", TwitterConsumerKey
+            buildConfigField 'String', "TwitterApiKey", TwitterApiKey
+            resValue 'string', "twitter_api_key_gradle", TwitterApiKey
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', "GoogleApiKey", GoogleMapApiKey
+            resValue 'string', "google_api_key_gradle", GoogleMapApiKey
+            buildConfigField 'String', "TwitterConsumerApiKey", TwitterConsumerKey
+            resValue 'string', "twitter_consumer_api_key_gradle", TwitterConsumerKey
+            buildConfigField 'String', "TwitterApiKey", TwitterApiKey
+            resValue 'string', "twitter_api_key_gradle", TwitterApiKey
         }
     }
     // Specific JDK version in build.gradle

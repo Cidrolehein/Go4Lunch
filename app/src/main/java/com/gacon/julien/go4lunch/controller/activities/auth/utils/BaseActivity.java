@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -71,7 +70,6 @@ public class BaseActivity extends AppCompatActivity {
     protected ArrayList<LatLng> latLngArrayList;
     protected ArrayList<LunchModel> model;
     protected Fragment mMapViewFragment, mListViewFragment, mWormatesFragment;
-    private AtomicInteger j;
 
 // --------------------
     // UTILS
@@ -194,9 +192,9 @@ public class BaseActivity extends AppCompatActivity {
      * Initialize Google Places Client and Details
      */
     protected void initPlaces() {
-        // Initialize Places.
-        String api_key = getString(R.string.google_maps_key);
-        Places.initialize(this, api_key);
+        // Initialize Places with Google Api Key.
+        String google_api_key = getString(R.string.google_maps_key);
+        Places.initialize(this, google_api_key);
         // Create a new Places client instance.
         mPlacesClient = Places.createClient(this);
         mPlacesDetails = Places.createClient(this);
@@ -293,12 +291,10 @@ public class BaseActivity extends AppCompatActivity {
      * Get the place details
      */
     protected void getPlaceDetails() {
-        j = new AtomicInteger();
         model = new ArrayList<>();
         latLngArrayList = new ArrayList<>();
         // Get place details from current places id
         for (int i = 0; i < arrayListPlaceId.size(); i++) {
-            j.getAndIncrement();
             placeId = arrayListPlaceId.get(i);
             if (placeId != null) {
                 FetchPlaceRequest requestById = FetchPlaceRequest.builder(placeId, placeDetailFields).build();

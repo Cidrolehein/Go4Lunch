@@ -350,10 +350,11 @@ public class MapViewFragment extends BaseFragment {
      */
     private void getAllPlacesSelected() {
         UserHelper.getUsersCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
-            assert queryDocumentSnapshots != null;
-            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                User user = documentSnapshot.toObject(User.class);
-                createNewGreenSelectedMarker(user);
+            if(queryDocumentSnapshots != null){
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    User user = documentSnapshot.toObject(User.class);
+                    createNewGreenSelectedMarker(user);
+                }
             }
         });
     }

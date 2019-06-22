@@ -19,8 +19,8 @@
     Once you have your key (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
     -->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyD95VyLsXgPACvDl1lAhl85lI3U2v6vNHs</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">@string/google_api_key_gradle</string>
     <!-- Twitter Auth -->
-    <string name="twitter_consumer_key" translatable="false">YhCzi2IwtAmFQpWTHmrmfecQt</string>
-    <string name="twitter_consumer_secret" translatable="false">7WKHA9YTmUJSSnq8DZmeB9eMA3lcnVfy6kHmoKRMPhsZNwU7Wc</string>
+    <string name="twitter_consumer_key" translatable="false">@string/twitter_consumer_api_key_gradle</string>
+    <string name="twitter_consumer_secret" translatable="false">@string/twitter_api_key_gradle</string>
 </resources>

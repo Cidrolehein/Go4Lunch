@@ -279,8 +279,7 @@ public class MapViewFragment extends BaseFragment {
     private Marker googleMapMarker(LatLng latLng, String markerTitle) {
         return googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .title(markerTitle)
-                .snippet("Marker Description"));
+                .title(markerTitle));
     }
 
     /**

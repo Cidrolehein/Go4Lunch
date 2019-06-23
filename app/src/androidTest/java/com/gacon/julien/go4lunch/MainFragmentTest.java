@@ -2,10 +2,8 @@ package com.gacon.julien.go4lunch;
 
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
@@ -69,7 +67,7 @@ public class MainFragmentTest {
     }
 
     @Test
-    public void OnClickFragmentTest(){
+    public void OnClickFragmentTest() {
         onView(withId(R.id.list_view)).perform(click());
         onView(withId(R.id.map_view)).perform(click());
         onView(withId(R.id.workmates)).perform(click());

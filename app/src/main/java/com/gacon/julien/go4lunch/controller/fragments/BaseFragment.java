@@ -126,12 +126,12 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
      * New area for place Search = 1000m around
      * @return RectangularBounds for LocationRestriction
      */
-    protected RectangularBounds rectangularBoundOfCurrentLocation(){
+    private RectangularBounds rectangularBoundOfCurrentLocation(){
         BaseActivity baseActivity = (BaseActivity) getActivity();
         // Get new Latitude :
         double earth = 6378.137;  //radius of the earth in kilometer
         double pi = Math.PI;
-        double m = (1 / ((2 * pi / 360) * earth)) / 1000;  //1 meter in degree
+        double m = meterInDegree(pi, earth);  //1 meter in degree
 
         assert baseActivity != null;
         double new_latitude_a = baseActivity.getCurrentLatitude() + (1000 * m);
@@ -149,6 +149,10 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
         return RectangularBounds.newInstance(
                 new LatLng(new_latitude_b, new_longitude_b),
                 new LatLng(new_latitude_a, new_longitude_a));
+    }
+
+    public double meterInDegree(double pi, double earth){
+        return (1 / ((2 * pi / 360) * earth)) / 1000;
     }
 
     /**

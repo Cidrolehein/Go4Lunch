@@ -325,7 +325,7 @@ public class BaseActivity extends AppCompatActivity {
                                 detailPlaceId,
                                 place,
                                 mPlacesDetails,
-                                distanceInMeter(place), // Distance between place in meters
+                                distanceInMeter(place.getLatLng()), // Distance between place in meters
                                 phoneNumber));
                         // For Google Maps
                         latLngArrayList.add(place.getLatLng());
@@ -350,15 +350,15 @@ public class BaseActivity extends AppCompatActivity {
 
     /**
      * Get data and calculate the distance between in meters
-     * @param place Google Place Details
+     * @param placeLatLng Google Place Details
      * @return Distance in meters
      */
-    private float distanceInMeter(Place place){
+    public float distanceInMeter(LatLng placeLatLng){
         float distanceInMeters = 0;
-        if (place.getLatLng() != null && currentLocation != null) {
+        if (placeLatLng != null && currentLocation != null) {
             Location placeLocation = new Location("");
-            placeLocation.setLatitude(place.getLatLng().latitude);
-            placeLocation.setLongitude(place.getLatLng().longitude);
+            placeLocation.setLatitude(placeLatLng.latitude);
+            placeLocation.setLongitude(placeLatLng.longitude);
             distanceInMeters = currentLocation.distanceTo(placeLocation);
         }
         return distanceInMeters;

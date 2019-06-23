@@ -16,9 +16,7 @@ import com.gacon.julien.go4lunch.models.User;
 import com.gacon.julien.go4lunch.view.utils.DataFormat;
 import com.gacon.julien.go4lunch.view.utils.GetHours;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
-import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
-import com.google.android.libraries.places.api.net.PlacesClient;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;

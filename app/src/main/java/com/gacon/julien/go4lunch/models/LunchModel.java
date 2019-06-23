@@ -1,10 +1,7 @@
 package com.gacon.julien.go4lunch.models;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.libraries.places.api.model.DayOfWeek;
 import com.google.android.libraries.places.api.model.Period;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
@@ -13,7 +10,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LunchModel implements Serializable {

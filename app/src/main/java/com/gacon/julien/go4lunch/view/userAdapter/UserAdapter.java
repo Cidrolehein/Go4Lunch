@@ -10,11 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.gacon.julien.go4lunch.R;
-import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.models.User;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
 

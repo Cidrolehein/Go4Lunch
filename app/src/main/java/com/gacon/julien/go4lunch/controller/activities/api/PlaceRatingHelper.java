@@ -10,7 +10,7 @@ public class PlaceRatingHelper {
 
     private static final String COLLECTION_NAME = "PlaceRating";
 
-    public static CollectionReference getPlaceRatingCollection(){
+    private static CollectionReference getPlaceRatingCollection(){
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
     }
 

@@ -60,8 +60,10 @@ public class ListViewFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         baseActivity = (BaseActivity) getActivity();
         usersList = new ArrayList<>();
-        this.createRecyclerView();
-        this.getUsersNames(adapter, usersList);
+        if(baseActivity.getModel() != null){
+            this.createRecyclerView();
+            this.getUsersNames(adapter, usersList);
+        }
         setHasOptionsMenu(true);
         return view;
     }

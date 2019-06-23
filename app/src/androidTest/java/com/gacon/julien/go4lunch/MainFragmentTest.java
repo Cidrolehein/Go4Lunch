@@ -2,8 +2,10 @@ package com.gacon.julien.go4lunch;
 
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
@@ -16,6 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isOpen;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -63,6 +66,13 @@ public class MainFragmentTest {
         onView(withId(R.id.profile_main_drawer_layout)).check(matches(isOpen()));
         onView(withId(R.id.profile_main_nav_view)).perform(NavigationViewActions.navigateTo(R.id.profile_logout));
 
+    }
+
+    @Test
+    public void OnClickFragmentTest(){
+        onView(withId(R.id.list_view)).perform(click());
+        onView(withId(R.id.map_view)).perform(click());
+        onView(withId(R.id.workmates)).perform(click());
     }
 
 }

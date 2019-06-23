@@ -281,9 +281,7 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected boolean typeOfInterestForDetails(PlaceLikelihood placeLikelihood) {
         boolean mTypeOfInterest;
-        mTypeOfInterest = Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("RESTAURANT")
-                || Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("FOOD")
-                || Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("BAKERY");
+        mTypeOfInterest = Objects.requireNonNull(placeLikelihood.getPlace().getTypes()).toString().contains("RESTAURANT");
         return mTypeOfInterest;
     }
 

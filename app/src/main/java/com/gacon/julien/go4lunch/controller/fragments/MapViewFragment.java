@@ -186,7 +186,9 @@ public class MapViewFragment extends BaseFragment {
                     // For showing a move to my location button
                     googleMap.setMyLocationEnabled(true);
                     // Create GoogleMap Markers Clickable
-                    getMarkers();
+                    if (baseActivity.getModel() != null){
+                        getMarkers();
+                    }
                     getAllPlacesSelected();
                     // Set a listener for info window events
                     initializeLunchListAndCreatDetailFragment(mMap);

@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.ProfileActivity;
+import com.gacon.julien.go4lunch.controller.activities.WebViewActivity;
 import com.gacon.julien.go4lunch.controller.activities.api.PlaceRatingHelper;
 import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
@@ -219,8 +220,10 @@ public class DetailsListViewFragment extends Fragment {
     private void createWebView() {
         if (mLunchModel.getWebsiteUriPlace() != null) {
             webImageBtnView.setOnClickListener(v -> {
-                Fragment mWiebViewFrag = new WebViewFragment();
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, mWiebViewFrag).commit();
+                String webUrl = String.valueOf(profileActivity.getLunch().getWebsiteUriPlace());
+                Intent intent = new Intent(getContext(), WebViewActivity.class);
+                intent.putExtra("url", webUrl);
+                startActivity(intent);
             });
         } else Toast.makeText(getContext(), "No website", Toast.LENGTH_LONG).show();
     }

@@ -104,7 +104,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
         } else imageView.setImageResource(R.drawable.bg_connection);
 
         // set Distance to TextView
-        this.mTextViewDistance.setText(dataFormat.formatMeters(newLunch));
+        this.mTextViewDistance.setText(dataFormat.formatMeters(newLunch.getDisanceInMeters()));
 
         // count the number of user who selected the place
         int count = countUsersPlaceSelected(user, newLunch);

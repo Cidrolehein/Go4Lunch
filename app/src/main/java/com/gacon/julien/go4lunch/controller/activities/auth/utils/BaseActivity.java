@@ -312,14 +312,6 @@ public class BaseActivity extends AppCompatActivity {
                     if (place.getRating() != null) {
                         rating = place.getRating();
                     }
-                    // Distance between place in meters
-                    float distanceInMeters = 0;
-                    if (place.getLatLng() != null && currentLocation != null) {
-                        Location placeLocation = new Location("");
-                        placeLocation.setLatitude(place.getLatLng().latitude);
-                        placeLocation.setLongitude(place.getLatLng().longitude);
-                        distanceInMeters = currentLocation.distanceTo(placeLocation);
-                    }
                     // Phone number
                     String phoneNumber = place.getPhoneNumber();
                     String detailPlaceId = place.getId();
@@ -334,8 +326,8 @@ public class BaseActivity extends AppCompatActivity {
                                 placeDetailFields,
                                 detailPlaceId,
                                 place,
-                                mPlacesClient,
-                                distanceInMeters,
+                                mPlacesDetails,
+                                distanceInMeter(place), // Distance between place in meters
                                 phoneNumber));
                         // For Google Maps
                         latLngArrayList.add(place.getLatLng());
@@ -348,11 +340,30 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Create a MapView Fragment
+     */
     protected void getMapViewFragment(){
         if (mMapViewFragment == null) {
             mMapViewFragment = new MapViewFragment();
         }
         getFragment(mMapViewFragment);
+    }
+
+    /**
+     * Get data and calculate the distance between in meters
+     * @param place Google Place Details
+     * @return Distance in meters
+     */
+    private float distanceInMeter(Place place){
+        float distanceInMeters = 0;
+        if (place.getLatLng() != null && currentLocation != null) {
+            Location placeLocation = new Location("");
+            placeLocation.setLatitude(place.getLatLng().latitude);
+            placeLocation.setLongitude(place.getLatLng().longitude);
+            distanceInMeters = currentLocation.distanceTo(placeLocation);
+        }
+        return distanceInMeters;
     }
 
     /**
@@ -362,7 +373,7 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected void getFragment(Fragment selectedFragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_frame_layout,
-                selectedFragment).commit();
+                selectedFragment).commitAllowingStateLoss();
     }
 
     /**

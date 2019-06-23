@@ -134,7 +134,7 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         if (requestCode == REQUEST_SELECT_PLACE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i(TAG, "onActivityResult: Activity succefull " + place);
+                Log.i(TAG, "onActivityResult: Activity successful " + place);
             } else if (resultCode == RESULT_CANCELED) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 this.onError(status);

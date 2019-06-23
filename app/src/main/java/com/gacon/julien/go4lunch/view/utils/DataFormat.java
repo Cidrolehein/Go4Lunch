@@ -7,7 +7,6 @@ import android.widget.ImageView;
 
 import androidx.core.content.ContextCompat;
 
-import com.gacon.julien.go4lunch.models.LunchModel;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
@@ -23,11 +22,11 @@ public class DataFormat {
     /**
      * Format meters
      *
-     * @param newLunch New Lunch model
+     * @param meters New Lunch model
      * @return Meters
      */
-    public String formatMeters(LunchModel newLunch) {
-        int metersInteger = convertMeters(newLunch.getDisanceInMeters());
+    public String formatMeters(float meters) {
+        int metersInteger = convertMeters(meters);
         String metersToString = Integer.toString(metersInteger);
         return metersToString + "m";
     }

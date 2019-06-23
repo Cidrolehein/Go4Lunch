@@ -13,8 +13,6 @@ import static org.junit.Assert.assertEquals;
  */
 public class DataFormatTest {
 
-    private static final String PROVIDER = "flp";
-
     private DataFormat dataFormat = new DataFormat();
     private BaseActivity mBaseActivity = new BaseActivity();
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <bitmap
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/go4lunch_connexion_background"
+    android:src="@drawable/go4lunch_connexion_background_taille_origine"
     android:gravity="center"
     android:scaleType="centerCrop" />

@@ -97,11 +97,13 @@ public class BaseFragment extends Fragment implements LunchAdapter.OnNoteListene
         // - Get all users names
         UserHelper.getUsersCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
             arrayList.clear();
-            assert queryDocumentSnapshots != null;
-            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                User user = documentSnapshot.toObject(User.class);
-                arrayList.add(user);
+            if (queryDocumentSnapshots != null){
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    User user = documentSnapshot.toObject(User.class);
+                    arrayList.add(user);
+                }
             }
+
             adapter.notifyDataSetChanged();
         });
     }

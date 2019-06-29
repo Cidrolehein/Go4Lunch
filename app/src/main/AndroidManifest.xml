@@ -60,6 +60,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Alarm Manager -->
+        <receiver android:name=".controller.activities.utils.AlarmReceiver"/>
     </application>
 
 </manifest>

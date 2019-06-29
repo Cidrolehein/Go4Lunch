@@ -338,6 +338,7 @@ public class MapViewFragment extends BaseFragment {
                         baseActivity.createDetailFragment();
                     });
                 }
+
             } else if (resultCode == RESULT_CANCELED) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 this.onErrorPlaceSelect(status);
@@ -373,6 +374,7 @@ public class MapViewFragment extends BaseFragment {
             assert marker != null;
             marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)); // change color of marker
         }
+
     }
 
 }

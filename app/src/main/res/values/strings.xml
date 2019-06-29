@@ -43,7 +43,7 @@
     <!-- Joining list text -->
     <string name="count_users">(%1$d)</string>
     <!-- Place selected by user -->
-    <string name="user_place_selected" translatable="false">%1$s is eating at %2$s</string>
+    <string name="user_place_selected">%1$s is eating at %2$s</string>
     <!-- User don't select place -->
     <string name="user_not_place_selected">%1$s hasn\'t decided yet</string>
 
@@ -97,5 +97,9 @@
     <string name="user_name">User name</string>
     <string name="place_name">place name</string>
     <string name="rate_is_not_found">Rate is not found</string>
+    <string name="usersJoined">you eat with : %1$s</string>
+    <string name="notification_title">%1$s with %2$s</string>
+    <string name="notification_message"> address : %1$s</string>
+    <string name="notification_activate">Lunch notifications</string>
 
 </resources>

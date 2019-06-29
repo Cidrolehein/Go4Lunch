@@ -18,9 +18,10 @@ public class UserHelper {
     // --- CREATE ---
 
     public static Task<Void> createUser(String uid, String username,
-                                        String urlPicture, String placeSelectedId, String placeName) {
+                                        String urlPicture, String placeSelectedId, String placeName,
+                                        String placeAddress) {
         // - Create User object
-        User userToCreate = new User(uid, username, urlPicture, placeSelectedId, placeName);
+        User userToCreate = new User(uid, username, urlPicture, placeSelectedId, placeName, placeAddress);
         // - Add a new User Document to Firestore
         return UserHelper.getUsersCollection()
                 .document(uid) // Setting uID for Document
@@ -33,6 +34,10 @@ public class UserHelper {
 
     public static Task<Void> updatePlaceName(String placeName, String uid) {
         return UserHelper.getUsersCollection().document(uid).update("placeName", placeName);
+    }
+
+    public static Task<Void> updatePlaceSelectedAddress(String placeSelectedAddress, String uid) {
+        return UserHelper.getUsersCollection().document(uid).update("placeSelectedAddress", placeSelectedAddress);
     }
 
 }

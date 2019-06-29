@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".controller.fragments.ListView.DetailsListViewFragment">
+    tools:context=".controller.fragments.listView.DetailsListViewFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -13,7 +13,8 @@ import androidx.fragment.app.Fragment;
 
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
-import com.gacon.julien.go4lunch.controller.fragments.ListView.DetailsListViewFragment;
+import com.gacon.julien.go4lunch.controller.activities.utils.NotificationHelper;
+import com.gacon.julien.go4lunch.controller.fragments.listView.DetailsListViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.MapViewFragment;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.google.android.gms.common.api.ApiException;
@@ -70,6 +71,8 @@ public class BaseActivity extends AppCompatActivity {
     protected ArrayList<LatLng> latLngArrayList;
     protected ArrayList<LunchModel> model;
     protected Fragment mMapViewFragment, mListViewFragment, mWormatesFragment;
+    protected String usersJoined;
+    protected NotificationHelper mNotificationHelper;
 
 // --------------------
     // UTILS
@@ -246,12 +249,12 @@ public class BaseActivity extends AppCompatActivity {
         if (task.isSuccessful()) {
             FindCurrentPlaceResponse response = task.getResult();
             assert response != null;
-                for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
-                    if (typeOfInterestForDetails(placeLikelihood)){
-                        // Get place detail for current hour
-                        placeId = placeLikelihood.getPlace().getId();
-                        arrayListPlaceId.add(placeId);
-                    }
+            for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
+                if (typeOfInterestForDetails(placeLikelihood)) {
+                    // Get place detail for current hour
+                    placeId = placeLikelihood.getPlace().getId();
+                    arrayListPlaceId.add(placeId);
+                }
             }
         } else {
             this.apiException(task);
@@ -314,25 +317,26 @@ public class BaseActivity extends AppCompatActivity {
                     String phoneNumber = place.getPhoneNumber();
                     String detailPlaceId = place.getId();
                     // Create a new model
-                        model.add(new LunchModel(place.getName(),
-                                place.getAddress(),
-                                periodList,
-                                Objects.requireNonNull(place.getTypes()).get(0).toString(),
-                                rating,
-                                place.getPhotoMetadatas(),
-                                place.getWebsiteUri(),
-                                placeDetailFields,
-                                detailPlaceId,
-                                place,
-                                mPlacesDetails,
-                                distanceInMeter(place.getLatLng()), // Distance between place in meters
-                                phoneNumber));
-                        // For Google Maps
-                        latLngArrayList.add(place.getLatLng());
-                        // Open map fragment when all data completed
-                        if (arrayListPlaceId.size() == model.size()){
-                            getMapViewFragment();
-                        }
+                    model.add(new LunchModel(place.getName(),
+                            place.getAddress(),
+                            periodList,
+                            Objects.requireNonNull(place.getTypes()).get(0).toString(),
+                            rating,
+                            place.getPhotoMetadatas(),
+                            place.getWebsiteUri(),
+                            placeDetailFields,
+                            detailPlaceId,
+                            place,
+                            mPlacesDetails,
+                            distanceInMeter(place.getLatLng()), // Distance between place in meters
+                            phoneNumber));
+                    // For Google Maps
+                    latLngArrayList.add(place.getLatLng());
+                    // Open map fragment when all data completed
+                    if (arrayListPlaceId.size() == model.size()) {
+                        getMapViewFragment();
+                    }
+
                 });
             }
         }
@@ -341,7 +345,7 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * Create a MapView Fragment
      */
-    protected void getMapViewFragment(){
+    protected void getMapViewFragment() {
         if (mMapViewFragment == null) {
             mMapViewFragment = new MapViewFragment();
         }
@@ -350,10 +354,11 @@ public class BaseActivity extends AppCompatActivity {
 
     /**
      * Get data and calculate the distance between in meters
+     *
      * @param placeLatLng Google Place Details
      * @return Distance in meters
      */
-    public float distanceInMeter(LatLng placeLatLng){
+    public float distanceInMeter(LatLng placeLatLng) {
         float distanceInMeters = 0;
         if (placeLatLng != null && currentLocation != null) {
             Location placeLocation = new Location("");
@@ -495,4 +500,7 @@ public class BaseActivity extends AppCompatActivity {
         return mPlacesDetails;
     }
 
+    public String getUsersJoined() {
+        return usersJoined;
+    }
 }

@@ -52,7 +52,8 @@ public class MainActivity extends BaseActivity {
                     ? this.getCurrentUser().getPhotoUrl().toString() : null;
             String username = this.getCurrentUser().getDisplayName();
             String uid = this.getCurrentUser().getUid();
-            UserHelper.createUser(uid, username, urlPicture, null, null)
+            UserHelper.createUser(uid, username, urlPicture, null, null,
+                    null)
                     .addOnFailureListener(this.onFailureListener());
         }
     }

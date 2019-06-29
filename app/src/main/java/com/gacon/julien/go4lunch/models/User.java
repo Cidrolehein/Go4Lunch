@@ -10,16 +10,19 @@ public class User {
     private String urlPicture;
     private String placeSelectedId;
     private String placeName;
+    private String placeSelectedAddress;
 
     public User() {
     }
 
-    public User(String uid, String username, String urlPicture, String placeSelectedId, String placeName) {
+    public User(String uid, String username, String urlPicture, String placeSelectedId, String placeName,
+                String placeSelectedAddress) {
         this.uid = uid;
         this.username = username;
         this.urlPicture = urlPicture;
         this.placeSelectedId = placeSelectedId;
         this.placeName = placeName;
+        this.placeSelectedAddress = placeSelectedAddress;
     }
 
     public String getUsername() {
@@ -38,5 +41,7 @@ public class User {
         return urlPicture;
     }
 
-
+    public String getPlaceSelectedAddress() {
+        return placeSelectedAddress;
+    }
 }

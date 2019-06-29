@@ -1,4 +1,4 @@
-package com.gacon.julien.go4lunch.controller.fragments.ListView;
+package com.gacon.julien.go4lunch.controller.fragments.listView;
 
 import android.content.Intent;
 import android.os.Bundle;

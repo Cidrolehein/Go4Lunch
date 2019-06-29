@@ -59,4 +59,8 @@
     <string name="website">Site Internet</string>
     <string name="website_icon_orange">Icone de site orange</string>
     <string name="your_lunch">Votre restaurant</string>
+    <string name="notification_message">addresse : %1$s</string>
+    <string name="notification_title">%1$s avec %2$s</string>
+    <string name="usersJoined">vous mangez avec : %1$s</string>
+    <string name="notification_activate">Notifications</string>
 </resources>

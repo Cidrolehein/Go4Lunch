@@ -20,9 +20,12 @@ import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.gacon.julien.go4lunch.R;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
-import com.gacon.julien.go4lunch.controller.fragments.ListView.ListViewFragment;
+import com.gacon.julien.go4lunch.controller.activities.utils.AlarmReceiver;
+import com.gacon.julien.go4lunch.controller.activities.utils.NotificationHelper;
+import com.gacon.julien.go4lunch.controller.fragments.listView.ListViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.MapViewFragment;
 import com.gacon.julien.go4lunch.controller.fragments.WorkmatesFragment;
+import com.gacon.julien.go4lunch.controller.fragments.menuDrawer.Settings;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,6 +39,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +58,7 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
     BottomNavigationView bottomNavigationView;
     // Data
     private LunchModel lunch;
+    private Fragment Settings;
     /**
      * For the Bottom Navigation Menu
      */
@@ -115,6 +120,8 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
         // Data for place API
         this.initPlaces();
         this.getCurrentPlaces();
+        mNotificationHelper = new NotificationHelper(this);
+        //this.startAlarmManager();
 
     }
 
@@ -188,13 +195,13 @@ public class ProfileActivity extends BaseActivity implements NavigationView.OnNa
 
         switch (item.getItemId()) {
             case R.id.profile_lunch:
-                if (mMapViewFragment == null) {
-                    mMapViewFragment = new MapViewFragment();
-                }
-                getFragment(mMapViewFragment);
+
                 break;
             case R.id.profile_sittings:
-
+                if (Settings == null) {
+                    Settings = new Settings();
+                }
+                getFragment(Settings);
                 break;
             case R.id.profile_logout:
                 this.signOutUserFromFirebase();

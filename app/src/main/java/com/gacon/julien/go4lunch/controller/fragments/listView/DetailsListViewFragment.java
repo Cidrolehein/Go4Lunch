@@ -1,11 +1,14 @@
-package com.gacon.julien.go4lunch.controller.fragments.ListView;
+package com.gacon.julien.go4lunch.controller.fragments.listView;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +31,7 @@ import com.gacon.julien.go4lunch.controller.activities.WebViewActivity;
 import com.gacon.julien.go4lunch.controller.activities.api.PlaceRatingHelper;
 import com.gacon.julien.go4lunch.controller.activities.api.UserHelper;
 import com.gacon.julien.go4lunch.controller.activities.auth.utils.BaseActivity;
+import com.gacon.julien.go4lunch.controller.activities.utils.NotificationHelper;
 import com.gacon.julien.go4lunch.models.LunchModel;
 import com.gacon.julien.go4lunch.models.PlaceRating;
 import com.gacon.julien.go4lunch.models.User;
@@ -72,6 +76,7 @@ public class DetailsListViewFragment extends Fragment {
     private ArrayList<User> mUsersJoiningArrayList;
     private UserJoiningAdapter adapter;
     private ProfileActivity profileActivity;
+    private NotificationHelper mNotificationHelper;
 
     /**
      * Required empty public constructor
@@ -95,6 +100,7 @@ public class DetailsListViewFragment extends Fragment {
         // create recycler view of joining users
         this.createRecyclerView();
         this.getUsersJoiningNames();
+        mNotificationHelper = new NotificationHelper(getContext());
 
         return view;
 
@@ -103,10 +109,21 @@ public class DetailsListViewFragment extends Fragment {
     /**
      * Select place button
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @OnClick(R.id.select_place_btn)
     void placeBtnSelected() {
         updatePlaceSelectedId();
         updatePlaceName();
+        updatePlaceSelectedAddress();
+        // send notification
+        sendOnChannel1(getString(R.string.notification_title, mLunchModel.getTitle()),
+                getString(R.string.notification_message, mLunchModel.getAddress(), mBaseActivity.getUsersJoined()));
+    }
+
+    private void sendOnChannel1(String title, String message) {
+        NotificationCompat.Builder nb = mNotificationHelper.getChannel1Notification(title, message);
+        mNotificationHelper.getManager().notify(1, nb.build());
+
     }
 
     @OnClick(R.id.like_imagebutton)
@@ -263,6 +280,20 @@ public class DetailsListViewFragment extends Fragment {
             String placeSelectedId = mLunchModel.getPlaceId();
             if (placeSelectedId != null) {
                 UserHelper.updatePlaceSelectedId(placeSelectedId,
+                        mBaseActivity.getCurrentUser().getUid())
+                        .addOnFailureListener(mBaseActivity.onFailureListener());
+            }
+        }
+    }
+
+    /**
+     * Get the current address
+     */
+    private void updatePlaceSelectedAddress() {
+        if (mBaseActivity.getCurrentUser() != null) {
+            String placeSelectedAddress = mLunchModel.getAddress();
+            if (placeSelectedAddress != null) {
+                UserHelper.updatePlaceSelectedAddress(placeSelectedAddress,
                         mBaseActivity.getCurrentUser().getUid())
                         .addOnFailureListener(mBaseActivity.onFailureListener());
             }
